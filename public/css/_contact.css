@@ -1,0 +1,8 @@
+.error, .has-error{
+    border-color: red !important;
+    border: 1px solid;
+}
+
+.help-block {
+    color: red;
+}

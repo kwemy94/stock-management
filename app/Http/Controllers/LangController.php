@@ -12,7 +12,7 @@ class LangController extends Controller
     }
 
     public function index() {
-        return view('lang');
+        return view('welcome');
     }
 
     public function change(Request $request)
