@@ -40,8 +40,8 @@
                                         srcset="https://flagcdn.com/32x24/us.png 2x, https://flagcdn.com/48x36/us.png 3x"
                                         width="16" height="12" alt="us"> --}}
                                     <select class="Langchange">
-                                        <option value="en" {{ session()->get('locale') == 'en' ? 'selected' : '' }}>En</option>
                                         <option value="fr" {{ session()->get('locale') == 'fr' ? 'selected' : '' }}>Fr</option>
+                                        <option value="en" {{ session()->get('locale') == 'en' ? 'selected' : '' }}>En</option>
                                     </select>
                                     {{-- </div> --}}
                                 </li>
