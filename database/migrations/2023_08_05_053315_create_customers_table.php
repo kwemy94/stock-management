@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->default('inconnu');
             $table->string('phone')->nullable();
+            $table->string('adress')->nullable();
+            $table->string('email')->nullable();
             $table->string('cni')->nullable();
             $table->timestamps();
         });

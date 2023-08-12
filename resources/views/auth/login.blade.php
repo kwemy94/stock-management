@@ -77,7 +77,8 @@
             <div class="card-body">
                 <p class="login-box-msg h4">{{ __('login.info-login.login') }}</p>
 
-                <form action="{{ route('login') }}" method="post">
+                <form action="{{ route('login') }}" method="POST">
+                    @csrf
                     <div class="input-group mb-3">
                         <input type="email" class="form-control" id="email" name="email"
                             value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="Email">
