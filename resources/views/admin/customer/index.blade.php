@@ -22,10 +22,10 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('product.title') }}</h3>
+                            <h3 class="card-title">{{ __('Liste des clients') }}</h3>
                             <div class="card-tools">
-                                <a href="{{ route('product.create')}}" class="btn btn-outline-success btn-sm"><span class="fa fa-plus"></span> Add</a>
-                                <a href="{{ route('barcode.to.pdf')}}" class="btn btn-outline-secondary btn-sm" target="_blank"><span class="fa fa-print"></span> Barcode</a>
+                                <a href="{{ route('customer.create')}}" class="btn btn-outline-success btn-sm"><span class="fa fa-plus"></span> Add</a>
+                                {{-- <a href="{{ route('barcode.to.pdf')}}" class="btn btn-outline-secondary btn-sm" target="_blank"><span class="fa fa-print"></span> Barcode</a> --}}
                             </div>
                         </div>
                         <!-- /.card-header -->
@@ -35,44 +35,44 @@
                                     <tr>
                                         <th style="width: 10px">#</th>
                                         <th>{{ __('product.info.name') }} </th>
-                                        {{-- <th>{{ __('product.info.price') }} </th> --}}
-                                        <th>{{ __('product.info.sale-price') }} </th>
-                                        {{-- <th>{{__('product.info.qantity-init')}} </th> --}}
-                                        <th>{{ __('product.info.qantity-available') }} </th>
-                                        <th>barcode</th>
+                                        <th>{{ __('CNI') }} </th>
+                                        <th>{{ __('Téléphone') }} </th>
+                                        <th>{{ __('Email') }} </th>
+                                        <th>{{ __('Adresse') }} </th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($products as $product)
+                                    @php
+                                        $cpt = 1;
+                                    @endphp
+                                    @forelse ($customers as $customer)
                                         <tr>
-                                            <td>{{ $product->id }}</td>
-                                            <td>{{ $product->product_name }} </td>
-                                            {{-- <td>
-                                                {{ $product->unit_price }}
-                                            </td> --}}
+                                            <td>{{ $cpt++ }}</td>
+                                            <td>{{ $customer->name }} </td>
                                             <td>
-                                                {{ $product->sale_price }}
-                                            </td>
-                                            <td><span
-                                                    class="badge {{ $product->stock_quantity <= $product->stock_alert ? 'bg-danger' : 'bg-success' }} ">{{ $product->stock_quantity }}</span>
+                                                {{ $customer->cni }}
                                             </td>
                                             <td>
-                                                <span>{{ $product->code }}</span>
+                                                {{ $customer->phone }}
+                                            </td>
+                                            <td>{{ $customer->email}} </td>
+                                            <td>
+                                                <span>{{ $customer->adress }}</span>
                                             </td>
                                             <td style="display: flex !important;">
                                                 
-                                                <form method="post" action="{{ route('product.destroy', $product->id) }}"
-                                                    id="form-delete-product{{ $product->id }}">
-                                                    <a href="{{ route('product.show', $product->id) }}" class="fas fa-eye"
-                                                        style="color: green"></a>
-                                                    <a href="{{ route('product.edit', $product->id) }}" class="fas fa-pen-alt"
+                                                <form method="post" action="{{ route('customer.destroy', $customer->id) }}"
+                                                    id="form-delete-customer{{ $customer->id }}">
+                                                    {{-- <a href="{{ route('customer.show', $customer->id) }}" class="fas fa-eye"
+                                                        style="color: green"></a> --}}
+                                                    <a href="{{ route('customer.edit', $customer->id) }}" class="fas fa-pen-alt"
                                                         style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
                                                         
                                                     @csrf
                                                     @method('delete')
-                                                    <span id="btn-delete-product{{ $product->id }}"
-                                                        onclick="deleteProduct({{ $product->id }})"
+                                                    <span id="btn-delete-customer{{ $customer->id }}"
+                                                        onclick="deleteCustomer({{ $customer->id }})"
                                                         class="fas fa-trash-alt" style="color: rgb(248, 38, 38)"></span>
                                                 </form>
                                             </td>
@@ -87,14 +87,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th style="width: 10px">#</th>
-                                        <th>{{ __('product.info.name') }} </th>
-                                        {{-- <th>{{ __('product.info.price') }} </th> --}}
-                                        <th>{{ __('product.info.sale-price') }} </th>
-                                        {{-- <th>{{__('product.info.qantity-init')}} </th> --}}
-                                        <th>{{ __('product.info.qantity-available') }} </th>
-                                        <th>barcode</th>
-                                        <th>Action</th>
+                                        
                                     </tr>
                                 </tfoot>
                             </table>
@@ -143,9 +136,9 @@
 
         });
 
-        function deleteProduct(i) {
-            if (confirm('Voulez-vous supprimer ce produit ??')) {
-                $('#form-delete-product' + i).submit();
+        function deleteCustomer(i) {
+            if (confirm('Voulez-vous supprimer cet utilisateur ??')) {
+                $('#form-delete-customer' + i).submit();
             }
         }
     </script>

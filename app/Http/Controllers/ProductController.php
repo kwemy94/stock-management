@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use PDF;
+use App\Models\Product;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Picqer\Barcode\GeneratorHTML;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Repositories\Product\ProductRepository;
@@ -52,6 +54,7 @@ class ProductController extends Controller
                 'product_name' => 'required',
                 'stock_quantity' => 'required|integer',
                 'unit_price' => 'required',
+                // 'product_image' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
             ],
             [
                 'product_name.required' => 'Nom du produit requis.',
@@ -66,6 +69,7 @@ class ProductController extends Controller
             //     'error' => true,
             //     'message' => $validation->errors(),
             // ]);
+            dd($validation->errors());
 
             return redirect()->back()->withErrors($validation->errors())->withInput();
         }
@@ -74,10 +78,21 @@ class ProductController extends Controller
         $inputs = $request->post();
         $codeProduit = generateProductBarcode();
 
+
+        // dd($request->all(), $request->file('product_image'));
         try {
             // dd($this->GenerateProductBarcode());
             $inputs['code'] = $codeProduit[0];
             $inputs['barcode'] = $codeProduit[1];
+
+            // if (!is_null($inputs['product_image'])) {
+            //     $productImage = $request->file('product_image');
+            //     $productName = Str::uuid() . '.' . $productImage->getClientOriginalExtension();
+            //     Storage::disk('public')->putFileAs('image/products/', $productImage, $productName);
+                
+            //     $inputs['product_name'] = $productName;
+            // }
+
 
             $product = $this->productRepository->store($inputs);
 
@@ -88,7 +103,7 @@ class ProductController extends Controller
             // ]);
             return redirect()->route('product.index')->with('success', __('product.store.success'));
         } catch (\Throwable $th) {
-            // dd($th);
+            dd($th);
             return redirect()->back()->with('eroor', __('product.store.error'));
         }
     }
@@ -147,7 +162,7 @@ class ProductController extends Controller
     public function BarcodeToPDF()
     {
         $products = $this->productRepository->getAll();
-        
+
         $data = [
             'title' => 'liste des produits',
             'date' => date('m/d/Y H:m:s'),

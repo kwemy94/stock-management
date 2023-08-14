@@ -45,7 +45,7 @@
         </div>
 
         {{--  Navbar  --}}
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="background-color: rgb(32, 47, 112)">
             {{-- Left navbar links  --}}
             @include('admin.layouts.partials._navbar-left')
 
@@ -54,7 +54,7 @@
         </nav>
 
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar elevation-4" style="background-color: white">
+        <aside class="main-sidebar elevation-4" style="background-color: rgba(20, 29, 70, 1)">
 
 
             {{-- Sidebar --}}
@@ -105,7 +105,6 @@
     <!-- ./wrapper -->
 
     {{-- <!-- jQuery --> --}}
-    @yield('dashboard-js')
     <script src="{{ asset('dashboard-template/plugins/jquery/jquery.min.js') }}"></script>
     {{-- <!-- jQuery UI 1.11.4 --> --}}
     <script src="{{ asset('dashboard-template/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
@@ -138,7 +137,7 @@
     <script src="{{ asset('dashboard-template/dist/js/adminlte.js') }}"></script>
 
     <script src="{{ asset('js/custom.js') }}"></script>
-    
+    @yield('dashboard-js')
     @yield('dashboard-datatable-js')
 
     <script src="{{ asset('dashboard-template/dist/js/pages/dashboard.js') }}"></script>

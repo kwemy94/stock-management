@@ -87,7 +87,7 @@ class CategoryController extends Controller
 
             return redirect()->back()->with('success', 'Catégorie supprimée !');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('success', 'Oups!! Echec de suppression');
+            return redirect()->back()->with('error', 'Oups!! Echec de suppression');
         }
     }
 }

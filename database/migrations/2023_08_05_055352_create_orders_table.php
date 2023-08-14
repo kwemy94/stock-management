@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('customer_id');
-            $table->date('date_order')->comm;
+            $table->foreignId('customer_id')->nullable();
+            $table->foreignId('user_id')->nullable();
+            $table->date('date_order')->nullable();
             $table->integer('status')->default(0)->comment('0=>non payer, 1 => payer, 2 => payer et livré' );
             $table->foreign('customer_id')->references('id')->on('customers');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

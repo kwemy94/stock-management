@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('adress')->nullable();
             $table->string('email')->nullable();
             $table->string('cni')->nullable();
+            $table->foreignId('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

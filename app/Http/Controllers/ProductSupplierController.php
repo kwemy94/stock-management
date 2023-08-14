@@ -2,64 +2,132 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProductSupplier;
 use Illuminate\Http\Request;
+use App\Models\ProductSupplier;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use App\Repositories\Product\ProductRepository;
+use App\Repositories\Supplier\SupplierRepository;
+use App\Repositories\ProductSupplier\AchatRepository;
 
 class ProductSupplierController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $achatRepository;
+    protected $productRepository;
+    protected $supplierRepository;
+
+    public function __construct(AchatRepository $achatRepository, ProductRepository $productRepository, SupplierRepository $supplierRepository)
+    {
+        $this->achatRepository = $achatRepository;
+        $this->supplierRepository = $supplierRepository;
+        $this->productRepository = $productRepository;
+    }
+
     public function index()
     {
-        //
+
+        $achats = $this->achatRepository->getAll();
+
+        return view('admin.achat.index', compact('achats'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
-        //
+        $products = $this->productRepository->getAll();
+        $suppliers = $this->supplierRepository->getAll();
+
+        return view('admin.achat.create', compact('products', 'suppliers'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
-        //
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'product_id' => 'required',
+                'supplier_id' => 'required|integer',
+                'quantity' => 'required',
+            ],
+        );
+
+        if ($validation->fails()) {
+
+            dd($validation->errors());
+
+            return redirect()->back()->withErrors($validation->errors())->withInput();
+        }
+
+        $inputs = $request->post();
+        try {
+
+            DB::transaction(function () use ($inputs) {
+                $this->achatRepository->store($inputs);
+
+                $product = $this->productRepository->getById($inputs['product_id']);
+
+                $product->stock_quantity += $inputs['quantity'];
+
+                $this->productRepository->update($product->id, ['stock_quantity' => $product->stock_quantity]);
+            });
+
+            return redirect(route('achat.index'))->with('success', "Achat enregistré");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', "Oups!! Echec d'enregistrement");
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(ProductSupplier $productSupplier)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ProductSupplier $productSupplier)
+
+    public function edit($id)
     {
-        //
+        $products = $this->productRepository->getAll();
+        $suppliers = $this->supplierRepository->getAll();
+        try {
+            $achat = $this->achatRepository->getById($id);
+            return view('admin.achat.edit', compact('achat', 'products', 'suppliers'));
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('error', "Oups!! Une erreur s'est produite");
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProductSupplier $productSupplier)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $achat = $this->achatRepository->getById($id);
+            // dd($achat);
+            $this->achatRepository->update($achat->id, ['quantity' =>$request->quantity]);
+
+            return redirect(route('achat.index'))->with('success', 'Mise à jour effectué');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('error', 'Oups!! Echec de mise à jour');
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductSupplier $productSupplier)
+    public function destroy($id)
     {
-        //
+        try {
+            $achat = $this->achatRepository->getById($id);
+
+            $achat->delete();
+
+            return redirect(route('achat.index'))->with('success', "Suppression reussie");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', "Oups!! Echec de suppression");
+        }
     }
 }

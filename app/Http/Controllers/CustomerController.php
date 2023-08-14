@@ -3,16 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Repositories\Customer\CustomerRepository;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private $customerRepository;
+    public function __construct(CustomerRepository $customerRepository)
+    {
+        $this->customerRepository = $customerRepository;
+    }
+
     public function index()
     {
-        //
+        $customers = $this->customerRepository->getAll();
+
+        return view('admin.customer.index', compact('customers'));
     }
 
     /**
@@ -20,7 +26,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.customer.create');
     }
 
     /**
@@ -28,7 +34,15 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $inputs = $request->post();
+        try {
+            $this->customerRepository->store($inputs);
+
+            return redirect()->route('customer.index')->with('success',"Utilisateur crée");
+        } catch (\Exception $e) {
+            dd($e);
+            return redirect()->back()->with('error',"Oups!! Echec d'enregistrement");
+        }
     }
 
     /**
@@ -42,24 +56,42 @@ class CustomerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Customer $customer)
+    public function edit($id)
     {
-        //
+        $customer = $this->customerRepository->getById($id);
+        return view('admin.customer.edit', compact('customer'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, $id)
     {
-        //
+        $customer = $this->customerRepository->getById($id);
+        
+        try {
+            
+            $inputs = $request->post();
+            $this->customerRepository->update($customer->id, $inputs);
+
+            return redirect()->route('customer.index')->with('success',"Utilisateur mis à jour!");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error',"Oups!! Echec de mis à jour");
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Customer $customer)
+    public function destroy($id)
     {
-        //
+        $customer = $this->customerRepository->getById($id);
+
+        try {
+            $customer->delete();
+            return redirect()->route('customer.index')->with('success',"Utilisateur supprimé!");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error',"Oups!! Echec de suppression");
+        }
     }
 }

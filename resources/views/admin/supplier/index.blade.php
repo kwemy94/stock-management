@@ -5,11 +5,10 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">{{ __('category.title') }} </h3>
+                    <h3 class="card-title">{{ __('supplier.title') }} </h3>
 
                     <div class="card-tools">
-                        <a href="{{ route('category.create') }}" class="btn btn-outline-success btn-sm"><span
-                                class="fa fa-plus"></span> Add</a>
+                        <a href="{{ route('supplier.create')}}" class="btn btn-outline-success btn-sm"><span class="fa fa-plus"></span> Add</a>
                         {{-- <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal"
                             data-target="#modal-default"><span class="fa fa-plus"></span> Add</button> --}}
                     </div>
@@ -20,8 +19,9 @@
                         <thead>
                             <tr>
                                 <th style="width: 10px">#</th>
-                                <th>{{ __('category.name') }} </th>
-                                <th>{{ __('Description') }} </th>
+                                <th>{{ __('supplier.name') }} </th>
+                                <th>{{ __('supplier.phone') }} </th>
+                                <th>{{ __('Email') }} </th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -30,27 +30,21 @@
                                 $cpte = 1;
                             @endphp
 
-                            @forelse ($categories as $category)
+                            @forelse ($suppliers as $supplier)
                                 <tr>
-                                    <td>{{ $cpte++ }}</td>
-                                    <td>{{ $category->name }} </td>
+                                    <td> {{ $cpte++ }} </td>
+                                    <td> {{ $supplier->name }} </td>
+                                    <td> {{ $supplier->phone }} </td>
+                                    <td> {{ $supplier->email }} </td>
                                     <td>
-                                        {{ $category->description }}
-                                    </td>
-                                    <td>
-
-                                        <form method="post" action="{{ route('category.destroy', $category->id) }}"
-                                            id="form-delete-category{{ $category->id }}">
-                                            <a href="{{ route('category.show', $category->id) }}" class="fas fa-eye"
-                                                style="color: green"></a>
-                                            <a href="{{ route('category.edit', $category->id) }}" class="fas fa-pen-alt"
-                                                style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
-                                            @csrf
-                                            @method('delete')
-                                            <span id="btn-delete-category{{ $category->id }}"
-                                                onclick="deleteCategory({{ $category->id }})" class="fas fa-trash-alt"
-                                                style="color: red"></span>
-                                        </form>
+                                            <form method="post" action="{{route('supplier.destroy',$supplier->id)}}" id="form-delete-supplier{{$supplier->id}}">
+                                                
+                                                <a href="{{route('supplier.edit', $supplier->id)}}" class="fas fa-pen-alt"
+                                                    style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
+                                                @csrf
+                                                @method('delete')
+                                                <span  id="btn-delete-supplier{{$supplier->id}}" onclick="deletesupplier({{$supplier->id}})"  class="fas fa-trash-alt" style="color: red"></span>
+                                            </form>
                                     </td>
                                 </tr>
                             @empty
@@ -75,26 +69,27 @@
 
         </div>
     </section>
+
 @endsection
 
 
 @section('dashboard-js')
     <script>
-        // $('#btn-delete-category').click( () =>{
+        // $('#btn-delete-supplier').click( () =>{
         //     if (confirm('Voulez-vous supprimer cette catégory ??')) {
-        //         $('#form-delete-category').submit();
+        //         $('#form-delete-supplier').submit();
         //     }
         // });
 
-        function deleteCategory(i) {
-            if (confirm('Voulez-vous supprimer cette catégory ??')) {
-                $('#form-delete-category' + i).submit();
+        function deletesupplier(i) {
+            if (confirm('Voulez-vous supprimer ce fournisseur??')) {
+                $('#form-delete-supplier'+i).submit();
             }
         }
 
-        $('#save-category').click((e) => {
+        $('#save-supplier').click((e) => {
             e.preventDefault();
-            let url = "{{ route('category.store') }}";
+            let url = "{{ route('supplier.store') }}";
             let datas = {
                 name: $('#name').val(),
                 description: $('#description').val(),

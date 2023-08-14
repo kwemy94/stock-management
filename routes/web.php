@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LangController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductSupplierController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +52,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('product', ProductController::class);
     Route::resource('/category', CategoryController::class);
     Route::resource('/setting', SettingController::class);
+    Route::resource('/supplier', SupplierController::class);
+
+    Route::resource('/achat', ProductSupplierController::class);
+    Route::resource('/customer', CustomerController::class);
 
     ## print to pdf
     Route::get('/pdf-barcode', [ProductController::class, 'BarcodeToPDF'])->name('barcode.to.pdf');

@@ -1,3 +1,10 @@
+ <style>
+    .nav-header{
+        color: blue;
+        font-weight: bold;
+    }
+ </style>
+ 
  {{-- Brand Logo  --}}
  <a href="{{ route('dashboard') }}" class="brand-link">
      <img src="{{ asset('front-template/assets/images/logo/logo.png') }}" alt="TechB"
@@ -13,23 +20,16 @@
              <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
              <li class="nav-item">
-                 <a href="{{ route('category.index') }}" class="nav-link">
+                 <a href="{{ route('category.index') }}" class="nav-link {{request()->routeIs('category.index')? 'active': ''}}">
                      <i class="nav-icon far fa-calendar-alt"></i>
                      <p>
                         {{ __('dashboard.category') }}
                      </p>
                  </a>
              </li>
+             
              <li class="nav-item">
-                 <a href="#" class="nav-link">
-                     <i class="nav-icon far fa-user"></i>
-                     <p>
-                        {{ __('dashboard.supplier') }}
-                     </p>
-                 </a>
-             </li>
-             <li class="nav-item">
-                 <a href="{{ route('product.index') }}" class="nav-link">
+                 <a href="{{ route('product.index') }}" class="nav-link {{request()->routeIs('product.index')? 'active': ''}}">
                      <i class="nav-icon far fa-calendar-alt"></i>
                      <p>
                         {{ __('dashboard.product') }}
@@ -37,13 +37,30 @@
                  </a>
              </li>
              <li class="nav-item">
-                 <a href="#" class="nav-link">
+                 <a href="{{ route('customer.index')}}" class="nav-link {{request()->routeIs('customer.index')? 'active': ''}}">
                      <i class="nav-icon fas fa-users"></i>
                      <p>
                         {{__('dashboard.customer')}}
                      </p>
                  </a>
              </li>
+             <li class="nav-header">Approvisionnement</li>
+             <li class="nav-item">
+                <a href="{{ route('supplier.index') }}" class="nav-link {{request()->routeIs('supplier.index')? 'active': ''}}">
+                    <i class="nav-icon far fa-user"></i>
+                    <p>
+                       {{ __('dashboard.supplier') }}
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('achat.index') }}" class="nav-link {{request()->routeIs('achat.index')? 'active': ''}}">
+                    <i class="nav-icon fas fa-cart-plus"></i>
+                    <p>
+                       {{ __('Achat') }}
+                    </p>
+                </a>
+            </li>
 
              {{-- <li class="nav-item menu-open">
                 <a href="#" class="nav-link {{request()->is('product')? 'active': ''}}">
@@ -71,7 +88,7 @@
 
              <li class="nav-header">POS</li>
              <li class="nav-item">
-                 <a href="pages/calendar.html" class="nav-link">
+                 <a href="#pages/calendar.html" class="nav-link">
                      <i class="nav-icon fas fa-cart-plus"></i>
                      <p>
                          {{ __('dashboard.order') }}
@@ -80,7 +97,7 @@
                  </a>
              </li>
              <li class="nav-item">
-                 <a href="pages/calendar.html" class="nav-link">
+                 <a href="#pages/calendar.html" class="nav-link">
                      <i class="nav-icon far fa-calendar-alt"></i>
                      <p>
                          {{ __('dashboard.sale') }}
@@ -97,7 +114,7 @@
                  </a>
              </li>
              <li class="nav-item">
-                 <a href="{{ route('setting.index') }}" class="nav-link">
+                 <a href="{{ route('setting.index') }}" class="nav-link {{request()->routeIs('setting.index')? 'active': ''}}">
                      <i class="fa-solid fas fa-cogs"></i>
                      <p>
                         {{ __('dashboard.setting') }}
