@@ -55,40 +55,16 @@
             </li>
             <li class="nav-item">
                 <a href="{{ route('achat.index') }}" class="nav-link {{request()->routeIs('achat.index')? 'active': ''}}">
-                    <i class="nav-icon fas fa-cart-plus"></i>
+                    <i class="nav-icon fas fa-cart-arrow-down"></i>
                     <p>
                        {{ __('Achat') }}
                     </p>
                 </a>
             </li>
 
-             {{-- <li class="nav-item menu-open">
-                <a href="#" class="nav-link {{request()->is('product')? 'active': ''}}">
-                    <i class="nav-icon fas fa-tachometer-alt"></i>
-                    <p>
-                        Stock Management
-                        <i class="right fas fa-angle-left"></i>
-                    </p>
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a href="{{route('product.index')}}" class="nav-link {{request()->routeIs('product.index')? 'active': ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Products</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{route('category.index')}}" class="nav-link {{request()->routeIs('product.create')? 'active': ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Category</p>
-                        </a>
-                    </li>
-                </ul>
-            </li> --}}
-
              <li class="nav-header">POS</li>
              <li class="nav-item">
-                 <a href="#pages/calendar.html" class="nav-link">
+                 <a href="{{ route('order.index')}}" class="nav-link">
                      <i class="nav-icon fas fa-cart-plus"></i>
                      <p>
                          {{ __('dashboard.order') }}
@@ -106,8 +82,16 @@
              </li>
              <li class="nav-header">Administration</li>
              <li class="nav-item">
+                 <a href="{{route('unite-mesure.index')}}" class="nav-link">
+                     <i class="nav-icon fas fa-balance-scale"></i>
+                     <p>
+                         {{ __('Unité de mesure') }}
+                     </p>
+                 </a>
+             </li>
+             <li class="nav-item">
                  <a href="#" class="nav-link">
-                     <i class="nav-icon fas fa-users"></i>
+                     <i class="nav-icon fas fa-user-cog"></i>
                      <p>
                          {{ __('dashboard.user') }}
                      </p>
@@ -115,7 +99,7 @@
              </li>
              <li class="nav-item">
                  <a href="{{ route('setting.index') }}" class="nav-link {{request()->routeIs('setting.index')? 'active': ''}}">
-                     <i class="fa-solid fas fa-cogs"></i>
+                     <i class="fa-solid fa fa-cog fa-spin fa-1x fa-fw"></i>
                      <p>
                         {{ __('dashboard.setting') }}
                      </p>

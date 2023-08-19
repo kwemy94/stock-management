@@ -9,12 +9,13 @@
                 <div class="col-md-6">
 
                     <div class="card card-primary">
-                        <div class="card-header">
-                            <h3 class="card-title">{{ __('Nouveau client') }}</h3>
+                        <div class="card-header" style="background-color: rgb(32, 47, 112)">
+                            <h3 class="card-title">{{ __('Modification info client') }}</h3>
                         </div>
 
-                        <form method="POST" action="{{ route('customer.store') }}" id="customer-form">
+                        <form method="POST" action="{{ route('customer.update', $customer->id) }}" id="customer-form">
                             @csrf
+                            @method('PUT')
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="name">{{ __('Nom client') }} <em>*</em></label>

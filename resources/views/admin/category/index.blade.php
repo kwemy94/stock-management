@@ -1,5 +1,18 @@
 @extends('admin.layouts.app')
 
+@section('dashboard-datatable-css')
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('dashboard-template/plugins/fontawesome-free/css/all.min.css') }}">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{ asset('dashboard-template/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('dashboard-template/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dashboard-template/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ asset('dashboard-template/dist/css/adminlte.min.css') }}">
+@endsection
+
 @section('dashboard-content')
     <section class="content mt-4">
         <div class="col-md-12">
@@ -15,8 +28,8 @@
                     </div>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body p-0">
-                    <table class="table">
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th style="width: 10px">#</th>
@@ -62,45 +75,50 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer">
-                    <div class="card-tools">
-                        <ul class="pagination pagination-sm float-right">
-                            <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                        </ul>
-                    </div>
-                </div>
+                
             </div>
 
         </div>
     </section>
 @endsection
 
+@section('dashboard-datatable-js')
+    <!-- jQuery -->
+    <script src="{{ asset('dashboard-template/plugins/jquery/jquery.min.js') }}"></script>
+    <!-- Bootstrap 4 -->
 
-@section('dashboard-js')
+    <script src="{{ asset('dashboard-template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script> --}}
+    <!-- DataTables  & Plugins -->
+    <script src="{{ asset('dashboard-template/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('dashboard-template/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('dashboard-template/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('dashboard-template/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('dashboard-template/plugins/jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('dashboard-template/plugins/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('dashboard-template/plugins/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ asset('dashboard-template/dist/js/adminlte.min.js') }}"></script>
+
     <script>
-        // $('#btn-delete-category').click( () =>{
-        //     if (confirm('Voulez-vous supprimer cette catégory ??')) {
-        //         $('#form-delete-category').submit();
-        //     }
-        // });
+        $(function() {
+            $("#example1").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["excel", "pdf"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        });
 
         function deleteCategory(i) {
             if (confirm('Voulez-vous supprimer cette catégory ??')) {
                 $('#form-delete-category' + i).submit();
             }
         }
-
-        $('#save-category').click((e) => {
-            e.preventDefault();
-            let url = "{{ route('category.store') }}";
-            let datas = {
-                name: $('#name').val(),
-                description: $('#description').val(),
-            }
-
-            console.log('Error');
-        });
     </script>
 @endsection

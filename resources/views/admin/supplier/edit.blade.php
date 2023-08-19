@@ -4,11 +4,12 @@
     <section class="content mt-4">
         <div class="container-fluid">
             <div class="row">
+                <div class="col-md-3"></div>
 
                 <div class="col-md-6">
 
                     <div class="card card-primary">
-                        <div class="card-header">
+                        <div class="card-header" style="background-color: rgb(32, 47, 112)">
                             <h3 class="card-title">{{ __('supplier.info.edit-supplier') }}</h3>
                         </div>
 
@@ -42,6 +43,7 @@
                     </div>
 
                 </div>
+                <div class="col-md-3"></div>
             </div>
         </div>
     </section>

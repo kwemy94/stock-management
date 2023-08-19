@@ -9,7 +9,7 @@
                 <div class="col-md-6">
 
                     <div class="card card-primary">
-                        <div class="card-header">
+                        <div class="card-header" style="background-color: rgb(32, 47, 112)">
                             <h3 class="card-title">{{ __('Approvisionnement') }}</h3>
                         </div>
 

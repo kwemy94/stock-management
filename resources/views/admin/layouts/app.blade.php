@@ -45,7 +45,7 @@
         </div>
 
         {{--  Navbar  --}}
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="background-color: rgb(32, 47, 112)">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light bg-primary">
             {{-- Left navbar links  --}}
             @include('admin.layouts.partials._navbar-left')
 

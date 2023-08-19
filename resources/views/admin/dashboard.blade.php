@@ -8,8 +8,8 @@
     }
 
     .small-box-footer{
-        background-color: rgba(20, 29, 70, 1) !important;
-        color: rgb(11, 47, 211) !important;
+        /* background-color: rgba(20, 29, 70, 1) !important; */
+        /* color: rgb(11, 47, 211) !important; */
         border-radius: 0 0 4px 4px;
     }
     .bg-white>a {

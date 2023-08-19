@@ -12,16 +12,19 @@ use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Repositories\Product\ProductRepository;
 use App\Repositories\Category\CategoryRepository;
+use App\Repositories\Unit\UnitRepository;
 
 class ProductController extends Controller
 {
     private $productRepository;
     private $categoryRepository;
+    private $unitRepository;
 
-    public function __construct(ProductRepository $productRepository, CategoryRepository $categoryRepository)
+    public function __construct(ProductRepository $productRepository, CategoryRepository $categoryRepository, UnitRepository $unitRepository)
     {
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->unitRepository = $unitRepository;
     }
     /**
      * Display a listing of the resource.
@@ -39,7 +42,8 @@ class ProductController extends Controller
     public function create()
     {
         $categories = $this->categoryRepository->getAll();
-        return view('admin.product.create', compact('categories'));
+        $units = $this->unitRepository->getAll();
+        return view('admin.product.create', compact('categories', 'units'));
     }
 
     /**
@@ -85,13 +89,13 @@ class ProductController extends Controller
             $inputs['code'] = $codeProduit[0];
             $inputs['barcode'] = $codeProduit[1];
 
-            // if (!is_null($inputs['product_image'])) {
-            //     $productImage = $request->file('product_image');
-            //     $productName = Str::uuid() . '.' . $productImage->getClientOriginalExtension();
-            //     Storage::disk('public')->putFileAs('image/products/', $productImage, $productName);
+            if (!is_null($request->product_image)) {
+                $productImage = $request->file('product_image');
+                $productName = Str::uuid() . '.' . $productImage->getClientOriginalExtension();
+                $request->product_image->storeAs('public/images/products', $productName);
                 
-            //     $inputs['product_name'] = $productName;
-            // }
+                $inputs['product_image'] = $productName;
+            }
 
 
             $product = $this->productRepository->store($inputs);
@@ -123,22 +127,36 @@ class ProductController extends Controller
     {
         // dd($product);
         $categories = $this->categoryRepository->getAll();
-        return view('admin.product.edit', compact('product', 'categories'));
+        $units = $this->unitRepository->getAll();
+        return view('admin.product.edit', compact('product', 'categories', 'units'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
         // dd($product, $request->post());
+        $product = $this->productRepository->getById($id);
         $inputs = $request->post();
         try {
-            $this->productRepository->update($product->id, $inputs);
+            if ($request->hasFile('product_image')) {
+                if (!is_null($product->product_image)) {
+                    Storage::delete('public/images/products/' . $product->product_image);
+                }
+
+                $productImage = $request->file('product_image');
+                $productName = Str::uuid() . '.' . $productImage->getClientOriginalExtension();
+                $request->product_image->storeAs('public/images/products', $productName);
+                
+                $inputs['product_image'] = $productName;
+            }
+            $this->productRepository->update($id, $inputs);
 
             return redirect(route('product.index'))->with('success', 'Produit mise à jour !');
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
             //throw $th;
+            dd($e);
             return redirect()->back()->with('error', 'Oups!! Echec de mise à jour...');
         }
     }
@@ -146,9 +164,16 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
+        
         try {
+            $product = $this->productRepository->getById($id);
+        
+            if (!is_null($product->product_image)) {
+                Storage::delete('public/images/products/' . $product->product_image);
+            }
+
             $product->delete();
 
             return redirect()->back()->with('success', 'Produit supprimé');
