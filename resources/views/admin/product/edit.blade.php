@@ -5,14 +5,16 @@
         <div class="container-fluid">
             <div class="row">
 
+                <div class="col-md-3"></div>
+
                 <div class="col-md-6">
 
                     <div class="card card-primary">
-                        <div class="card-header">
+                        <div class="card-header" style="background-color: rgb(32, 47, 112)">
                             <h3 class="card-title">{{ __('product.new-title') }}</h3>
                         </div>
 
-                        <form method="POST" action="{{ route('product.update', $product->id) }}" id="update-product-form">
+                        <form method="POST" action="{{ route('product.update', $product->id) }}" enctype="multipart/form-data" id="update-product-form">
                             @csrf
                             @method('PUT')
                             <div class="card-body">
@@ -21,16 +23,31 @@
                                     <input type="text" class="form-control form-control-border border-width-2 required"
                                         name="product_name" id="name" value="{{$product->product_name}}">
                                 </div>
-        
-                                <div class="form-group">
-                                    <label for="category">Catégorie <em>*</em></label>
-                                    <select name="category_id" class="custom-select form-control-border border-width-2 required"
-                                        id="category">
-                                        <option value="" disabled >Select category</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}" {{$category->id == $product->category_id ? 'selected' : ''}}>{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <label for="category">Catégorie <em>*</em></label>
+                                            <select name="category_id" class="custom-select form-control-border border-width-2 required"
+                                                id="category">
+                                                <option value="" disabled>Select category</option>
+                                                @foreach ($categories as $category)
+                                                    <option value="{{ $category->id }}" {{$category->id == $product->category_id ? 'selected' : ''}}>{{ $category->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="unit">Unité <em>*</em></label>
+                                            <select name="unit_id" class="custom-select form-control-border border-width-2 required"
+                                                id="unit">
+                                                <option value="" disabled>Select unit</option>
+                                                @foreach ($units as $unit)
+                                                    <option value="{{ $unit->id }}" {{$category->id == $product->category_id ? 'selected' : ''}}>{{ $unit->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
         
                                 <div class="row">
@@ -97,6 +114,8 @@
                     </div>
 
                 </div>
+
+                <div class="col-md-3"></div>
             </div>
         </div>
     </section>

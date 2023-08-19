@@ -6,11 +6,13 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LangController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSupplierController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UnitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +24,9 @@ use App\Http\Controllers\SupplierController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::view('/order/create/{path?}', 'admin.pos.order.create')
+    ->where('path', '.*');
 
 Route::get('/', [HomeController::class, 'index'])->name('home-page');
 
@@ -56,9 +61,14 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/achat', ProductSupplierController::class);
     Route::resource('/customer', CustomerController::class);
+    Route::resource('/unite-mesure', UnitController::class);
+    Route::resource('/order', OrderController::class);
 
     ## print to pdf
     Route::get('/pdf-barcode', [ProductController::class, 'BarcodeToPDF'])->name('barcode.to.pdf');
+
+    ## pos
+    Route::get('/pos-data-loading', [OrderController::class, 'loadProduct']);
 });
 
 require __DIR__.'/auth.php';

@@ -22,11 +22,10 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('product.title') }}</h3>
+                            <h3 class="card-title">{{ __('Liste des unités de mesure') }}</h3>
                             <div class="card-tools">
-                                <a href="{{ route('product.create')}}" class="btn btn-outline-success btn-sm"><span class="fa fa-plus"></span> Add</a>
-                                <a href="{{ route('barcode.to.pdf')}}" class="btn btn-outline-secondary btn-sm" target="_blank"><span class="fa fa-print"></span> Barcode</a>
-                            </div>
+                                <a href="{{ route('unite-mesure.create')}}" class="btn btn-outline-success btn-sm"><span class="fa fa-plus"></span> Add</a>
+                             </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -34,12 +33,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 10px">#</th>
-                                        <th>{{ __('product.info.name') }} </th>
-                                        <th>{{ __('Image') }} </th>
-                                        <th>{{ __('product.info.sale-price') }} </th>
-                                        {{-- <th>{{__('product.info.qantity-init')}} </th> --}}
-                                        <th>{{ __('product.info.qantity-available') }} </th>
-                                        <th>barcode</th>
+                                        <th>{{ __('Unité de mesure') }} </th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -47,33 +41,22 @@
                                     @php
                                         $cpt = 1;
                                     @endphp
-                                    @forelse ($products as $product)
+                                    @forelse ($units as $unit)
                                         <tr>
                                             <td>{{ $cpt++ }}</td>
-                                            <td>{{ $product->product_name }} </td>
-                                            <td> <img src="{{Storage::url('images/products/'.$product->product_image)}}" width="40px" height="40px" alt="" > </td>
-                                            <td>
-                                                {{ $product->sale_price }}
-                                            </td>
-                                            <td><span
-                                                    class="badge {{ $product->stock_quantity <= $product->stock_alert ? 'bg-danger' : 'bg-success' }} ">{{ $product->stock_quantity }}</span>
-                                            </td>
-                                            <td>
-                                                <span>{{ $product->code }}</span>
-                                            </td>
+                                            <td>{{ $unit->name }} </td>
+
                                             <td style="display: flex !important;">
                                                 
-                                                <form method="post" action="{{ route('product.destroy', $product->id) }}"
-                                                    id="form-delete-product{{ $product->id }}">
-                                                    <a href="{{ route('product.show', $product->id) }}" class="fas fa-eye"
-                                                        style="color: green"></a>
-                                                    <a href="{{ route('product.edit', $product->id) }}" class="fas fa-pen-alt"
+                                                <form method="post" action="{{ route('unite-mesure.destroy', $unit->id) }}"
+                                                    id="form-delete-unit{{ $unit->id }}">
+                                                    <a href="{{ route('unite-mesure.edit', $unit->id) }}" class="fas fa-pen-alt"
                                                         style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
                                                         
                                                     @csrf
                                                     @method('delete')
-                                                    <span id="btn-delete-product{{ $product->id }}"
-                                                        onclick="deleteProduct({{ $product->id }})"
+                                                    <span id="btn-delete-unit{{ $unit->id }}"
+                                                        onclick="deleteUnit({{ $unit->id }})"
                                                         class="fas fa-trash-alt" style="color: rgb(248, 38, 38)"></span>
                                                 </form>
                                             </td>
@@ -89,12 +72,7 @@
                                 <tfoot>
                                     <tr>
                                         <th style="width: 10px">#</th>
-                                        <th>{{ __('product.info.name') }} </th>
-                                        <th>{{ __('Image') }} </th>
-                                        <th>{{ __('product.info.sale-price') }} </th>
-                                        {{-- <th>{{__('product.info.qantity-init')}} </th> --}}
-                                        <th>{{ __('product.info.qantity-available') }} </th>
-                                        <th>barcode</th>
+                                        <th>{{ __('Unité de mesure ') }} </th>
                                         <th>Action</th>
                                     </tr>
                                 </tfoot>
@@ -144,9 +122,9 @@
 
         });
 
-        function deleteProduct(i) {
-            if (confirm('Voulez-vous supprimer ce produit ??')) {
-                $('#form-delete-product' + i).submit();
+        function deleteUnit(i) {
+            if (confirm('Voulez-vous supprimer cette unité ??')) {
+                $('#form-delete-unit' + i).submit();
             }
         }
     </script>

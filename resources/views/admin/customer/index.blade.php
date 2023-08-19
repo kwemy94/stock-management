@@ -87,7 +87,13 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        
+                                        <th style="width: 10px">#</th>
+                                        <th>{{ __('product.info.name') }} </th>
+                                        <th>{{ __('CNI') }} </th>
+                                        <th>{{ __('Téléphone') }} </th>
+                                        <th>{{ __('Email') }} </th>
+                                        <th>{{ __('Adresse') }} </th>
+                                        <th>Action</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -131,7 +137,7 @@
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                "buttons": ["excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         });

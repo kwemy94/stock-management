@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
-use App\Repositories\Customer\CustomerRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use App\Repositories\Customer\CustomerRepository;
 
 class CustomerController extends Controller
 {
@@ -34,7 +36,23 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'email' => 'required|unique:customers',
+            ],
+            [
+                'email.unique' => 'Email dejà utilisée.',
+            ]
+        );
+
+        if ($validation->fails()) {;
+            dd($validation->errors());
+
+            return redirect()->back()->withErrors($validation->errors())->withInput();
+        }
         $inputs = $request->post();
+        $inputs['user_id'] = Auth::user()->id;
         try {
             $this->customerRepository->store($inputs);
 

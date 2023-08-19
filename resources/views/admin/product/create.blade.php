@@ -9,11 +9,11 @@
                 <div class="col-md-6">
 
                     <div class="card card-primary">
-                        <div class="card-header">
+                        <div class="card-header" style="background-color: rgb(32, 47, 112)">
                             <h3 class="card-title">{{ __('product.new-title') }}</h3>
                         </div>
 
-                        <form method="POST" action="{{ route('product.store') }}" id="product-form">
+                        <form method="POST" action="{{ route('product.store') }}" id="product-form" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">
@@ -22,16 +22,33 @@
                                         name="product_name" id="name" placeholder="Ex: Fer de 6">
                                 </div>
         
-                                <div class="form-group">
-                                    <label for="category">Catégorie <em>*</em></label>
-                                    <select name="category_id" class="custom-select form-control-border border-width-2 required"
-                                        id="category">
-                                        <option value="" disabled >Select category</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <label for="category">Catégorie <em>*</em></label>
+                                            <select name="category_id" class="custom-select form-control-border border-width-2 required"
+                                                id="category">
+                                                <option value="" disabled selected>Select category</option>
+                                                @foreach ($categories as $category)
+                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="unit">Unité <em>*</em></label>
+                                            <select name="unit_id" class="custom-select form-control-border border-width-2 required"
+                                                id="unit">
+                                                <option value="" disabled selected >Select unit</option>
+                                                @foreach ($units as $unit)
+                                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
+                                
         
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -77,7 +94,7 @@
                                 </div>
         
                                 <div class="form-group">
-                                    <input type="file" name="image2">
+                                    
                                     <label for="product_image">{{ __('product.info.product-image') }}</label>
                                     <div class="input-group">
                                         <div class="custom-file">

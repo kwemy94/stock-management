@@ -22,11 +22,10 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('product.title') }}</h3>
+                            <h3 class="card-title">{{ __('Liste des ventes') }}</h3>
                             <div class="card-tools">
-                                <a href="{{ route('product.create')}}" class="btn btn-outline-success btn-sm"><span class="fa fa-plus"></span> Add</a>
-                                <a href="{{ route('barcode.to.pdf')}}" class="btn btn-outline-secondary btn-sm" target="_blank"><span class="fa fa-print"></span> Barcode</a>
-                            </div>
+                                <a href="{{ route('order.create')}}" class="btn btn-outline-success btn-sm"><span class="fa fa-plus"></span> Vente</a>
+                                </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -34,12 +33,11 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 10px">#</th>
-                                        <th>{{ __('product.info.name') }} </th>
-                                        <th>{{ __('Image') }} </th>
-                                        <th>{{ __('product.info.sale-price') }} </th>
-                                        {{-- <th>{{__('product.info.qantity-init')}} </th> --}}
-                                        <th>{{ __('product.info.qantity-available') }} </th>
-                                        <th>barcode</th>
+                                        <th>{{ __('Client') }} </th>
+                                        <th>{{ __('Total') }} </th>
+                                        <th>{{ __('Payer') }} </th>
+                                        <th>{{ __('Status') }} </th>
+                                        <th>{{ __('Reste') }}</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -47,57 +45,48 @@
                                     @php
                                         $cpt = 1;
                                     @endphp
-                                    @forelse ($products as $product)
+                                    @forelse ($orders as $order)
                                         <tr>
                                             <td>{{ $cpt++ }}</td>
-                                            <td>{{ $product->product_name }} </td>
-                                            <td> <img src="{{Storage::url('images/products/'.$product->product_image)}}" width="40px" height="40px" alt="" > </td>
+                                            <td>{{ $order->customers->name }} </td>
+                                            <td>{{ $order->order_product->price }} x fois </td>
                                             <td>
-                                                {{ $product->sale_price }}
-                                            </td>
-                                            <td><span
-                                                    class="badge {{ $product->stock_quantity <= $product->stock_alert ? 'bg-danger' : 'bg-success' }} ">{{ $product->stock_quantity }}</span>
+                                                {{ $order->payments->amount }}
                                             </td>
                                             <td>
-                                                <span>{{ $product->code }}</span>
+                                                {{-- <span
+                                                    class="badge {{ $order->stock_quantity <= $order->stock_alert ? 'bg-danger' : 'bg-success' }} ">{{ $order->stock_quantity }}
+                                                </span> --}}
+                                                    comparaison à faire
+                                            </td>
+                                            <td>
+                                                <span>{{ "a calculer" }}</span>
                                             </td>
                                             <td style="display: flex !important;">
                                                 
-                                                <form method="post" action="{{ route('product.destroy', $product->id) }}"
-                                                    id="form-delete-product{{ $product->id }}">
-                                                    <a href="{{ route('product.show', $product->id) }}" class="fas fa-eye"
+                                                {{-- <form method="post" action="{{ route('order.destroy', $order->id) }}"
+                                                    id="form-delete-order{{ $order->id }}">
+                                                    <a href="{{ route('order.show', $order->id) }}" class="fas fa-eye"
                                                         style="color: green"></a>
-                                                    <a href="{{ route('product.edit', $product->id) }}" class="fas fa-pen-alt"
+                                                    <a href="{{ route('order.edit', $order->id) }}" class="fas fa-pen-alt"
                                                         style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
                                                         
                                                     @csrf
                                                     @method('delete')
-                                                    <span id="btn-delete-product{{ $product->id }}"
-                                                        onclick="deleteProduct({{ $product->id }})"
+                                                    <span id="btn-delete-order{{ $order->id }}"
+                                                        onclick="deleteorder({{ $order->id }})"
                                                         class="fas fa-trash-alt" style="color: rgb(248, 38, 38)"></span>
-                                                </form>
+                                                </form> --}}
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" style="text-align: center"> Aucun produit disponible</td>
+                                            <td colspan="7" style="text-align: center"> Aucun ordre disponible</td>
                                         </tr>
                                     @endforelse
 
 
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th style="width: 10px">#</th>
-                                        <th>{{ __('product.info.name') }} </th>
-                                        <th>{{ __('Image') }} </th>
-                                        <th>{{ __('product.info.sale-price') }} </th>
-                                        {{-- <th>{{__('product.info.qantity-init')}} </th> --}}
-                                        <th>{{ __('product.info.qantity-available') }} </th>
-                                        <th>barcode</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                         <!-- /.card-body -->
@@ -144,9 +133,9 @@
 
         });
 
-        function deleteProduct(i) {
+        function deleteorder(i) {
             if (confirm('Voulez-vous supprimer ce produit ??')) {
-                $('#form-delete-product' + i).submit();
+                $('#form-delete-order' + i).submit();
             }
         }
     </script>

@@ -64,28 +64,28 @@
                                                 class="col-sm-2 col-form-label">{{ __('setting.structure-name') }}</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control required" name="app_name"
-                                                    id="inputName" placeholder="Name">
+                                                    id="inputName" placeholder="Name" value="{{$setting->app_name}}">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="phone" class="col-sm-2 col-form-label">Téléphone</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control required" name="phone"
-                                                    id="phone" placeholder="672510000">
+                                                    id="phone" value="{{$setting->phone}}">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="devise" class="col-sm-2 col-form-label">Dévise</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control required" name="devise"
-                                                    id="devise" placeholder="XAF">
+                                                    id="devise" value="{{$setting->devise}}">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="email" class="col-sm-2 col-form-label">Email</label>
                                             <div class="col-sm-10">
                                                 <input type="email" name="email" class="form-control required"
-                                                    id="email" placeholder="Email">
+                                                    id="email" placeholder="Email" value="{{$setting->email}}">
                                             </div>
                                         </div>
                                         <div class="input-group row mb-3">

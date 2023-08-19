@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product_order;
+use App\Models\OrderProduct;
 use Illuminate\Http\Request;
 
-class ProductOrderController extends Controller
+class OrderProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class ProductOrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product_order $product_order)
+    public function show(OrderProduct $orderProduct)
     {
         //
     }
@@ -42,7 +42,7 @@ class ProductOrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product_order $product_order)
+    public function edit(OrderProduct $orderProduct)
     {
         //
     }
@@ -50,7 +50,7 @@ class ProductOrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product_order $product_order)
+    public function update(Request $request, OrderProduct $orderProduct)
     {
         //
     }
@@ -58,7 +58,7 @@ class ProductOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product_order $product_order)
+    public function destroy(OrderProduct $orderProduct)
     {
         //
     }
