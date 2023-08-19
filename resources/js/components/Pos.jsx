@@ -25,10 +25,17 @@ function Pos() {
     loadData();
   }, []);
 
+<<<<<<< HEAD
   useEffect(()=>{
     console.log('total');
     setTotalCart(
       cartField.reduce((total, elt) => {return total += elt.price;},0)
+=======
+  useEffect(() => {
+    console.log('total');
+    setTotalCart(
+      cartField.reduce((total, elt) => { return total += elt.price; }, 0)
+>>>>>>> test
     );
   }, [cartField]);
 
@@ -110,7 +117,11 @@ function Pos() {
     }
     console.log(cartField);
     setTotalCart(
+<<<<<<< HEAD
       cartField.reduce((total, elt) => {return total += elt.price;},0)
+=======
+      cartField.reduce((total, elt) => { return total += elt.price; }, 0)
+>>>>>>> test
     );
 
   }
@@ -120,7 +131,11 @@ function Pos() {
     setCartFiel(newListProd);
 
     setTotalCart(
+<<<<<<< HEAD
       newListProd.reduce((total, elt) => {return total += elt.price;},0)
+=======
+      newListProd.reduce((total, elt) => { return total += elt.price; }, 0)
+>>>>>>> test
     );
   }
 
@@ -154,9 +169,15 @@ function Pos() {
             </select>
           </div>
         </div>
+<<<<<<< HEAD
         <div className="row mb-2">
           <div className="col">
             <form action="">
+=======
+        <form action="">
+          <div className="row mb-2">
+            <div className="col">
+>>>>>>> test
               <table className="table table-striped">
                 <thead>
                   <tr>
@@ -171,15 +192,22 @@ function Pos() {
                       <tr key={i}>
                         <td hidden> <input type="text" value={prod.prod_id} /> </td>
                         <td>{prod.name} </td>
+<<<<<<< HEAD
                         <td> <input type="text" className='form-control'  style={{height: '25px', width: '35px'}} value={prod.quantity} /></td>
                         <td> <input type="text" className='form-control' style={{height: '25px', width: '100px'}} readOnly value={prod.price} /></td>
                         <u className='btn btn-danger btn-sm' onClick={()=>deleteProdInCart(prod.prod_id)}><span className='fas fa-times'></span></u>
+=======
+                        <td> <input type="text" className='form-control' style={{ height: '25px', width: '35px' }} value={prod.quantity} /></td>
+                        <td> <input type="text" className='form-control' style={{ height: '25px', width: '100px' }} readOnly value={prod.price} /></td>
+                        <u className='btn btn-danger btn-sm' onClick={() => deleteProdInCart(prod.prod_id)}><span className='fas fa-times'></span></u>
+>>>>>>> test
                       </tr>
                     ))
                   }
 
                 </tbody>
               </table>
+<<<<<<< HEAD
             </form>
 
           </div>
@@ -203,6 +231,32 @@ function Pos() {
 
       <div className="col-md-6 col-lg-8 " style={{ border: '3px solid', borderColor: '#007bff' }}>
       <Loader load={loading} />
+=======
+
+
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">Total:</div>
+            <div className="col text-right">
+              {totalCart} {setting?.map(sett => <>{sett.devise} </>)}
+            </div>
+          </div>
+          <div className="row ">
+            <div className="col">
+              <button type="button" className="btn btn-secondary btn-sm"> Cancel </button>
+            </div>
+            <div className="col">
+              <button type="button" className="btn btn-success btn-sm"> Valider </button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+
+      <div className="col-md-6 col-lg-8 " style={{ border: '3px solid', borderColor: '#007bff' }}>
+        <Loader load={loading} />
+>>>>>>> test
         <div className="row mt-2">
           <div className="col-sm-6">
             <select className="custom-select form-control-border border-width-2"
