@@ -24,8 +24,9 @@
                         <div class="card-header">
                             <h3 class="card-title">{{ __('Liste des ventes') }}</h3>
                             <div class="card-tools">
-                                <a href="{{ route('order.create')}}" class="btn btn-outline-success btn-sm"><span class="fa fa-plus"></span> Vente</a>
-                                </div>
+                                <a href="{{ route('order.create') }}" class="btn btn-outline-success btn-sm"><span
+                                        class="fa fa-plus"></span> Vente</a>
+                            </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -34,8 +35,8 @@
                                     <tr>
                                         <th style="width: 10px">#</th>
                                         <th>{{ __('Client') }} </th>
-                                        <th>{{ __('Total') }} </th>
-                                        <th>{{ __('Payer') }} </th>
+                                        <th>{{ __('Montant facture') }} </th>
+                                        <th>{{ __('Montant perçu') }} </th>
                                         <th>{{ __('Status') }} </th>
                                         <th>{{ __('Reste') }}</th>
                                         <th>Action</th>
@@ -48,35 +49,44 @@
                                     @forelse ($orders as $order)
                                         <tr>
                                             <td>{{ $cpt++ }}</td>
-                                            <td>{{ $order->customers->name }} </td>
-                                            <td>{{ $order->order_product->price }} x fois </td>
+                                            <td>{{ isset($order->customer) ? $order->customer->name : 'Non identifié' }}
+                                            </td>
+                                            {{-- @dd($order->order_products) --}}
                                             <td>
-                                                {{ $order->payments->amount }}
+                                                @php
+                                                    $sumAttendu = 0;
+                                                    
+                                                    foreach ($order->order_products as $item) {
+                                                        $sumAttendu += $item->price;
+                                                    }
+                                                @endphp
+                                                {{ $sumAttendu }} {{ $setting->devise }}
+
+
                                             </td>
                                             <td>
-                                                {{-- <span
-                                                    class="badge {{ $order->stock_quantity <= $order->stock_alert ? 'bg-danger' : 'bg-success' }} ">{{ $order->stock_quantity }}
-                                                </span> --}}
-                                                    comparaison à faire
+                                                @php
+                                                    $sumPayer = 0;
+                                                    foreach ($order->payments as $item) {
+                                                        $sumPayer += $item->amount;
+                                                    }
+                                                @endphp
+                                                {{ $sumPayer }} {{ $setting->devise }}
                                             </td>
                                             <td>
-                                                <span>{{ "a calculer" }}</span>
+                                                <span
+                                                    class="badge {{ $sumPayer == $sumAttendu ? 'bg-success' : 'bg-warning' }}">
+                                                    {{ $sumPayer == $sumAttendu ? 'payé' : 'Partiel' }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span>{{ $sumPayer != $sumAttendu ? ($sumAttendu - $sumPayer ). $setting->devise: '' }}</span>
                                             </td>
                                             <td style="display: flex !important;">
-                                                
-                                                {{-- <form method="post" action="{{ route('order.destroy', $order->id) }}"
-                                                    id="form-delete-order{{ $order->id }}">
-                                                    <a href="{{ route('order.show', $order->id) }}" class="fas fa-eye"
-                                                        style="color: green"></a>
-                                                    <a href="{{ route('order.edit', $order->id) }}" class="fas fa-pen-alt"
-                                                        style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
-                                                        
-                                                    @csrf
-                                                    @method('delete')
-                                                    <span id="btn-delete-order{{ $order->id }}"
-                                                        onclick="deleteorder({{ $order->id }})"
-                                                        class="fas fa-trash-alt" style="color: rgb(248, 38, 38)"></span>
-                                                </form> --}}
+                                                <a href="{{ route('order.print.invoice', $order->id) }}"
+                                                    class="fas fa-print" title="Imprimer"
+                                                    style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
+
                                             </td>
                                         </tr>
                                     @empty

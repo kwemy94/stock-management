@@ -195,7 +195,7 @@ class ProductController extends Controller
         ];
         $pdf = PDF::loadView('admin.product.print-barcode-to-pdf', $data)->setPaper('a4', 'landscape')->setWarnings(false);
 
-        // return $pdf->download('client.pdf');exit
+        return $pdf->download('client.pdf');
         return $pdf->stream();
     }
 }

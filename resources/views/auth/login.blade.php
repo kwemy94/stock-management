@@ -54,7 +54,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Log in (v2)</title>
+    <title>Tech briva | login</title>
 
 
     <link rel="stylesheet"
@@ -69,7 +69,7 @@
 
 <body class="hold-transition login-page">
     <div class="login-box">
-        <!-- /.login-logo -->
+        
         <div class="card card-outline card-success">
             <div class="card-header text-center">
                 <a href="#techbriva.com" class="h2"><b>{{ __('login.info-login.title') }} </b> TB</a>
@@ -106,16 +106,16 @@
                                 </label>
                             </div>
                         </div>
-                        <!-- /.col -->
+                        
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                         </div>
-                        <!-- /.col -->
+                        
                     </div>
                 </form>
 
 
-                <!-- /.social-auth-links -->
+                
 
                 <p class="mb-1">
                     @if (Route::has('password.request'))
@@ -128,15 +128,15 @@
                     <a href="#new" class="text-center">{{ __('login.info-login.register') }}</a>
                 </p>
             </div>
-            <!-- /.card-body -->
+            
         </div>
-        <!-- /.card -->
+        
     </div>
-    <!-- /.login-box -->
+    
 
-    <!-- jQuery -->
+    {{-- jQuery --}}
     <script src="{{ asset('dashboard-template/plugins/jquery/jquery.min.js') }}"></script>
-    <!-- Bootstrap 4 -->
+    {{-- Bootstrap 4  --}}
     <script src="{{ 'dashboard-template/plugins/bootstrap/js/bootstrap.bundle.min.js' }}"></script>
 
     <script src="{{ asset('dashboard-template/dist/js/adminlte.min.js') }}"></script>

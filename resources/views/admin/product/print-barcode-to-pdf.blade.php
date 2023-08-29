@@ -29,7 +29,7 @@
                     <th scope="row">{{ $cpte++ }}</th>
                     <td>{{ $product->product_name }}</td>
                     <td>
-                        <img src="data:image/png;base64, {!! base64_encode($product->barcode) !!} ">
+                        <img height="20px" width="20px" src="data:image/png;base64, {!! base64_encode($product->barcode) !!} ">
                     </td>
                     <td>{{$product->created_at }}</td>
                 </tr>
