@@ -40,8 +40,9 @@ class OrderController extends Controller
     public function index()
     {
         $orders = $this->orderRepository->getAll();
+        $setting = $this->settingRepository->getFirstSetting();
 
-        return view('admin.pos.order.index', compact('orders'));
+        return view('admin.pos.order.index', compact('orders','setting'));
     }
 
     
@@ -59,25 +60,65 @@ class OrderController extends Controller
     
     public function store(Request $request)
     {
+        dd(date('Y-m-d'), $request->post());
         $user = Auth::user();
+
+        $products = $this->productRepository->getAll();
+        $customer = $this->customerRepository->getAll();
+        $categories = $this->categoryRepository->getAll();
+        $setting = $this->settingRepository->getAll();
+
         try {
             $inputOrder['user_id'] = $user->id;
-            $inputOrder['customer_id'] = $request->customer_id ?? null;
+            $inputOrder['customer_id'] = $request->customer ?? null;
+            $inputOrder['date_order'] = date('Y-m-d');
+            $inputOrder['status'] = 1;
+            // dd($inputOrder);
 
             DB::transaction(function () use($inputOrder, $user, $request) {
                 $order = $this->orderRepository->store($inputOrder);
 
-                $payment['amount'] = $request->amount;
+                ## enregistrement du paiement
+                $payment['amount'] = $request->totalCart;
                 $payment['order_id'] = $order->id;
                 $payment['user_id'] = $user->id;
+                $payment['received_amount'] = $request->totalCart;
                 $this->paymentRepository->store($payment);
 
                 ### Sauvegarde des produits selectionner dans le pos
-                // $orderProduct;
+                $panier = $request->cartField;
+
+                for ($i=0; $i < count($panier); $i++) { 
+                    $inputs['product_id'] = $panier[$i]['prod_id'];
+                    $inputs['order_id'] = $order->id;
+                    $inputs['quantity'] = $panier[$i]['quantity'];
+                    $inputs['price'] = $panier[$i]['price'];
+
+                    $this->orderProductRepository->store($inputs);
+
+                    ## update product quantity
+                    $prod = $this->productRepository->getById($inputs['product_id']);
+                    $this->productRepository->update($prod->id, ['stock_quantity' => $prod->stock_quantity - $inputs['quantity']]);
+                }
             });
+
+            return response()->json([
+                'success' => true,
+                'products' => $products,
+                'customers' => $customer,
+                'categories' => $categories,
+                'setting' => $setting,
+            ], 201);
 
         } catch (\Exception $e) {
             dd($e);
+            return response()->json([
+                'success' => false,
+                'products' => $products,
+                'customers' => $customer,
+                'categories' => $categories,
+                'setting' => $setting,
+            ], 201);
         }
     }
 

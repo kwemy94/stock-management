@@ -16,7 +16,7 @@ class SettingRepository extends ResourceRepository {
         return $this->model->get();
     }
 
-    public function getStructure() {
+    public function getFirstSetting() {
         return $this->model->first();
     }
 

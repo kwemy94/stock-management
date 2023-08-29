@@ -16,6 +16,7 @@ function Pos() {
   const [setting, setSetting] = useState();
   const [loading, setLoading] = useState(true);
   const [totalCart, setTotalCart] = useState(0);
+  const [customer, setCustomer] = useState('');
 
   const [cartField, setCartFiel] = useState([
     // { prod_id: '', name: '', quantity: '', price: '' }
@@ -65,6 +66,7 @@ function Pos() {
 
   })
 
+  // Selection des produits par categorie
   const ParCategorie = (id) => {
     // Selection de tous les produits
     console.log(id);
@@ -80,32 +82,45 @@ function Pos() {
     }
   }
 
+  const selectProduct_new = () => {
+
+  }
+
   const selectProduct = (id) => {
 
     let foundProd = cartField?.find((elt) => elt.prod_id == id);
 
     if (foundProd) {
-      cartField.find((elt) => {
-        elt.prod_id == id
-          ? (elt.price += (foundProd.price / foundProd.quantity), elt.quantity += 1)
-          : '';
+      if (decrementProductQuantity(id) != -1) {
+        cartField.find((elt) => {
+          elt.prod_id == id
+            ? (elt.price += (foundProd.price / foundProd.quantity), elt.quantity = parseInt(elt.quantity) + 1)
+            : '';
 
-      });
+        });
+      } else {
+        alert('Oups ! Stock épuisé');
+      }
+
+
     } else {
-      let newAddItem = copyProducts.find(elt => elt.id == id ? elt : '');
+      // let newAddItem = copyProducts.find(elt => elt.id == id ? elt : '');
+      let newAddItem = products.find(elt => elt.id == id ? elt : '');
       console.log(newAddItem);
-      if (newAddItem.stock_quantity > 0) {
+      // if (newAddItem.stock_quantity > 0) {
+      if (decrementProductQuantity(id) != -1) {
         setCartFiel([
           ...cartField,
           {
             prod_id: newAddItem.id,
             name: newAddItem.product_name,
             quantity: 1,
-            price: newAddItem.sale_price
+            price: newAddItem.sale_price,
           }
         ]);
+
       } else {
-        alert('Stock épuisé');
+        alert('Oups ! Stock épuisé');
       }
     }
     console.log(cartField);
@@ -113,9 +128,22 @@ function Pos() {
       cartField.reduce((total, elt) => { return total += elt.price; }, 0)
     );
 
+    console.log('set de la quantité dans le menu de droite');
+    // let proTemp = products;
+    // let tmp_product = proTemp.find( elt => {
+    //   elt.id == id ? elt.quantity -= 1 : ''
+    // });
+
+    // setProducts(tmp_product);
+
   }
 
   const deleteProdInCart = (id) => {
+
+    // Restore quantity before delete
+    let prod_delete = cartField.find(elt => elt.prod_id == id);
+    restoreProductQuantity(id, prod_delete.quantity);
+
     let newListProd = cartField.filter(elt => elt.prod_id != id);
     setCartFiel(newListProd);
 
@@ -123,6 +151,128 @@ function Pos() {
       newListProd.reduce((total, elt) => { return total += elt.price; }, 0)
     );
   }
+
+  const restoreProductQuantity = (id, add_quantity = 0) => {
+    let oldProduct = copyProducts.find(elt => elt.id == id);
+
+    // let tmp_products = [...products];
+    // let tmp = tmp_products.find(elt => elt.id == id) ;
+
+    // tmp.stock_quantity = oldProduct.stock_quantity;
+    console.log(oldProduct);
+
+    let new_prods = products.map(prod => {
+      if (prod.id == id) {
+        return { ...prod, stock_quantity: prod.stock_quantity + add_quantity }
+      }
+      return prod;
+    })
+    console.log('xx');
+    console.log(new_prods);
+
+    setProducts(new_prods);
+  }
+
+  const decrementProductQuantity = (id, index = null, remove_quantity = 1) => {
+    console.log("Décrement --");
+    console.log(index, id);
+    let tmp_products = [...products];
+    let tmp;
+    if (index) {
+      console.log('with index');
+      tmp = { ...tmp_products[index] };
+    } else {
+      console.log('with id');
+      tmp = tmp_products.find(elt => elt.id == id);
+    }
+
+    if (parseInt(tmp.stock_quantity) > 0) {
+      let quantity = parseInt(tmp.stock_quantity) - remove_quantity;
+      tmp.stock_quantity = quantity;
+
+      console.log(tmp);
+      tmp_products[index] = tmp;
+
+      setProducts(tmp_products);
+      // setCopyProducts(tmp_products);
+    } else {
+
+      // Lorsue le stock est épuisé
+      return -1;
+    }
+
+  }
+
+  const changeProductQuantity = (val, index) => {
+    console.log(index);
+    console.log(val);
+    let tmp_cartField = [...cartField];
+
+    let tmp = { ...tmp_cartField[index] };
+    let unitPrice = tmp.price / tmp.quantity;
+
+    let current_prod = products.find(elt => elt.id == tmp.prod_id);
+
+    if (
+      (parseInt(current_prod.stock_quantity) + parseInt(tmp.quantity) - parseInt(val) >= 0)
+      // && decrementProductQuantity(tmp.prod_id, null, val) != -1
+    ) {
+      tmp.quantity = val;
+      tmp.price = val * unitPrice;
+
+      console.log(tmp);
+      tmp_cartField[index] = tmp;
+
+      setCartFiel(tmp_cartField);
+
+
+    } else {
+      alert('Oups ! Stock insuffisant')
+    }
+
+
+  }
+
+  const handleSubmit = () => {
+    console.log(cartField);
+    setLoading(true);
+
+    axios.post('http://localhost:8000/order', {
+      cartField,
+      customer,
+      totalCart
+    },
+      {
+        "Accept": 'application/json',
+        "Content-Type": 'application/json',
+        "'Access-Control-Allow-Origin'": '*'
+      }).then((res) => {
+        console.log(res);
+        // setCartFiel([]);
+        setProducts(res.data.products);
+        setCopyProducts(res.data.products);
+        setCustomers(res.data.customers);
+        setCategories(res.data.categories);
+        setSetting(res.data.setting)
+        setLoading(false);
+
+      }).catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  }
+
+  // const decrementProductQuantity = (id, n = 1) => {
+  //   let tmp_products = [...products];
+
+  //   let tmp = {...tmp_products[index]};
+
+  //   tmp.quantity = val;
+
+  //   tmp_products[index] = tmp;
+
+  //   setProducts(temp_products);
+  // }
 
   return (
     <div className="row">
@@ -143,6 +293,7 @@ function Pos() {
           <div className="col mt-2">
             <select
               className="custom-select form-control-border border-width-2"
+              onChange={(e) => setCustomer(e.target.value)}
             >
               <option value="">Client inconnu</option>
               {
@@ -171,9 +322,12 @@ function Pos() {
                       <tr key={i}>
                         <td hidden> <input type="text" value={prod.prod_id} /> </td>
                         <td>{prod.name} </td>
-                        <td> <input type="text" className='form-control' style={{ height: '25px', width: '35px' }} value={prod.quantity} /></td>
-                        <td> <input type="text" className='form-control' style={{ height: '25px', width: '100px' }} readOnly value={prod.price} /></td>
-                        <u className='btn btn-danger btn-sm' onClick={() => deleteProdInCart(prod.prod_id)}><span className='fas fa-times'></span></u>
+                        <td>
+                          <input onBlur={(e) => changeProductQuantity(e.target.value, i)} type="number" min={1} className='form-control' />
+                          {prod.quantity}
+                        </td>
+                        <td> {prod.price}</td>
+                        <td><button className='btn btn-danger btn-sm' onClick={() => deleteProdInCart(prod.prod_id)}><span className='fas fa-times'></span></button></td>
                       </tr>
                     ))
                   }
@@ -187,15 +341,15 @@ function Pos() {
           <div className="row">
             <div className="col">Total:</div>
             <div className="col text-right">
-              {totalCart} {setting?.map(sett => <>{sett.devise} </>)}
+              <strong>{totalCart}</strong> {setting?.map(sett => <i>{sett.devise} </i>)}
             </div>
           </div>
           <div className="row ">
             <div className="col">
-              <button type="button" className="btn btn-secondary btn-sm"> Cancel </button>
+              <button type="button" onClick={() => setCartFiel([])} className="btn btn-secondary btn-sm"> Cancel </button>
             </div>
             <div className="col">
-              <button type="button" className="btn btn-success btn-sm"> Valider </button>
+              <button type="button" onClick={() => handleSubmit()} className="btn btn-success btn-sm"> Valider </button>
             </div>
           </div>
         </form>
@@ -224,7 +378,11 @@ function Pos() {
         <div className="row mt-2">
           {
             productFilter?.map((prod, i) => (
-              <div className='col-2 ml-3' key={i} onClick={() => selectProduct(prod.id)}>
+              <div className='col-2 ml-3'
+                key={i}
+                onClick={() => selectProduct(prod.id)}
+              // onClick={() => selectProduct_new(prod)}
+              >
                 <img src={`http://localhost:8000/storage/images/products/${prod.product_image}`} width={50} height={50} alt="" style={{ borderRadius: '10px' }} />
                 <h6>{prod.product_name} ({prod.stock_quantity})</h6>
               </div>
@@ -232,21 +390,6 @@ function Pos() {
           }
 
         </div>
-
-
-
-        {/* <div className="timeline">
-          <div>
-
-            <div className="timeline-item">
-              <div className="timeline-header m-2">
-
-              </div>
-              
-            </div>
-          </div>
-
-        </div> */}
       </div>
     </div>
   );

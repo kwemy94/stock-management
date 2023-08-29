@@ -32,7 +32,7 @@
                                     <a class="menu-scroll" href="#team">Team</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="" href="#contact">{{ __('auth.login') }}</a>
+                                    <a class="" href="{{route('login')}}">{{ __('auth.login') }}</a>
                                 </li>
                                 <li class="nav-item"> 
                                     {{-- <div class="col-md-4"> --}}
