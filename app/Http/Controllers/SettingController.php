@@ -19,7 +19,7 @@ class SettingController extends Controller
      */
     public function index()
     {
-        $setting = $this->settingRepository->getStructure();
+        $setting = $this->settingRepository->getFirstSetting();
         return view('admin.settings.structure-setting', compact('setting'));
     }
 

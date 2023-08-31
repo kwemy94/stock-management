@@ -60,7 +60,7 @@ class OrderController extends Controller
     
     public function store(Request $request)
     {
-        dd(date('Y-m-d'), $request->post());
+        // dd(date('Y-m-d'), $request->post());
         $user = Auth::user();
 
         $products = $this->productRepository->getAll();
@@ -158,5 +158,21 @@ class OrderController extends Controller
             'categories' => $categories,
             'setting' => $setting,
         ]);
+    }
+
+
+
+    public function printInvoice($id) {
+        $orders = $this->productRepository->getAll();
+
+        $data = [
+            'title' => 'liste des produits',
+            'date' => date('m/d/Y H:m:s'),
+            'products' => $orders,
+        ];
+        $pdf = PDF::loadView('admin?pos.order.print-invoice', $data)->setPaper('a4', 'landscape')->setWarnings(false);
+
+        return $pdf->download('command.pdf');
+        return $pdf->stream();
     }
 }

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import axios from 'axios';
 import Loader from './Loader';
+import AlertMessage from './AlertMessage';
+import toastr from 'reactjs-toastr';
+import 'reactjs-toastr/lib/toast.css';
 
 function Pos() {
 
@@ -29,7 +32,7 @@ function Pos() {
   useEffect(() => {
     console.log('total');
     setTotalCart(
-      cartField.reduce((total, elt) => { return total += elt.price; }, 0)
+      cartField.reduce((total, elt) => { return total += elt.total_price; }, 0)
     );
   }, [cartField]);
 
@@ -91,10 +94,11 @@ function Pos() {
     let foundProd = cartField?.find((elt) => elt.prod_id == id);
 
     if (foundProd) {
-      if (decrementProductQuantity(id) != -1) {
+      if (decrementProductQuantity(id) != -5000000) {
         cartField.find((elt) => {
           elt.prod_id == id
-            ? (elt.price += (foundProd.price / foundProd.quantity), elt.quantity = parseInt(elt.quantity) + 1)
+            // ? (elt.price += (foundProd.price / foundProd.quantity), elt.quantity = parseInt(elt.quantity) + 1)
+            ? (elt.total_price += foundProd.price , elt.quantity = parseInt(elt.quantity) + 1)
             : '';
 
         });
@@ -108,7 +112,7 @@ function Pos() {
       let newAddItem = products.find(elt => elt.id == id ? elt : '');
       console.log(newAddItem);
       // if (newAddItem.stock_quantity > 0) {
-      if (decrementProductQuantity(id) != -1) {
+      if (decrementProductQuantity(id) != -5000000) {
         setCartFiel([
           ...cartField,
           {
@@ -116,6 +120,7 @@ function Pos() {
             name: newAddItem.product_name,
             quantity: 1,
             price: newAddItem.sale_price,
+            total_price: newAddItem.sale_price,
           }
         ]);
 
@@ -125,7 +130,8 @@ function Pos() {
     }
     console.log(cartField);
     setTotalCart(
-      cartField.reduce((total, elt) => { return total += elt.price; }, 0)
+      // cartField.reduce((total, elt) => { return total += elt.price; }, 0)
+      cartField.reduce((total, elt) => { return total += elt.total_price; }, 0)
     );
 
     console.log('set de la quantité dans le menu de droite');
@@ -148,7 +154,8 @@ function Pos() {
     setCartFiel(newListProd);
 
     setTotalCart(
-      newListProd.reduce((total, elt) => { return total += elt.price; }, 0)
+      // newListProd.reduce((total, elt) => { return total += elt.price; }, 0)
+      newListProd.reduce((total, elt) => { return total += elt.total_price; }, 0)
     );
   }
 
@@ -163,7 +170,7 @@ function Pos() {
 
     let new_prods = products.map(prod => {
       if (prod.id == id) {
-        return { ...prod, stock_quantity: prod.stock_quantity + add_quantity }
+        return { ...prod, stock_quantity: parseInt(prod.stock_quantity) + parseInt(add_quantity) }
       }
       return prod;
     })
@@ -186,8 +193,9 @@ function Pos() {
       tmp = tmp_products.find(elt => elt.id == id);
     }
 
-    if (parseInt(tmp.stock_quantity) > 0) {
-      let quantity = parseInt(tmp.stock_quantity) - remove_quantity;
+    let quantity = parseInt(tmp.stock_quantity) - parseInt(remove_quantity);
+
+    if (parseInt(tmp.stock_quantity) > 0 || quantity >= 0) {
       tmp.stock_quantity = quantity;
 
       console.log(tmp);
@@ -198,7 +206,7 @@ function Pos() {
     } else {
 
       // Lorsue le stock est épuisé
-      return -1;
+      return -5000000;
     }
 
   }
@@ -213,12 +221,15 @@ function Pos() {
 
     let current_prod = products.find(elt => elt.id == tmp.prod_id);
 
+    // Modification manuel de la quantité d'un article dans le panier (via l'input)
+    let debit_quantity =  parseInt(val) - parseInt(tmp.quantity);
     if (
       (parseInt(current_prod.stock_quantity) + parseInt(tmp.quantity) - parseInt(val) >= 0)
-      // && decrementProductQuantity(tmp.prod_id, null, val) != -1
+      && decrementProductQuantity(tmp.prod_id, null, debit_quantity) != -5000000
     ) {
       tmp.quantity = val;
-      tmp.price = val * unitPrice;
+      // tmp.price = val * unitPrice;
+      tmp.total_price = val * tmp.price;
 
       console.log(tmp);
       tmp_cartField[index] = tmp;
@@ -237,7 +248,7 @@ function Pos() {
     console.log(cartField);
     setLoading(true);
 
-    axios.post('http://localhost:8000/order', {
+    axios.post('/order', {
       cartField,
       customer,
       totalCart
@@ -255,24 +266,19 @@ function Pos() {
         setCategories(res.data.categories);
         setSetting(res.data.setting)
         setLoading(false);
-
+        AlertMessage('Commande enregistrée !');
       }).catch((err) => {
         console.log(err);
         setLoading(false);
+        AlertMessage('Echec !', false, 'error');
       });
   }
 
-  // const decrementProductQuantity = (id, n = 1) => {
-  //   let tmp_products = [...products];
-
-  //   let tmp = {...tmp_products[index]};
-
-  //   tmp.quantity = val;
-
-  //   tmp_products[index] = tmp;
-
-  //   setProducts(temp_products);
-  // }
+  // reinitialiser les produits en cliquant sur le btn annuler
+  const resetCartFiel = () => {
+    // solution provisoire
+    setCartFiel([]);
+  }
 
   return (
     <div className="row">
@@ -314,6 +320,7 @@ function Pos() {
                     <th>Product</th>
                     <th>Quantity</th>
                     <th className="text-right">Price</th>
+                    <th className="text-right">Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -321,12 +328,19 @@ function Pos() {
                     cartField.map((prod, i) => (
                       <tr key={i}>
                         <td hidden> <input type="text" value={prod.prod_id} /> </td>
-                        <td>{prod.name} </td>
+                        <td>{prod.name.substring(0, 8)} </td>
                         <td>
-                          <input onBlur={(e) => changeProductQuantity(e.target.value, i)} type="number" min={1} className='form-control' />
+                          <input 
+                          // onBlur={(e) => changeProductQuantity(e.target.value, i)} 
+                          onChange={(e) => changeProductQuantity(e.target.value, i)} 
+                          type="number" 
+                          min={1} 
+                          value={prod.quantity} 
+                          className='form-control' />
                           {prod.quantity}
                         </td>
                         <td> {prod.price}</td>
+                        <td> {prod.total_price}</td>
                         <td><button className='btn btn-danger btn-sm' onClick={() => deleteProdInCart(prod.prod_id)}><span className='fas fa-times'></span></button></td>
                       </tr>
                     ))
@@ -346,7 +360,7 @@ function Pos() {
           </div>
           <div className="row ">
             <div className="col">
-              <button type="button" onClick={() => setCartFiel([])} className="btn btn-secondary btn-sm"> Cancel </button>
+              <button type="button" onClick={() => resetCartFiel()} className="btn btn-secondary btn-sm"> Cancel </button>
             </div>
             <div className="col">
               <button type="button" onClick={() => handleSubmit()} className="btn btn-success btn-sm"> Valider </button>

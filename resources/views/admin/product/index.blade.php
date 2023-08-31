@@ -51,7 +51,7 @@
                                         <tr>
                                             <td>{{ $cpt++ }}</td>
                                             <td>{{ $product->product_name }} </td>
-                                            <td> <img src="{{Storage::url('images/products/'.$product->product_image)}}" width="40px" height="40px" alt="" > </td>
+                                            <td> <img src='{{asset("storage/images/products/$product->product_image")}}' width="40px" height="40px" alt="" > </td>
                                             <td>
                                                 {{ $product->sale_price }}
                                             </td>
