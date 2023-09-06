@@ -11,8 +11,8 @@
                         <div class="card-body box-profile">
                             <div class="text-center">
                                 <img class="profile-user-img img-fluid img-circle"
-                                    src="{{ asset('dashboard-template/dist/img/user4-128x128.jpg') }}"
-                                    alt="User profile picture">
+                                src='{{ $setting->logo ? asset("storage/images/logo/$setting->logo") : asset("front-template/assets/images/logo/logo.png") }}'
+                                >
                             </div>
 
                             {{-- <h3 class="profile-username text-center">Nina Mcintire</h3> --}}
@@ -55,7 +55,7 @@
                             <div class="tab-content">
 
                                 <div class="active tab-pane" id="settings">
-                                    <form class="form-horizontal" id="setting-form"
+                                    <form class="form-horizontal" id="setting-form" enctype="multipart/form-data"
                                         action="{{ route('setting.update', $setting->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
@@ -91,7 +91,7 @@
                                         <div class="input-group row mb-3">
                                             <label for="email" class="col-sm-2 col-form-label">Logo</label>
                                             <div class="col-sm-10">
-                                                <input type="file" class="custom-file-input" id="exampleInputFile">
+                                                <input type="file" class="custom-file-input" name="logo" id="exampleInputFile">
                                                 <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                                             </div>
 

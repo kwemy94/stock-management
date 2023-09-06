@@ -20,19 +20,13 @@
                                     <a class="menu-scroll" href="#home">Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="menu-scroll" href="#features">Features</a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="menu-scroll" href="#about">About</a>
                                 </li>
-                                {{-- <li class="nav-item">
-                                    <a class="menu-scroll" href="#faq">FAQ</a>
-                                </li> --}}
                                 <li class="nav-item">
                                     <a class="menu-scroll" href="#team">Team</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="" href="{{route('login')}}">{{ __('auth.login') }}</a>
+                                    <a class="menu-scroll" href="#features">{{ __('home.our-product') }}</a>
                                 </li>
                                 <li class="nav-item"> 
                                     {{-- <div class="col-md-4"> --}}

@@ -19,6 +19,7 @@ class SupplierController extends Controller
      */
     public function index()
     {
+        toggleDatabase();
         $suppliers = $this->supplierRepository->getAll();
         return view('admin.supplier.index', compact('suppliers'));
     }
@@ -39,6 +40,7 @@ class SupplierController extends Controller
         $inputs = $request->post();
         // dd($inputs);
 
+        toggleDatabase();
         try {
             $this->supplierRepository->store($inputs);
             return redirect(route('supplier.index'))->with('success', 'Fournisseur crée !');
@@ -71,6 +73,7 @@ class SupplierController extends Controller
     public function update(Request $request, $id)
     {
 
+        toggleDatabase();
         if (!$this->supplierRepository->getById($id)) {
             return redirect()->back()->with('error', "Oups!! Ce fourisseur n'existe pas");
         }
@@ -91,6 +94,7 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
+        toggleDatabase();
         $supplier = $this->supplierRepository->getById($id);
         if (!$supplier) {
             return redirect()->back()->with('error', "Oups!! Ce fourisseur n'existe pas");

@@ -31,6 +31,7 @@ class ProductController extends Controller
      */
     public function index()
     {
+        toggleDatabase();
         $products = $this->productRepository->getAll();
         $categories = $this->categoryRepository->getAll();
         return view('admin.product.index', compact('products', 'categories'));
@@ -41,6 +42,7 @@ class ProductController extends Controller
      */
     public function create()
     {
+        toggleDatabase();
         $categories = $this->categoryRepository->getAll();
         $units = $this->unitRepository->getAll();
         return view('admin.product.create', compact('categories', 'units'));
@@ -52,6 +54,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // dd($request->post());
+        toggleDatabase();
         $validation = Validator::make(
             $request->all(),
             [
@@ -115,17 +118,21 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($id)
     {
+        toggleDatabase();
+        $product = $this->productRepository->getById($id);
         return view('admin.product.show', compact('product'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit($id)
     {
         // dd($product);
+        toggleDatabase();
+        $product = $this->productRepository->getById($id);
         $categories = $this->categoryRepository->getAll();
         $units = $this->unitRepository->getAll();
         return view('admin.product.edit', compact('product', 'categories', 'units'));
@@ -137,6 +144,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         // dd($product, $request->post());
+        toggleDatabase();
         $product = $this->productRepository->getById($id);
         $inputs = $request->post();
         try {
@@ -166,6 +174,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
+        toggleDatabase();
         
         try {
             $product = $this->productRepository->getById($id);
@@ -186,6 +195,7 @@ class ProductController extends Controller
 
     public function BarcodeToPDF()
     {
+        toggleDatabase();
         $products = $this->productRepository->getAll();
 
         $data = [
