@@ -26,6 +26,7 @@ class ProductSupplierController extends Controller
     public function index()
     {
 
+        toggleDatabase();
         $achats = $this->achatRepository->getAll();
 
         return view('admin.achat.index', compact('achats'));
@@ -34,6 +35,7 @@ class ProductSupplierController extends Controller
 
     public function create()
     {
+        toggleDatabase();
         $products = $this->productRepository->getAll();
         $suppliers = $this->supplierRepository->getAll();
 
@@ -43,6 +45,7 @@ class ProductSupplierController extends Controller
 
     public function store(Request $request)
     {
+        toggleDatabase();
         $validation = Validator::make(
             $request->all(),
             [
@@ -87,6 +90,7 @@ class ProductSupplierController extends Controller
 
     public function edit($id)
     {
+        toggleDatabase();
         $products = $this->productRepository->getAll();
         $suppliers = $this->supplierRepository->getAll();
         try {
@@ -103,6 +107,7 @@ class ProductSupplierController extends Controller
      */
     public function update(Request $request, $id)
     {
+        toggleDatabase();
         try {
             $achat = $this->achatRepository->getById($id);
             // dd($achat);
@@ -120,6 +125,7 @@ class ProductSupplierController extends Controller
      */
     public function destroy($id)
     {
+        toggleDatabase();
         try {
             $achat = $this->achatRepository->getById($id);
 

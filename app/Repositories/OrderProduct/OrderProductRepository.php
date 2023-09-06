@@ -16,4 +16,9 @@ class OrderProductRepository extends ResourceRepository {
         return $this->model->OrderBy('id', 'DESC')->get();
     }
 
+    public function getByOrderId($order_id) 
+    {
+        return $this->model->where('order_id', $order_id)->with('product')->get();
+    }
+
 }

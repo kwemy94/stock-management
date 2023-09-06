@@ -6,7 +6,7 @@
     <!-- ====== Hero End ====== -->
 
     <!-- ====== Features Start ====== -->
-    @include('partials._features')
+    @include('partials._our-product')
     <!-- ====== Features End ====== -->
 
     <!-- ====== About Start ====== -->

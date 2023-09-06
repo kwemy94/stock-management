@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import axios from 'axios';
 import Loader from './Loader';
-import AlertMessage from './AlertMessage';
-import toastr from 'reactjs-toastr';
-import 'reactjs-toastr/lib/toast.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import useScanDetection from 'use-scan-detection';
+import { QrReader } from 'react-qr-reader';
 
 function Pos() {
 
@@ -14,12 +15,13 @@ function Pos() {
   const [copyProducts, setCopyProducts] = useState();
   const [customers, setCustomers] = useState();
   const [searchProduct, setSearchProduct] = useState('');
-  const [scanBarecode, setScanBarecode] = useState('');
   const [categories, setCategories] = useState([]);
   const [setting, setSetting] = useState();
   const [loading, setLoading] = useState(true);
   const [totalCart, setTotalCart] = useState(0);
   const [customer, setCustomer] = useState('');
+
+  const qrRf = useRef(null);
 
   const [cartField, setCartFiel] = useState([
     // { prod_id: '', name: '', quantity: '', price: '' }
@@ -85,9 +87,6 @@ function Pos() {
     }
   }
 
-  const selectProduct_new = () => {
-
-  }
 
   const selectProduct = (id) => {
 
@@ -98,12 +97,13 @@ function Pos() {
         cartField.find((elt) => {
           elt.prod_id == id
             // ? (elt.price += (foundProd.price / foundProd.quantity), elt.quantity = parseInt(elt.quantity) + 1)
-            ? (elt.total_price += foundProd.price , elt.quantity = parseInt(elt.quantity) + 1)
+            ? (elt.total_price += foundProd.price, elt.quantity = parseInt(elt.quantity) + 1)
             : '';
 
         });
+        toast.success('Article ajouté!');
       } else {
-        alert('Oups ! Stock épuisé');
+        toast.warning('Oups ! Stock épuisé');
       }
 
 
@@ -124,8 +124,10 @@ function Pos() {
           }
         ]);
 
+        toast.success('Article ajouté!');
+
       } else {
-        alert('Oups ! Stock épuisé');
+        toast.warning('Oups ! Stock épuisé');
       }
     }
     console.log(cartField);
@@ -211,9 +213,17 @@ function Pos() {
 
   }
 
-  const changeProductQuantity = (val, index) => {
+  const changeProductQuantity = (e, index) => {
     console.log(index);
-    console.log(val);
+    console.log(e);
+
+    let val = e.target.validity.valid ? e.target.value : null;
+
+    if (val == null) {
+      toast.error('Entrez un nombre valide...');
+      return -1;
+    }
+
     let tmp_cartField = [...cartField];
 
     let tmp = { ...tmp_cartField[index] };
@@ -222,7 +232,7 @@ function Pos() {
     let current_prod = products.find(elt => elt.id == tmp.prod_id);
 
     // Modification manuel de la quantité d'un article dans le panier (via l'input)
-    let debit_quantity =  parseInt(val) - parseInt(tmp.quantity);
+    let debit_quantity = parseInt(val) - parseInt(tmp.quantity);
     if (
       (parseInt(current_prod.stock_quantity) + parseInt(tmp.quantity) - parseInt(val) >= 0)
       && decrementProductQuantity(tmp.prod_id, null, debit_quantity) != -5000000
@@ -238,7 +248,7 @@ function Pos() {
 
 
     } else {
-      alert('Oups ! Stock insuffisant')
+      toast.warning('Oups ! Stock insuffisant')
     }
 
 
@@ -259,19 +269,39 @@ function Pos() {
         "'Access-Control-Allow-Origin'": '*'
       }).then((res) => {
         console.log(res);
-        // setCartFiel([]);
+        setCartFiel([]);
         setProducts(res.data.products);
         setCopyProducts(res.data.products);
         setCustomers(res.data.customers);
         setCategories(res.data.categories);
         setSetting(res.data.setting)
         setLoading(false);
-        AlertMessage('Commande enregistrée !');
+        toast.success('Commande enregistrée !');
       }).catch((err) => {
         console.log(err);
         setLoading(false);
-        AlertMessage('Echec !', false, 'error');
+        toast.error('Echec !', false, 'error');
       });
+  }
+
+  const findProductWithBarcode = (code) => {
+    let product = products.find(elt => elt.code == code);
+
+    if (product) {
+      selectProduct(product.id);
+
+      // toast.success('Produit ajouté !');
+    } else {
+      // toast.error('Produit non existant !');
+    }
+  }
+
+  const handleScanBarecode = (e) => {
+    e.preventDefault();
+    let code = e.target.value;
+    e.target.value = '';
+
+    findProductWithBarcode(code);
   }
 
   // reinitialiser les produits en cliquant sur le btn annuler
@@ -280,8 +310,31 @@ function Pos() {
     setCartFiel([]);
   }
 
+
+  // Utilisation du lecteur de code barre pour inserer le produit
+  useScanDetection({
+    onComplete: findProductWithBarcode,
+    minLength: 3
+  });
+
+  // Scanner le codebare en cliquant sur btn de scan de l'app
+  const scanCode = () => {
+    qrRf.current.openImageDialog();
+  }
+
+  const handleErrorFile = (err) => {
+    console.log(err);
+  }
+
+  const handleScanFile = (res) => {
+    if (res) {
+      findProductWithBarcode(res);
+    }
+  }
+
   return (
     <div className="row">
+      <div className="toast-container"><ToastContainer limit={3} /></div>
       <div className="col-md-6 col-lg-4 mb-2" style={{ border: '3px solid', borderColor: '#007bff' }}>
         <div className="row mb-2">
           <div className="col mt-2">
@@ -292,7 +345,7 @@ function Pos() {
                 className="form-control form-control-border border-width-2"
                 placeholder="Scan Barcode..."
                 autoFocus
-                onChange={(e) => setScanBarecode(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleScanBarecode(e)}
               />
             </form>
           </div>
@@ -330,13 +383,13 @@ function Pos() {
                         <td hidden> <input type="text" value={prod.prod_id} /> </td>
                         <td>{prod.name.substring(0, 8)} </td>
                         <td>
-                          <input 
-                          // onBlur={(e) => changeProductQuantity(e.target.value, i)} 
-                          onChange={(e) => changeProductQuantity(e.target.value, i)} 
-                          type="number" 
-                          min={1} 
-                          value={prod.quantity} 
-                          className='form-control' />
+                          <input
+                            // onBlur={(e) => changeProductQuantity(e.target.value, i)} 
+                            onChange={(e) => changeProductQuantity(e, i)}
+                            type="text"
+                            pattern="[0-9]*"
+                            value={prod.quantity}
+                            className='form-control' />
                           {prod.quantity}
                         </td>
                         <td> {prod.price}</td>
@@ -352,10 +405,21 @@ function Pos() {
 
             </div>
           </div>
-          <div className="row">
-            <div className="col">Total:</div>
+
+          <div className="row mb-2">
+            <div className="col">
+              <button type="button" variant='contained' onClick={() => scanCode()} className="btn btn-warning btn-sm"> Scan code </button>
+              {/* <QrReader
+                ref={qrRf}
+                delay={300}
+                style={{width: '100%'}}
+                onError={handleErrorFile}
+                onScan={handleScanFile}
+                legacyMode
+              /> */}
+            </div>
             <div className="col text-right">
-              <strong>{totalCart}</strong> {setting?.map(sett => <i>{sett.devise} </i>)}
+              Total : <strong>{totalCart}</strong> {setting?.map(sett => <i>{sett.devise} </i>)}
             </div>
           </div>
           <div className="row ">

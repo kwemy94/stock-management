@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Repositories\Category\CategoryRepository;
-use App\Repositories\Customer\CustomerRepository;
+use PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\Order\OrderRepository;
-use App\Repositories\OrderProduct\OrderProductRepository;
 use App\Repositories\Payment\PaymentRepository;
 use App\Repositories\Product\ProductRepository;
 use App\Repositories\Setting\SettingRepository;
+use App\Repositories\Category\CategoryRepository;
+use App\Repositories\Customer\CustomerRepository;
+use App\Repositories\OrderProduct\OrderProductRepository;
 
 class OrderController extends Controller
 {
@@ -39,6 +40,7 @@ class OrderController extends Controller
     
     public function index()
     {
+        toggleDatabase();
         $orders = $this->orderRepository->getAll();
         $setting = $this->settingRepository->getFirstSetting();
 
@@ -48,6 +50,7 @@ class OrderController extends Controller
     
     public function create()
     {
+        toggleDatabase();
         $products = $this->productRepository->getAll();
 
         return view('admin.pos.order.create', compact('products'));
@@ -63,6 +66,7 @@ class OrderController extends Controller
         // dd(date('Y-m-d'), $request->post());
         $user = Auth::user();
 
+        toggleDatabase();
         $products = $this->productRepository->getAll();
         $customer = $this->customerRepository->getAll();
         $categories = $this->categoryRepository->getAll();
@@ -92,7 +96,7 @@ class OrderController extends Controller
                     $inputs['product_id'] = $panier[$i]['prod_id'];
                     $inputs['order_id'] = $order->id;
                     $inputs['quantity'] = $panier[$i]['quantity'];
-                    $inputs['price'] = $panier[$i]['price'];
+                    $inputs['price'] = $panier[$i]['total_price'];
 
                     $this->orderProductRepository->store($inputs);
 
@@ -114,11 +118,8 @@ class OrderController extends Controller
             dd($e);
             return response()->json([
                 'success' => false,
-                'products' => $products,
-                'customers' => $customer,
-                'categories' => $categories,
-                'setting' => $setting,
-            ], 201);
+                'error' => $e->getMessage(),
+            ], 400);
         }
     }
 
@@ -147,6 +148,8 @@ class OrderController extends Controller
     }
 
     public function loadProduct() {
+
+        toggleDatabase();
         $products = $this->productRepository->getAll();
         $customer = $this->customerRepository->getAll();
         $categories = $this->categoryRepository->getAll();
@@ -163,14 +166,22 @@ class OrderController extends Controller
 
 
     public function printInvoice($id) {
-        $orders = $this->productRepository->getAll();
+
+        toggleDatabase();
+        $orders = $this->orderRepository->getById($id);
+        $orderProducts = $this->orderProductRepository->getByOrderId($id);
+        // dd($product, $id);
+        $setting = $this->settingRepository->getFirstSetting();
 
         $data = [
             'title' => 'liste des produits',
-            'date' => date('m/d/Y H:m:s'),
-            'products' => $orders,
+            // 'date' => date('m/d/Y H:m:s'),
+            'setting' => $setting,
+            'orderProducts' => $orderProducts,
+            'order_id' => $id,
         ];
-        $pdf = PDF::loadView('admin?pos.order.print-invoice', $data)->setPaper('a4', 'landscape')->setWarnings(false);
+        $customPaper = array(0, 0, 792.00, 1224.00);
+        $pdf = PDF::loadView('admin.pos.order.print-invoice', $data)->setPaper($customPaper, 'portrait')->setWarnings(false);
 
         return $pdf->download('command.pdf');
         return $pdf->stream();

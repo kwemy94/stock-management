@@ -19,6 +19,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        toggleDatabase();
         $categories = $this->categoryRepository->getAll();
         return view('admin.category.index', compact('categories'));
     }
@@ -36,6 +37,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        toggleDatabase();
         try {
             $this->categoryRepository->store($request->post());
 
@@ -57,17 +59,21 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
+    public function edit($id)
     {
+        toggleDatabase();
+        $category = $this->categoryRepository->getById($id);
         return view('admin.category.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, $id)
     {
+        toggleDatabase();
         try {
+            $category = $this->categoryRepository->getById($id);
             $this->categoryRepository->update($category->id, $request->post());
 
             return redirect(route('category.index'))->with('success', 'Catégorie mis à jour !');
@@ -80,9 +86,11 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy($id)
     {
+        toggleDatabase();
         try {
+            $category = $this->categoryRepository->getById($id);
             $category->delete();
 
             return redirect()->back()->with('success', 'Catégorie supprimée !');

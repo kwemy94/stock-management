@@ -64,7 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/unite-mesure', UnitController::class);
 
     Route::resource('/order', OrderController::class);
-    Route::get('print-invoice', [OrderController::class, 'printInvoice'])->name('order.print.invoice');
+    Route::get('print-invoice/{id}', [OrderController::class, 'printInvoice'])->name('order.print.invoice');
 
     ## print to pdf
     Route::get('/pdf-barcode', [ProductController::class, 'BarcodeToPDF'])->name('barcode.to.pdf');
