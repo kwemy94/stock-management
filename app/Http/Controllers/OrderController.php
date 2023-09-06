@@ -168,9 +168,14 @@ class OrderController extends Controller
     public function printInvoice($id) {
 
         toggleDatabase();
-        $orders = $this->orderRepository->getById($id);
+        $order = $this->orderRepository->getById($id);
         $orderProducts = $this->orderProductRepository->getByOrderId($id);
         // dd($product, $id);
+        $customer = null;
+        if ($order->customer_id) {
+            $customer = $this->customerRepository->getById($order->customer_id);
+        }
+
         $setting = $this->settingRepository->getFirstSetting();
 
         $data = [
@@ -179,6 +184,7 @@ class OrderController extends Controller
             'setting' => $setting,
             'orderProducts' => $orderProducts,
             'order_id' => $id,
+            'customer' => $customer,
         ];
         $customPaper = array(0, 0, 792.00, 1224.00);
         $pdf = PDF::loadView('admin.pos.order.print-invoice', $data)->setPaper($customPaper, 'portrait')->setWarnings(false);
