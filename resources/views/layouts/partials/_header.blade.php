@@ -26,7 +26,7 @@
                                     <a class="menu-scroll" href="#team">Team</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="menu-scroll" href="#features">{{ __('home.our-product') }}</a>
+                                    <a class="menu-scroll" href="#features">{{ __('home.our-item.our-product') }}</a>
                                 </li>
                                 <li class="nav-item"> 
                                     {{-- <div class="col-md-4"> --}}

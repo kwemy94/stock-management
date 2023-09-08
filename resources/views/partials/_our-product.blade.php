@@ -4,7 +4,7 @@
             <div class="col-lg-12">
                 <div class="section-title mx-auto text-center">
                     <span>{{ __('home.our-item.our-product') }}</span>
-                    <h2>{{__('home.our-item.title')}} </h2>
+                    <h2>{{ __('home.our-item.title') }} </h2>
                     <p>
                         {{ __('home.our-item.introduction') }}
                     </p>
@@ -31,10 +31,14 @@
                         <i class="lni lni-lock"></i>
                     </div>
                     <div class="feature-content">
-                        <h3 class="feature-title">{{__('home.our-item.title')}}</h3>
+                        <h3 class="feature-title">{{ __('home.our-item.title') }}</h3>
                         <p class="feature-desc">
                             Souscrivez à notre produit et bénéficier d'une réduction allant jusqu'à 10%
-                            <a href="#souscription"> <strong style="color: black">Souscrire...</strong> </a>
+
+                            {{-- <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#supcription_app">
+                                Souscrire ...
+                            </button> --}}
                         </p>
                     </div>
                 </div>
@@ -54,4 +58,34 @@
             </div> --}}
         </div>
     </div>
+
+    <!-- Modal -->
+    {{-- <div class="modal fade" id="supcription_app" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">App de Gestion de stock</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                      <div class=" mb-3">
+                        <label for="recipient-name" class="col-form-label">Recipient:</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                      </div>
+                      <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Message:</label>
+                        <textarea class="form-control" id="message-text"></textarea>
+                      </div>
+                    </form>
+                  </div>
+                <div class="modal-footer">
+                    
+                    <button type="button" class="btn btn-primary">Enregister</button>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+
+    {{-- @include('partials.modal.modal') --}}
 </section>

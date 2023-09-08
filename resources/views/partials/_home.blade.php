@@ -12,12 +12,12 @@
             </div>
             <div class="col-lg-6 col-xl-6">
                 <div class="hero-image wow fadeInUp" data-wow-delay=".25s">
-                    <div class="video-btn-wrapper">
+                    {{-- <div class="video-btn-wrapper">
                         <a href="javascript:void(0)" class="video-btn glightbox">
                             <i class="lni lni-play"></i>
                         </a>
-                    </div>
-                    <img src="front-template/assets/images/hero/xhero-image.jpg.pagespeed.ic.cOzo3MXpdq.webp" alt="hero-image"
+                    </div> --}}
+                    <img src="{{asset('front-template/assets/images/hero/dev3.png')}}" alt="image"
                         class="image" />
                 </div>
             </div>

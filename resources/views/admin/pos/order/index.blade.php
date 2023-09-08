@@ -145,5 +145,10 @@
                 $('#form-delete-order' + i).submit();
             }
         }
+
+        function printInvoice(el) {
+            // let data = '<input type="button" id="printPqgeButton" '+
+            // 'class="printPageButton" style="display:block; width">
+        }
     </script>
 @endsection

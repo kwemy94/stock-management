@@ -5,10 +5,18 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tech Briva</title>
+    <title>Tech Briva | @yield('title')</title>
 
-    <!--====== Favicon Icon ======-->
+    
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="{{__('home.web-description')}}">
+    {{-- <meta name="description" content="site web, application web sur mesure, site vitrine, site carte de visite."> --}}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    {{-- ====== Favicon Icon ====== --}}
     <link rel="shortcut icon" href="{{ asset('front-template/assets/images/favicon-32x32.png') }}" type="image/svg" />
+    <link rel="apple-touch-icon" href="{{asset('front-template/assets/images/logo/logo.png')}}">
 
     <!-- ===== All CSS files ===== -->
     <link rel="stylesheet" href="{{ asset('front-template/assets/css/bootstrap.min.css') }}" />
@@ -53,6 +61,7 @@
     <script type="text/javascript">
         var url = "{{ route('change-lang') }}";
         $(".Langchange").change(function() {
+            console.log('Loading...');
             window.location.href = url + "?lang=" + $(this).val();
         });
 

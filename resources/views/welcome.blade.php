@@ -1,5 +1,9 @@
 @extends('layouts.layout')
 
+@section('front-css')
+    {{-- <link rel="stylesheet" href="{{asset('css/modal.css')}}"> --}}
+@endsection
+
 @section('front-content')
     <!-- ====== Hero Start ====== -->
     @include('partials._home')
@@ -44,4 +48,8 @@
     </script> --}}
 
     
+@endsection
+
+@section('front-js')
+    {{-- <script src="{{asset('js/modal.js')}}"></script> --}}
 @endsection
