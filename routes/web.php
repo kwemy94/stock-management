@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\EtablissementController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CustomerController;
@@ -49,6 +50,8 @@ Route::post('contact-us', [ContactController::class, 'store'])->name('contact.us
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::Post('/app-sub-script', [EtablissementController::class, 'store'])->name('app.sub.scribt');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

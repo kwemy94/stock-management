@@ -1,7 +1,11 @@
 @extends('layouts.layout')
 
 @section('front-css')
-    {{-- <link rel="stylesheet" href="{{asset('css/modal.css')}}"> --}}
+    <style>
+        em {
+            color: red;
+        }
+    </style>
 @endsection
 
 @section('front-content')
@@ -30,7 +34,7 @@
     <!-- ====== Contact End ====== -->
 
 
-     {{-- Génération de signature pdf --}}
+    {{-- Génération de signature pdf --}}
     {{-- <div id="pspdfkit" style="height: 100vh"></div>
 
     <script src="{{asset('assets/dist/pspdfkit.js')}}"></script>
@@ -46,10 +50,55 @@
             console.error(error.message);
         });
     </script> --}}
-
-    
 @endsection
 
-@section('front-js')
-    {{-- <script src="{{asset('js/modal.js')}}"></script> --}}
+@section('front-simpleJs')
+    <script>
+        $('#btnSubmit').click((e) => {
+            // e.preventDefault();
+
+            if (!ControlRequiredFields($('#registerForm .required'))) {
+                // alert('echec')
+                return;
+            }
+
+            $('#btnSubmit').attr('disabled', true);
+
+            let name = $('#app_name').val();
+            let phone = $('#app_phone').val();
+            let email = $('#app_email').val();
+            let logo = $('#app_logo').val();
+            let address = $('#app_address').val();
+            let activity = $('#app_domain').val();
+            let captcha = $('#captcha').val();
+            // let _token = $("input[name='_token']").val();
+            let datas = {
+                name,
+                phone,
+                email,
+                logo,
+                address,
+                activity,
+                captcha
+            };
+            let url = "{{ route('app.sub.scribt') }}";
+            console.log(url);
+            postData(url, datas).then(res => {
+                console.log(res);
+                if (res.success) {
+                    $('#registerForm').trigger('reset');
+                    $("#supcription_app").modal('hide');
+                    alert('Message de confirmation envoyé dans votre boite mail');
+                } else {
+                    alert('Une erreur survenue. Essayer plus tard');
+                    $("#supcription_app").modal('hide');
+                }
+
+                $('#btnSubmit').attr('disabled', false);
+            }).catch(err => {
+                console.log(err.response);
+                $('#btnSubmit').attr('disabled', false);
+            });
+        });
+    </script>
 @endsection

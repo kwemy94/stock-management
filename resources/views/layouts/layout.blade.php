@@ -56,7 +56,7 @@
     <script src="{{ asset('front-template/assets/js/glightbox.min.js')}}"></script>
     <script src="{{ asset('front-template/assets/js/main.js')}}"></script>
     <script src="{{ asset('js/custom.js')}}"></script>
-
+    @yield('front-simpleJs')
     {{-- Traduction du site --}}
     <script type="text/javascript">
         var url = "{{ route('change-lang') }}";
