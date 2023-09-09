@@ -4,7 +4,7 @@
             <div class="col-lg-12">
                 <div class="section-title mx-auto text-center">
                     <span>{{ __('home.our-item.our-product') }}</span>
-                    <h2>{{__('home.our-item.title')}} </h2>
+                    <h2>{{ __('home.our-item.title') }} </h2>
                     <p>
                         {{ __('home.our-item.introduction') }}
                     </p>
@@ -31,10 +31,14 @@
                         <i class="lni lni-lock"></i>
                     </div>
                     <div class="feature-content">
-                        <h3 class="feature-title">{{__('home.our-item.title')}}</h3>
+                        <h3 class="feature-title">{{ __('home.our-item.title') }}</h3>
                         <p class="feature-desc">
                             Souscrivez à notre produit et bénéficier d'une réduction allant jusqu'à 10%
-                            <a href="#souscription"> <strong style="color: black">Souscrire...</strong> </a>
+
+                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#supcription_app">
+                                Souscrire ...
+                            </button>
                         </p>
                     </div>
                 </div>
@@ -54,4 +58,7 @@
             </div> --}}
         </div>
     </div>
+
+    <!-- Modal -->
+    @include('partials.modal.modal')
 </section>

@@ -60,7 +60,7 @@
                 @endif
                 <div class="contact-form-wrapper wow fadeInUp" data-wow-delay=".2s">
                     <h3 class="contact-form-title">{{ __('contact.title')}} </h3>
-                    <form class="contact-form" method="POST" action="{{ route('contact.us.message') }}">
+                    <form class="contact-form" method="POST" id="contactForm" action="{{ route('contact.us.message') }}">
                         @csrf
                         <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
                             <label for="fullName">Full Name*</label>
@@ -141,8 +141,8 @@
 
             
 
-            if (ControlRequiredFields()) {
-                $('form').submit();
+            if (ControlRequiredFields($('#contactForm .required'))) {
+                $('#contactForm').submit();
             }
             return;
         });

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Mail\MessageGoogle;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Etablissement;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use App\Repositories\User\UserRepository;
@@ -103,19 +105,32 @@ class EtablissementController extends Controller
             
         } catch (\Exception $e) {
             //throw $th;
-            return response()->json(['error'=> 'erreur survenue '.$e]);
+            return response()->json([
+                'success' =>false,
+                'error'=> 'erreur survenue '.$e,
+            ]);
         }
 
         #changement de statut (passer de 2 =>bd non créé à 1 =>  bd cré et migré)
         $etab = $this->etablissementRepository->lastField();
         $etab->status = 1;
         $this->etablissementRepository->update($etab->id, ['status'=>1]);
+        try {
+            $inputs['url'] = config('app.url').'/app-connect';
+            $inputs['email'] = $adminUser['email'];
+            $inputs['password'] = $pwd;
+            Mail::to($adminUser['email'])->bcc("tiwagrant@yahoo.fr")
+                    ->queue(new MessageGoogle($inputs));
+        } catch (\Throwable $th) {
+            //throw $th;
+            dd($th);
+        }
 
         return response()->json([
             'success' =>true,
             'login' => $adminUser['email'],
             'password' => $pwd,
-            'url' => 'url vers le nom de domaine crée',
+            'url' => $inputs['url'],
 
         ], 201);
     }

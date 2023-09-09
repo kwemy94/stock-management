@@ -4,7 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Tech Briva | Contact</title>
+    <title>Tech Briva | Souscription</title>
 
     <style>
         /* -------------------------------------
@@ -363,7 +363,7 @@
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                         <tr>
                             <td class="align-center" width="100%">
-                                <a href="{{ env('APP_URL')}}"><img
+                                <a href="{{ config('app.url').'/login'}}"><img
                                         src="{{asset('/front-template/assets/images/logo/logo.png')}}"
                                         height="40" alt="tech briva"></a>
                             </td>
@@ -383,17 +383,17 @@
                                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                     <tr>
                                         <td>
-                                            <p>👋&nbsp; Notification de Tech briva</p>
+                                            <p>👋&nbsp; Votre application de gestion de stock à été créer</p>
                                             
-                                            <p> Informations :</p>
+                                            <p> Vous trouverez ci-dessous, vos identifiants de connexion</p>
                                             
                                             <p>
-                                                Expéditeur: <strong>{{$data['name']}} </strong><br>
-                                                Email: <strong>{{$data['email']}} </strong><br>
-                                                Object: <strong>{{$data['subject']}} </strong><br>
-                                                <p>
-                                                    Message: <strong>{{$data['message']}} </strong><br>
-                                                </p>
+                                                login: <strong>{{$data['email']}} </strong><br>
+                                                Mot de passe: <strong>{{$data['password']}} </strong><br>
+                                                
+                                            </p>
+                                            <p>
+                                                Connectez vous en cliquant sur le button ci dessous 
                                             </p>
                                             
                                             <table role="presentation" border="0" cellpadding="0" cellspacing="0"
@@ -405,8 +405,7 @@
                                                                 cellspacing="0">
                                                                 <tbody>
                                                                     <tr>
-                                                                        <td> <a href="http://techbriva.com" target="_blank">Sign Up
-                                                                                For Techbriva</a> </td>
+                                                                        <td> <a href={{$data['url']}} target="_blank">Connectez-vous!</a> </td>
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
@@ -414,7 +413,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                            <p>💃&nbsp; Briva vers le numérique.</p>
+                                            <p>💃&nbsp; Briva vers le numérique...</p>
                                         </td>
                                     </tr>
                                 </table>
@@ -435,7 +434,7 @@
                             </tr> --}}
                             <tr>
                                 <td class="content-block powered-by">
-                                    Powered by <a href="http://techbriva.com">Tech Briva</a>.
+                                    Powered by <a href="https://techbriva.">Tech Briva</a>.
                                 </td>
                             </tr>
                         </table>

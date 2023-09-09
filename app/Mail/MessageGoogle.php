@@ -26,7 +26,7 @@ class MessageGoogle extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Message Google',
+            subject: isset($this->data['url'])? 'Souscription Tech Briva stock' : 'new massage Tech Briva',
         );
     }
 
@@ -35,6 +35,11 @@ class MessageGoogle extends Mailable
      */
     public function content(): Content
     {
+        if (isset($this->data['url'])) {
+            return new Content(
+                view: 'emails.suscription-email',
+            );
+        }
         return new Content(
             view: 'emails.contact-email',
         );
@@ -52,6 +57,11 @@ class MessageGoogle extends Mailable
 
     public function build()
     {
+        if (isset($this->data['url'])) {
+            return $this->from("granttiwa0@gmail.com") // L'expéditeur
+                    ->subject("Message via le SMTP Google") // Le sujet
+                    ->view('emails.suscription-email'); // La vue
+        }
         return $this->from("granttiwa0@gmail.com") // L'expéditeur
                     ->subject("Message via le SMTP Google") // Le sujet
                     ->view('emails.contact-email'); // La vue

@@ -53,7 +53,7 @@ class ContactController extends Controller
             return redirect()->back()->with('success', 'Message envoyé !');
         } catch (\Throwable $th) {
             //throw $th;
-            // dd($th->getMessage());
+            dd($th->getMessage());
             return redirect()->back()->with('error', 'Oups! Une erreur s\'est produite !');
         }
     }
