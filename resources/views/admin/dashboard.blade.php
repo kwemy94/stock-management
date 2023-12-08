@@ -28,7 +28,7 @@
                     <!-- small box -->
                     <div class="small-box bg-white">
                         <div class="inner">
-                            {{-- <h3>{{\App\Models\User::count()}}</h3> --}}
+                            <h3>{{count($users)}}</h3>
 
                             <p>{{__('dashboard.user')}}</p>
                         </div>
@@ -43,7 +43,7 @@
                     <!-- small box -->
                     <div class="small-box bg-white">
                         <div class="inner">
-                            {{-- <h3>{{\App\Models\Supplier::count()}}<sup style="font-size: 20px"></sup></h3> --}}
+                            <h3>{{count($suppliers)}}<sup style="font-size: 20px"></sup></h3>
 
                             <p>{{__('dashboard.supplier')}}</p>
                         </div>
@@ -58,7 +58,7 @@
                     <!-- small box -->
                     <div class="small-box bg-white">
                         <div class="inner">
-                            {{-- <h3>{{\App\Models\Customer::count()}}</h3> --}}
+                            <h3>{{count($customers)}}</h3>
 
                             <p >{{__('dashboard.customer')}}</p>
                         </div>
@@ -73,7 +73,7 @@
                     <!-- small box -->
                     <div class="small-box bg-white">
                         <div class="inner">
-                            {{-- <h3>{{\App\Models\Category::count()}}</h3> --}}
+                            <h3>{{count($customers)}}</h3>
 
                             <p>{{__('dashboard.category')}}</p>
                         </div>
@@ -87,7 +87,7 @@
                     <!-- small box -->
                     <div class="small-box bg-white">
                         <div class="inner">
-                            {{-- <h3>{{\App\Models\Product::count()}}</h3> --}}
+                            <h3>{{count($products)}}</h3>
 
                             <p>{{__('dashboard.product')}}</p>
                         </div>
@@ -101,7 +101,7 @@
                     <!-- small box -->
                     <div class="small-box bg-white">
                         <div class="inner">
-                            {{-- <h3>{{\App\Models\Order::count()}}</h3> --}}
+                            <h3>{{count($orders)}}</h3>
 
                             <p>{{__('dashboard.order')}}</p>
                         </div>
@@ -115,7 +115,7 @@
                     <!-- small box -->
                     <div class="small-box bg-white">
                         <div class="inner">
-                            {{-- <h3>{{\App\Models\Payment::count()}}</h3> --}}
+                            <h3>{{count($payments)}}</h3>
 
                             <p>{{__('dashboard.payment')}}</p>
                         </div>

@@ -35,10 +35,10 @@ class ContactController extends Controller
             ]
         );
 
-        if ($validation->fails()) {
+        // if ($validation->fails()) {
 
-            return redirect()->back()->withErrors($validation->errors())->withInput();
-        }
+        //     return redirect()->back()->withErrors($validation->errors())->withInput();
+        // }
         // dd('');
         $inputs = $request->post();
         unset($inputs['_token']);

@@ -16,4 +16,8 @@ class UserRepository extends ResourceRepository {
         return $this->model->orderBy('id', 'DESC')->get();
     }
 
+    public function getUserByCompany($companyId) {
+        return $this->model->where('etablissement_id', $companyId)->get();
+    }
+
 }

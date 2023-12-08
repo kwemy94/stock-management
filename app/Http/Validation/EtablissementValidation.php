@@ -7,6 +7,7 @@ class EtablissementValidation {
       return   [
             'name' => 'required|min:3',
             'email' => 'required|email',
+            'captcha' => 'required|captcha',
         ];
     }
 
@@ -17,6 +18,7 @@ class EtablissementValidation {
             'name.min' => 'le nom doit avoir au moins 3 caractères',
             'email.required' => 'Adresse email obligatoire',
             'email.email' => 'Mauvaise adresse email',
+            'captcha.captcha' => 'Invalid captcha code.'
         ];
     }
 }

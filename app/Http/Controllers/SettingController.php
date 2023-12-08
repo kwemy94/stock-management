@@ -25,6 +25,10 @@ class SettingController extends Controller
         return view('admin.settings.structure-setting', compact('setting'));
     }
 
+    public static function settingInfo() {
+        return ["io"];
+    }
+
     /**
      * Show the form for creating a new resource.
      */

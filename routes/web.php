@@ -1,19 +1,22 @@
 <?php
 
-use App\Http\Controllers\API\EtablissementController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LangController;
+use App\Http\Controllers\UnitController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProductSupplierController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\UnitController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Sale\SaleController;
+use App\Http\Controllers\ProductSupplierController;
+use App\Http\Controllers\API\EtablissementController;
+use App\Http\Controllers\Inventory\InventoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,9 +50,10 @@ Route::post('contact-us', [ContactController::class, 'store'])->name('contact.us
 
 
 # Dashboard management
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('admin.dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'dashboardHome'] )->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::Post('/app-sub-script', [EtablissementController::class, 'store'])->name('app.sub.scribt');
 
@@ -74,6 +78,12 @@ Route::middleware('auth')->group(function () {
 
     ## pos
     Route::get('/pos-data-loading', [OrderController::class, 'loadProduct']);
+
+    ## Vente
+    Route::resource('sale', SaleController::class);
+
+    ## inventory
+    Route::resource('/inventory', InventoryController::class);
 });
 
 require __DIR__.'/auth.php';

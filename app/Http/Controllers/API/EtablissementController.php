@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Etablissement;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SMSNotificationController;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Artisan;
@@ -49,6 +50,8 @@ class EtablissementController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request  $request, EtablissementValidation $etablissementValidation) {
+        // $sms = new SMSNotificationController;
+        // dd($sms->sendSMSNotification());
         
         $validator = Validator::make($request->all(), $etablissementValidation->rules(), $etablissementValidation->message());
 
@@ -64,7 +67,7 @@ class EtablissementController extends Controller
 
         $adminUser['name'] = $request->name;
         $adminUser['email'] = $request->email;
-        $pwd = generateRandomPassword(8);
+        $pwd = generateRandopmPassword(8);
         $adminUser['password'] = Hash::make($pwd);
 
         try {
@@ -119,11 +122,16 @@ class EtablissementController extends Controller
             $inputs['url'] = config('app.url').'/app-connect';
             $inputs['email'] = $adminUser['email'];
             $inputs['password'] = $pwd;
-            Mail::to($adminUser['email'])->bcc("tiwagrant@yahoo.fr")
+            Mail::to($adminUser['email'])->bcc("grantshell0@gmail.com")
                     ->queue(new MessageGoogle($inputs));
         } catch (\Throwable $th) {
             //throw $th;
-            dd($th);
+            // dd($th);
+            return response()->json([
+                'success' =>false,
+                'message' => "Erreur survenue",
+    
+            ], 201);
         }
 
         return response()->json([

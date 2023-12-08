@@ -13,7 +13,7 @@ class PaymentRepository extends ResourceRepository {
 
     public function getAll() 
     {
-        return $this->model->PaymentBy('id', 'DESC')->get();
+        return $this->model->orderBy('id', 'DESC')->get();
     }
 
 }

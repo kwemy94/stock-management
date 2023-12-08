@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useScanDetection from 'use-scan-detection';
 import { QrReader } from 'react-qr-reader';
+import PaymentModal from './PaymentModal';
 
 function Pos() {
 
@@ -20,6 +21,8 @@ function Pos() {
   const [loading, setLoading] = useState(true);
   const [totalCart, setTotalCart] = useState(0);
   const [customer, setCustomer] = useState('');
+  const [disableBtn, setDisableBtn] = useState(false);
+  const [amount_received, setAmountReceived] = useState();
 
   const qrRf = useRef(null);
 
@@ -101,7 +104,7 @@ function Pos() {
             : '';
 
         });
-        toast.success('Article ajouté!');
+        // toast.success('Article ajouté!');
       } else {
         toast.warning('Oups ! Stock épuisé');
       }
@@ -124,7 +127,7 @@ function Pos() {
           }
         ]);
 
-        toast.success('Article ajouté!');
+        // toast.success('Article ajouté!');
 
       } else {
         toast.warning('Oups ! Stock épuisé');
@@ -146,7 +149,8 @@ function Pos() {
 
   }
 
-  const deleteProdInCart = (id) => {
+  const deleteProdInCart = (e, id) => {
+    e.preventDefault();
 
     // Restore quantity before delete
     let prod_delete = cartField.find(elt => elt.prod_id == id);
@@ -256,8 +260,14 @@ function Pos() {
 
   const handleSubmit = () => {
     console.log(cartField);
-    setLoading(true);
 
+    if (cartField.length == 0) {
+      toast.warning('Panier vide');
+      return;
+    }
+
+    setLoading(true);
+    setDisableBtn(true);
     axios.post('/order', {
       cartField,
       customer,
@@ -277,10 +287,12 @@ function Pos() {
         setSetting(res.data.setting)
         setLoading(false);
         toast.success('Commande enregistrée !');
+        setDisableBtn(false);
       }).catch((err) => {
         console.log(err);
         setLoading(false);
         toast.error('Echec !', false, 'error');
+        setDisableBtn(false);
       });
   }
 
@@ -307,7 +319,30 @@ function Pos() {
   // reinitialiser les produits en cliquant sur le btn annuler
   const resetCartFiel = () => {
     // solution provisoire
-    setCartFiel([]);
+    console.log(cartField);
+    if (cartField.length > 0) {
+      for (let k = 0; k < cartField.length; k++) {
+        // Restore quantity before delete
+        // let prod_delete = cartField.find(elt => elt.prod_id == id);
+        restoreProductQuantity(cartField[k].prod_id, cartField[k].quantity);
+        console.log(k);
+
+      }
+      setCartFiel([]);
+
+
+      // // Restore quantity before delete
+      // let prod_delete = cartField.find(elt => elt.prod_id == id);
+      // restoreProductQuantity(id, prod_delete.quantity);
+
+      // let newListProd = cartField.filter(elt => elt.prod_id != id);
+      // setCartFiel(newListProd);
+
+      // setTotalCart(
+      //   // newListProd.reduce((total, elt) => { return total += elt.price; }, 0)
+      //   newListProd.reduce((total, elt) => { return total += elt.total_price; }, 0)
+      // );
+    }
   }
 
 
@@ -333,84 +368,88 @@ function Pos() {
   }
 
   return (
-    <div className="row">
-      <div className="toast-container"><ToastContainer limit={3} /></div>
-      <div className="col-md-6 col-lg-4 mb-2" style={{ border: '3px solid', borderColor: '#007bff' }}>
-        <div className="row mb-2">
-          <div className="col mt-2">
-
-            <form >
-              <input
-                type="search"
-                className="form-control form-control-border border-width-2"
-                placeholder="Scan Barcode..."
-                autoFocus
-                onKeyDown={(e) => e.key === 'Enter' && handleScanBarecode(e)}
-              />
-            </form>
-          </div>
-          <div className="col mt-2">
-            <select
-              className="custom-select form-control-border border-width-2"
-              onChange={(e) => setCustomer(e.target.value)}
-            >
-              <option value="">Client inconnu</option>
-              {
-                customers?.map((customer, i) => (
-                  <option value={customer.id} key={i}>{customer.name} </option>
-                ))
-              }
-
-            </select>
-          </div>
-        </div>
-        <form action="">
+    <>
+      <div className="row">
+        <div className="toast-container"><ToastContainer limit={3} /></div>
+        <div className="col-md-6 col-lg-4 mb-2" style={{ border: '3px solid', borderColor: '#007bff' }}>
           <div className="row mb-2">
-            <div className="col">
-              <table className="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th className="text-right">Price</th>
-                    <th className="text-right">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    cartField.map((prod, i) => (
-                      <tr key={i}>
-                        <td hidden> <input type="text" value={prod.prod_id} /> </td>
-                        <td>{prod.name.substring(0, 8)} </td>
-                        <td>
-                          <input
-                            // onBlur={(e) => changeProductQuantity(e.target.value, i)} 
-                            onChange={(e) => changeProductQuantity(e, i)}
-                            type="text"
-                            pattern="[0-9]*"
-                            value={prod.quantity}
-                            className='form-control' />
-                          {prod.quantity}
-                        </td>
-                        <td> {prod.price}</td>
-                        <td> {prod.total_price}</td>
-                        <td><button className='btn btn-danger btn-sm' onClick={() => deleteProdInCart(prod.prod_id)}><span className='fas fa-times'></span></button></td>
+            <div className="col mt-2">
 
-                      </tr>
-                    ))
-                  }
+              <form >
+                <input
+                  type="search"
+                  className="form-control form-control-border border-width-2"
+                  placeholder="Barcode..."
+                  autoFocus
+                  onKeyDown={(e) => e.key === 'Enter' && handleScanBarecode(e)}
+                />
+              </form>
+            </div>
+            <div className="col mt-2">
+              <button type="button" title='Scan code' onClick={() => scanCode()} className="btn btn-warning btn-sm"> <i className="fa fa-qrcode"></i> </button>
+            </div>
+            <div className="col mt-2">
+              <select
+                className="custom-select form-control-border border-width-2"
+                onChange={(e) => setCustomer(e.target.value)}
+              >
+                <option value="">Client inconnu</option>
+                {
+                  customers?.map((customer, i) => (
+                    <option value={customer.id} key={i}>{customer.name} </option>
+                  ))
+                }
 
-                </tbody>
-              </table>
-
-
+              </select>
             </div>
           </div>
+          <form action="">
+            <div className="row mb-2">
+              <div className="col">
+                <table className="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Quantity</th>
+                      <th className="text-right">Price</th>
+                      <th className="text-right">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      cartField.map((prod, i) => (
+                        <tr key={i}>
+                          <td hidden> <input type="text" value={prod.prod_id} /> </td>
+                          <td>{prod.name.substring(0, 8)} </td>
+                          <td>
+                            <input
+                              // onBlur={(e) => changeProductQuantity(e.target.value, i)} 
+                              onChange={(e) => changeProductQuantity(e, i)}
+                              type="text"
+                              pattern="[0-9]*"
+                              value={prod.quantity}
+                              className='form-control' />
+                            {prod.quantity}
+                          </td>
+                          <td> {prod.price}</td>
+                          <td> {prod.total_price}</td>
+                          <td><button className='btn btn-danger btn-sm' onClick={(e) => deleteProdInCart(e, prod.prod_id)}><span className='fas fa-times'></span></button></td>
 
-          <div className="row mb-2">
-            <div className="col">
-              <button type="button" variant='contained' onClick={() => scanCode()} className="btn btn-warning btn-sm"> Scan code </button>
-              {/* <QrReader
+                        </tr>
+                      ))
+                    }
+
+                  </tbody>
+                </table>
+
+
+              </div>
+            </div>
+
+            <div className="row mb-2">
+              <div className="col">
+
+                {/* <QrReader
                 ref={qrRf}
                 delay={300}
                 style={{width: '100%'}}
@@ -418,59 +457,65 @@ function Pos() {
                 onScan={handleScanFile}
                 legacyMode
               /> */}
-            </div>
-            <div className="col text-right">
-              Total : <strong>{totalCart}</strong> {setting?.map(sett => <i>{sett.devise} </i>)}
-            </div>
-          </div>
-          <div className="row ">
-            <div className="col">
-              <button type="button" onClick={() => resetCartFiel()} className="btn btn-secondary btn-sm"> Cancel </button>
-            </div>
-            <div className="col">
-              <button type="button" onClick={() => handleSubmit()} className="btn btn-success btn-sm"> Valider </button>
-            </div>
-          </div>
-        </form>
-
-      </div>
-
-      <div className="col-md-6 col-lg-8 " style={{ border: '3px solid', borderColor: '#007bff' }}>
-        <Loader load={loading} />
-        <div className="row mt-2">
-          <div className="col-sm-6">
-            <select className="custom-select form-control-border border-width-2"
-              onChange={(e) => ParCategorie(e.target.value)}>
-              <option value="0" selected >Toutes catégories</option>
-              {
-                categories?.map((cat, i) => (
-                  <option value={cat.id} key={i}>{cat.name} </option>
-                ))
-              }
-            </select>
-          </div>
-          <div className="col-sm-6">
-            <input type="search" onChange={(e) => setSearchProduct(e.target.value)} className='form-control form-control-border border-width-2' placeholder='Rechercher un produit...' />
-          </div>
-        </div>
-
-        <div className="row mt-2">
-          {
-            productFilter?.map((prod, i) => (
-              <div className='col-2 ml-3'
-                key={i}
-                onClick={() => selectProduct(prod.id)}
-              // onClick={() => selectProduct_new(prod)}
-              >
-                <img src={`http://localhost:8000/storage/images/products/${prod.product_image}`} width={50} height={50} alt="" style={{ borderRadius: '10px' }} />
-                <h6>{prod.product_name} ({prod.stock_quantity})</h6>
               </div>
-            ))
-          }
+              <div className="col text-right">
+                Total : <strong>{totalCart}</strong> {setting?.map((sett, key) => <i key={key}>{sett.devise} </i>)}
+              </div>
+            </div>
+            <div className="row ">
+              <div className="col">
+                <button type="button" onClick={() => resetCartFiel()} className="btn btn-secondary btn-sm"> Cancel </button>
+              </div>
+              <div className="col">
+                <button type="button" disabled={disableBtn} onClick={() => handleSubmit()} className="btn btn-success btn-sm"> Valider </button>
+                {/* <button type="button" data-toggle="modal" data-target="#modal-payment" className="btn btn-primary btn-sm"> Payment </button> */}
+              </div>
+            </div>
+          </form>
 
         </div>
+
+        <div className="col-md-6 col-lg-8 " style={{ border: '3px solid', borderColor: '#007bff' }}>
+          <Loader load={loading} />
+          <div className="row mt-2">
+            <div className="col-sm-6">
+              <select className="custom-select form-control-border border-width-2"
+                onChange={(e) => ParCategorie(e.target.value)}>
+                <option value="0" selected >Toutes catégories</option>
+                {
+                  categories?.map((cat, i) => (
+                    <option value={cat.id} key={i}>{cat.name} </option>
+                  ))
+                }
+              </select>
+            </div>
+            <div className="col-sm-6">
+              <input type="search" onChange={(e) => setSearchProduct(e.target.value)} className='form-control form-control-border border-width-2' placeholder='Rechercher un produit...' />
+            </div>
+          </div>
+
+          <div className="row mt-2">
+            {
+              productFilter?.map((prod, i) => (
+                <div className='col-2 ml-3'
+                  key={i}
+                  onClick={() => selectProduct(prod.id)}
+                // onClick={() => selectProduct_new(prod)}
+                >
+                  <img src={`http://localhost:8000/storage/images/products/${prod.product_image}`} width={50} height={50} alt="" style={{ borderRadius: '10px' }} />
+                  <h6>{prod.product_name} ({prod.stock_quantity})</h6>
+                </div>
+              ))
+            }
+
+          </div>
+        </div>
+
       </div>
-    </div>
+      {/* <PaymentModal totalAmount = {totalCart} amount_received = {totalCart} /> */}
+    </>
+
+
   );
 }
 

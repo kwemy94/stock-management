@@ -26,7 +26,7 @@
                 </div>
             </div> --}}
             <div class="col-xl-4 col-md-6 col-sm-9">
-                <div class="single-feature wow fadeInUp" data-wow-delay=".15s">
+                <div class="single-feature wow fadeInUp" style="background-color: rgb(96, 96, 102)" data-wow-delay=".15s">
                     <div class="feature-icon">
                         <i class="lni lni-lock"></i>
                     </div>
@@ -35,11 +35,11 @@
                         <p class="feature-desc">
                             Souscrivez à notre produit et bénéficier d'une réduction allant jusqu'à 10%
 
-                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#supcription_app">
-                                Souscrire ...
-                            </button>
                         </p>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#supcription_app">
+                            Souscrire ...
+                        </button>
                     </div>
                 </div>
             </div>
