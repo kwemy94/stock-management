@@ -16,4 +16,20 @@ class InventoryRepository extends ResourceRepository {
         return $this->model->InventoryBy('id', 'DESC')->get();
     }
 
+    public function getHistoryByDate($date = null){
+
+        if (isset($date)) {
+            $result = $this->model->with('product')->where('inventory_date', $date)->get();
+        } else {
+            $result = $this->model->groupBy('inventory_date')
+            ->with('product')
+            ->select('inventory_date')
+            ->get();
+        }
+        
+        
+
+        return $result;
+    }
+
 }

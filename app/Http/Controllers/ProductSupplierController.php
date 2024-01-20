@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\ProductSupplier;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Product\ProductRepository;
 use App\Repositories\Supplier\SupplierRepository;
+use App\Repositories\Inventory\InventoryRepository;
 use App\Repositories\ProductSupplier\AchatRepository;
 
 class ProductSupplierController extends Controller
@@ -15,12 +17,18 @@ class ProductSupplierController extends Controller
     protected $achatRepository;
     protected $productRepository;
     protected $supplierRepository;
+    private $inventoryRepository;
 
-    public function __construct(AchatRepository $achatRepository, ProductRepository $productRepository, SupplierRepository $supplierRepository)
-    {
+    public function __construct(
+        AchatRepository $achatRepository,
+        ProductRepository $productRepository,
+        SupplierRepository $supplierRepository,
+        InventoryRepository $inventoryRepository
+    ) {
         $this->achatRepository = $achatRepository;
         $this->supplierRepository = $supplierRepository;
         $this->productRepository = $productRepository;
+        $this->inventoryRepository = $inventoryRepository;
     }
 
     public function index()
@@ -111,7 +119,7 @@ class ProductSupplierController extends Controller
         try {
             $achat = $this->achatRepository->getById($id);
             // dd($achat);
-            $this->achatRepository->update($achat->id, ['quantity' =>$request->quantity]);
+            $this->achatRepository->update($achat->id, ['quantity' => $request->quantity]);
 
             return redirect(route('achat.index'))->with('success', 'Mise à jour effectué');
         } catch (\Throwable $th) {
@@ -135,5 +143,64 @@ class ProductSupplierController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', "Oups!! Echec de suppression");
         }
+    }
+
+
+    public function inventory()
+    {
+        $inventories = $this->achatRepository->getInventory();
+        // dd($inventories);
+        return view('admin.achat.inventory.index', compact('inventories'));
+    }
+
+    public function storeInventory(Request $request)
+    {
+        // dd($request->all());
+
+        $quantities = $request->quantity;
+        $suppliers = $request->supplier_id;
+        $products = $request->product_id;
+        $initialStock = $request->initial_stock;
+        $availableStock = $request->available_stock;
+        $comments = $request->comment;
+
+        toggleDatabase();
+        #update des produit de achat avec les nouvelles valeurs renseignées
+        try {
+            DB::transaction(function () use ($quantities, $initialStock, $availableStock, $comments, $products, $suppliers) {
+                foreach ($quantities as $key => $qty) {
+                    #delete products where id
+                    $this->achatRepository->deleteProductLine($products[$key]);
+
+                    $newBuy = [
+                        'product_id' => $products[$key],
+                        'supplier_id' => $suppliers[$key],
+                        'quantity' => $qty
+                    ];
+                    $this->achatRepository->store($newBuy);
+
+                    #mise à jour du stock des articles
+                    $this->productRepository->update($products[$key], ['stock_quantity' => $qty]);
+                    #store invent;
+                    $invent = [
+                        'product_id' => $products[$key],
+                        'comment' => $comments[$key],
+                        'gap' => $qty - $availableStock[$key],
+                        'initial_stock' => $initialStock[$key],
+                        'available_stock' => $availableStock[$key],
+                        'inventory_date' => Carbon::now()->toDateString(),
+                    ];
+                    $this->inventoryRepository->store($invent);
+
+                }
+            });
+        } catch (\Throwable $th) {
+            // dd($th);
+            errorManager("Echec inventaire", $th, $th->getMessage());
+            return redirect()->back()->with('error', 'Echec de création d\'inventaire');
+        }
+        return redirect()->route('achat.index')->with('success', "Inventaire reussi");
+
+
     }
 }

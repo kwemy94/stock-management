@@ -84,7 +84,7 @@
                                             </td>
                                             <td style="display: flex !important;">
                                                 <a href="{{ route('order.print.invoice', $order->id) }}"
-                                                    class="fas fa-print" title="Imprimer"
+                                                    class="fas fa-print" title="Imprimer" target=_blank
                                                     style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
 
                                             </td>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Inventory\Inventory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,9 +16,9 @@ class Product extends Model
         return  $this->belongsToMany(Supplier::class);
     }
 
-    // public function customer() {
-    //     return  $this->belongsToMany(Customer::class);
-    // }
+    public function inventories() {
+        return  $this->hasMany(Inventory::class);
+    }
     public function order() {
         return  $this->belongsToMany(Order::class);
     }

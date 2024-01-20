@@ -189,7 +189,7 @@ class OrderController extends Controller
         $customPaper = array(0, 0, 792.00, 1224.00);
         $pdf = PDF::loadView('admin.pos.order.print-invoice', $data)->setPaper($customPaper, 'portrait')->setWarnings(false);
 
-        return $pdf->download('command.pdf');
+        // return $pdf->download('command.pdf');
         return $pdf->stream();
     }
 }

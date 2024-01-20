@@ -67,6 +67,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('/supplier', SupplierController::class);
 
     Route::resource('/achat', ProductSupplierController::class);
+    #Inventaire
+    Route::get('/syst-inventory', [ProductSupplierController::class, 'inventory'])->name('syst.inventory');
+    Route::post('/store-inventory', [ProductSupplierController::class, 'storeInventory'])->name('store.inventory');
+    Route::get('/inventaire-histo', [InventoryController::class, 'history'])->name('histo.inventaire');
+    Route::get('/invent-histo-print/{date_inv}', [InventoryController::class, 'printInventory'])->name('print.inventaire');
+
     Route::resource('/customer', CustomerController::class);
     Route::resource('/unite-mesure', UnitController::class);
 

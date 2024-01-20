@@ -1,4 +1,12 @@
-<?php
+*ùuu,,
+
+
+
+²yuuu^
+
+
+
+ùùmiea²p
 namespace App\Http\Validation;
 
 class EtablissementValidation {

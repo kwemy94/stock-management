@@ -22,14 +22,9 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('Liste approvisionnement') }} </h3>
-        
-                            <div class="card-tools">
-                                <a href="{{ route('syst.inventory') }}" class="btn btn-outline-primary btn-sm"><span
-                                        > {{ __('Inventaire') }}</a>
-                                <a href="{{ route('achat.create') }}" class="btn btn-outline-success btn-sm"><span
-                                        class="fa fa-plus"></span> Add</a>
-                            </div>
+                            <h3 class="card-title">{{ __('Historique des inventaires') }} </h3>
+
+
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -37,9 +32,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 10px">#</th>
-                                        <th>{{ __('product.info.name') }} </th>
-                                        <th>{{ __('supplier.name') }} fournisseur </th>
-                                        <th>{{ __('product.info.qantity') }} </th>
+                                        <th>{{ __('Description') }} </th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -47,49 +40,34 @@
                                     @php
                                         $cpte = 1;
                                     @endphp
-        
-                                    @forelse ($achats as $achat)
+
+                                    @forelse ($inventories as $inventory)
                                         <tr>
                                             <td>{{ $cpte++ }}</td>
-                                            <td>{{ $achat->product->product_name }} </td>
+                                            <td> Inventaire du {{ $inventory->inventory_date }} </td>
+
                                             <td>
-                                                {{ $achat->supplier->name }}
-                                            </td>
-                                            <td>
-                                                {{ $achat->quantity }}
-                                            </td>
-                                            <td>
-        
-                                                <form method="post" action="{{ route('achat.destroy', $achat->id) }}"
-                                                    id="form-delete-achat{{ $achat->id }}">
-                                                    
-                                                    <a href="{{ route('achat.edit', $achat->id) }}" class="fas fa-pen-alt"
-                                                        style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
-        
-                                                    @csrf
-                                                    @method('delete')
-                                                    <span id="btn-delete-achat{{ $achat->id }}"
-                                                        onclick="deleteachat({{ $achat->id }})" class="fas fa-trash-alt"
-                                                        style="color: red"></span>
-                                                </form>
+                                                <a href="{{ route('print.inventaire', $inventory->inventory_date) }}" target="_blank" class="fas fa-print"
+                                                    style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
+
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" style="text-align: center"> Aucun produit disponible</td>
+                                            <td colspan="4" style="text-align: center"> Aucun invaitaire disponible</td>
                                         </tr>
                                     @endforelse
-        
+
                                 </tbody>
                             </table>
                         </div>
-                        
+
                     </div>
-        
+
                 </div>
             </div>
         </div>
-        
+
     </section>
 @endsection
 
@@ -112,14 +90,14 @@
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-    
+
     <script>
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["excel", "pdf","colvis"]
+                "buttons": ["excel", "pdf", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         });

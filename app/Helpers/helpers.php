@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 if (! function_exists('generateProductBarcode')) {
@@ -84,5 +85,15 @@ if (!function_exists('toggleDatabase')) {
         }
 
         return $connection;
+    }
+
+    if (!function_exists('errorManager')) {
+        function errorManager($action,\Exception $e,$message=null)
+        {
+            if($message){
+                DB::table('error_managers')->insert(['id'=>Str::random(30),'action' => $action, 'message' => $message,'created_at'=>now()]);
+            }
+            DB::table('error_managers')->insert(['id'=>Str::random(30),'action' => $action, 'message' => $e->getMessage(),'line' => $e->getLine(), 'code'=>$e->getCode(),'created_at'=>now()]);
+        }
     }
 }

@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('product_id')->nullable()->constrained();
+            $table->integer('initial_stock');
+            $table->integer('available_stock');
+            $table->integer('gap');
+            $table->text('comment')->nullable();
+            $table->date('inventory_date');
             $table->timestamps();
         });
     }
