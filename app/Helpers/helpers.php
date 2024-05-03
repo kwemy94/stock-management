@@ -3,25 +3,25 @@
 use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-if (! function_exists('generateProductBarcode')) {
-    function generateProductBarcode($path= '/dashboard/produit')
+if (!function_exists('generateProductBarcode')) {
+    function generateProductBarcode($path = '/dashboard/produit')
     {
         $code = rand(555000, 699699);
-       $barcode = QrCode::size(60)->generate($code);
+        $barcode = QrCode::size(60)->generate($code);
 
         return [$code, $barcode];
     }
 }
 
 
-if (! function_exists('generateRandomPassword')) {
+if (!function_exists('generateRandomPassword')) {
     function generateRandomPassword($length = 10)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyz$@_-%+ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
 
         $randomString = '';
-        for ($i=0; $i < $length; $i++) { 
+        for ($i = 0; $i < $length; $i++) {
             $randomString .= $characters[random_int(0, $charactersLength - 1)];
         }
 
@@ -87,13 +87,35 @@ if (!function_exists('toggleDatabase')) {
         return $connection;
     }
 
-    if (!function_exists('errorManager')) {
-        function errorManager($action,\Exception $e,$message=null)
-        {
-            if($message){
-                DB::table('error_managers')->insert(['id'=>Str::random(30),'action' => $action, 'message' => $message,'created_at'=>now()]);
-            }
-            DB::table('error_managers')->insert(['id'=>Str::random(30),'action' => $action, 'message' => $e->getMessage(),'line' => $e->getLine(), 'code'=>$e->getCode(),'created_at'=>now()]);
+}
+
+if (!function_exists('errorManager')) {
+    function errorManager($action, \Exception $e, $message = null)
+    {
+        if ($message) {
+            DB::table('error_managers')->insert(['id' => Str::random(30), 'action' => $action, 'message' => $message, 'created_at' => now()]);
         }
+        DB::table('error_managers')->insert(['id' => Str::random(30), 'action' => $action, 'message' => $e->getMessage(), 'line' => $e->getLine(), 'code' => $e->getCode(), 'created_at' => now()]);
+    }
+}
+
+if(!function_exists('automationRecipe')){
+    function automationRecipe($inputs){
+        if ($inputs) {
+            DB::table('recipes')->insert($inputs);
+            return true;
+        }
+        return false;
+    }
+}
+
+
+if(!function_exists('automationExpense')){
+    function automationExpense($inputs){
+        if ($inputs) {
+            DB::table('expenses')->insert($inputs);
+            return true;
+        }
+        return false;
     }
 }

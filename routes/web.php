@@ -15,6 +15,9 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Sale\SaleController;
 use App\Http\Controllers\ProductSupplierController;
+use App\Http\Controllers\Treasury\RecipeController;
+use App\Http\Controllers\Treasury\AnalyseController;
+use App\Http\Controllers\Treasury\ExpenseController;
 use App\Http\Controllers\API\EtablissementController;
 use App\Http\Controllers\Inventory\InventoryController;
 
@@ -90,6 +93,12 @@ Route::middleware('auth')->group(function () {
 
     ## inventory
     Route::resource('/inventory', InventoryController::class);
+
+    Route::group(['prefix'=>'treasury'], function(){
+        Route::get('/analyse', [AnalyseController::class, 'index'])->name('analyse.treso');
+        Route::resource('/recipe', RecipeController::class);
+        Route::resource('/expense', ExpenseController::class);
+    });
 });
 
 require __DIR__.'/auth.php';

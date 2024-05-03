@@ -10,4 +10,10 @@ return [
     'supplier' => 'Fournisseur',
     'customer' => 'Client',
     'payment' => 'Paiement',
+    'treasury' => [
+        'treasury-title' =>'Trésorerie',
+        'recipe' =>'Recette',
+        'expense' =>'Dépense',
+        'analyse' =>'Analyse',
+    ],
 ];

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
 use PDF;
+use Exception;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -104,6 +105,25 @@ class OrderController extends Controller
                     $prod = $this->productRepository->getById($inputs['product_id']);
                     $this->productRepository->update($prod->id, ['stock_quantity' => $prod->stock_quantity - $inputs['quantity']]);
                 }
+
+                ### Automatisation tresorerie
+                if($payment['received_amount'] > 0){
+                    $resteAPayer = $payment['amount'] - $payment['received_amount'];
+
+                    $vente['intitule'] = "Vente POS";
+                    $vente['reference'] = 'VTE00'. $order->id;
+                    $vente['date'] = now();
+                    $vente['amount'] = $payment['received_amount'];
+                    $vente['amount_du'] = $resteAPayer;
+                    $vente['status'] = $resteAPayer <= 0? 1 : 0;
+                    $vente['created_by'] = $user->name;
+
+                    if(!automationRecipe($vente)){
+                        throw new Exception("Echec automatisation tresorery", 1);
+                        
+                    }
+                }
+                
             });
 
             return response()->json([
@@ -114,8 +134,9 @@ class OrderController extends Controller
                 'setting' => $setting,
             ], 201);
 
-        } catch (\Exception $e) {
-            dd($e);
+        } catch (Exception $e) {
+            // dd($e);
+            errorManager("Ordre de vente", $e, $e->getMessage());
             return response()->json([
                 'success' => false,
                 'error' => $e->getMessage(),

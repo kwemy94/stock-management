@@ -22,9 +22,13 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('Historique des inventaires') }} </h3>
-
-
+                            <h3 class="card-title">{{ __('Liste des clients') }}</h3>
+                            <div class="card-tools">
+                                <a href="{{ route('expense.create')}}" class="btn btn-outline-success btn-sm">
+                                    <span class="fa fa-plus"></span> Add
+                                </a>
+                                
+                            </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -32,44 +36,63 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 10px">#</th>
-                                        <th>{{ __('Description') }} </th>
+                                        <th>{{ __('Motif de la dépense') }} </th>
+                                        <th>{{ __('Référence') }} </th>
+                                        <th>{{ __('date') }} </th>
+                                        <th>{{ __('Montant') }} </th>
+                                        <th>{{ __('Statut') }} </th>
+                                        <th>{{ __('Crée par') }} </th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbody">
+                                <tbody>
                                     @php
-                                        $cpte = 1;
+                                        $cpt = 1;
                                     @endphp
-
-                                    @forelse ($inventories as $inventory)
+                                    @forelse ($expenses as $expense)
                                         <tr>
-                                            <td>{{ $cpte++ }}</td>
-                                            <td> Inventaire du {{ $inventory->inventory_date }} </td>
-
+                                            <td>{{ $cpt++ }}</td>
+                                            <td>{{ $expense->reason }}</td>
+                                            <td>{{ $expense->reference }}</td>
+                                            <td>{{ $expense->date }}</td>
+                                            <td>{{ $expense->amount }}</td>
                                             <td>
-                                                <a href="{{ route('print.inventaire', $inventory->inventory_date) }}" target="_blank" class="fas fa-download"
-                                                    style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
-
+                                                <span class='badge bg-success'>payé </span>
                                             </td>
+                                            <td>{{ $expense->created_by }}</td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" style="text-align: center"> Aucun invaitaire disponible</td>
+                                            <td colspan="8" style="text-align: center"> Aucun dépense disponible</td>
                                         </tr>
                                     @endforelse
+                                    
+
 
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>{{ __('Motif de la dépense') }} </th>
+                                        <th>{{ __('Référence') }} </th>
+                                        <th>{{ __('date') }} </th>
+                                        <th>{{ __('Montant') }} </th>
+                                        <th>{{ __('Statut') }} </th>
+                                        <th>{{ __('Crée par') }} </th>
+                                        <th>Action</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
-
+                        <!-- /.card-body -->
                     </div>
-
                 </div>
             </div>
         </div>
-
     </section>
 @endsection
+
+
 
 
 @section('dashboard-datatable-js')
@@ -90,21 +113,21 @@
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-
+    
     <script>
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["excel", "pdf", "colvis"]
+                "buttons": ["excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         });
 
-        function deleteachat(i) {
-            if (confirm('Voulez-vous supprimer cet approvisionnement ??')) {
-                $('#form-delete-achat' + i).submit();
+        function deleteCustomer(i) {
+            if (confirm('Voulez-vous supprimer cet utilisateur ??')) {
+                $('#form-delete-customer' + i).submit();
             }
         }
     </script>

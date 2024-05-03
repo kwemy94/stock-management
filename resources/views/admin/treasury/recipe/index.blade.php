@@ -22,9 +22,13 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('Historique des inventaires') }} </h3>
-
-
+                            <h3 class="card-title">{{ __('Liste des clients') }}</h3>
+                            <div class="card-tools">
+                                <a href="{{ route('expense.create')}}" class="btn btn-outline-success btn-sm">
+                                    <span class="fa fa-plus"></span> Add
+                                </a>
+                                
+                            </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -32,44 +36,78 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 10px">#</th>
-                                        <th>{{ __('Description') }} </th>
+                                        <th>{{ __('Intitulé') }} </th>
+                                        <th>{{ __('Référence') }} </th>
+                                        <th>{{ __('date') }} </th>
+                                        <th>{{ __('Montant') }} </th>
+                                        <th>{{ __('Montant dû') }} </th>
+                                        <th>{{ __('Statut') }} </th>
+                                        <th>{{ __('Crée par') }} </th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbody">
+                                <tbody>
                                     @php
-                                        $cpte = 1;
+                                        $cpt = 1;
                                     @endphp
-
-                                    @forelse ($inventories as $inventory)
+                                    @forelse ($recipes as $recipe)
                                         <tr>
-                                            <td>{{ $cpte++ }}</td>
-                                            <td> Inventaire du {{ $inventory->inventory_date }} </td>
-
+                                            <td>{{ $cpt++ }}</td>
+                                            <td>{{ $recipe->intitule }}</td>
+                                            <td>{{ $recipe->reference }}</td>
+                                            <td>{{ $recipe->date }}</td>
+                                            <td>{{ $recipe->amount }}</td>
+                                            <td>{{ $recipe->amount_du }}</td>
                                             <td>
-                                                <a href="{{ route('print.inventaire', $inventory->inventory_date) }}" target="_blank" class="fas fa-download"
-                                                    style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
-
+                                                @if ($recipe->status == 1)
+                                                <span class='badge bg-success'>payé </span>
+                                                @else
+                                                <span class='badge bg-primary'> A payer </span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $recipe->created_by }}</td>
+                                            <td>
+                                                @if ($recipe->status != 1)
+                                                    <a href="#" class="fas fa-save" title="Enregister un paiement"
+                                                        style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
+                                                    <a href="{{route('expense.edit', $recipe->id)}}" class="fas fa-pen" title="Editer"
+                                                        style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" style="text-align: center"> Aucun invaitaire disponible</td>
+                                            <td colspan="9" style="text-align: center"> Aucun recette disponible</td>
                                         </tr>
                                     @endforelse
+                                    
+
 
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>{{ __('Intitulé') }} </th>
+                                        <th>{{ __('Référence') }} </th>
+                                        <th>{{ __('date') }} </th>
+                                        <th>{{ __('Montant') }} </th>
+                                        <th>{{ __('Montant dû') }} </th>
+                                        <th>{{ __('Statut') }} </th>
+                                        <th>{{ __('Crée par') }} </th>
+                                        <th>Action</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
-
+                        <!-- /.card-body -->
                     </div>
-
                 </div>
             </div>
         </div>
-
     </section>
 @endsection
+
+
 
 
 @section('dashboard-datatable-js')
@@ -90,21 +128,21 @@
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-
+    
     <script>
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["excel", "pdf", "colvis"]
+                "buttons": ["excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         });
 
-        function deleteachat(i) {
-            if (confirm('Voulez-vous supprimer cet approvisionnement ??')) {
-                $('#form-delete-achat' + i).submit();
+        function deleteCustomer(i) {
+            if (confirm('Voulez-vous supprimer cet utilisateur ??')) {
+                $('#form-delete-customer' + i).submit();
             }
         }
     </script>
