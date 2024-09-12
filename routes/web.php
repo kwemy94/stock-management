@@ -59,6 +59,8 @@ Route::post('contact-us', [ContactController::class, 'store'])->name('contact.us
 Route::get('/dashboard', [DashboardController::class, 'dashboardHome'] )->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::Post('/app-sub-script', [EtablissementController::class, 'store'])->name('app.sub.scribt');
+Route::get('/app-company', [EtablissementController::class, 'nosCompany'])->name('app.company');
+Route::post('/app-activate-company/{id}', [EtablissementController::class, 'activateEts'])->name('app.activate.company');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

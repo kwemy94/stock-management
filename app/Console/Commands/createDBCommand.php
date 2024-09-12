@@ -52,8 +52,13 @@ class createDBCommand extends Command
 
         $query = "CREATE DATABASE IF NOT EXISTS $schemaName CHARACTER SET $charset COLLATE $collation;";
 
-        DB::statement($query);
-
+        // DB::statement($query);
+        try {
+            shell_exec('touch database/db/'.$schemaName.'.sqlite');
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+        // dd('OK', $schemaName);
         config(["database.connections.mysql.database" => $schemaName]);
 
         $this->info("Requête terminée !");

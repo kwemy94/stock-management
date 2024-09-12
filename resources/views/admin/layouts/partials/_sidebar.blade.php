@@ -111,6 +111,16 @@
                      </p>
                  </a>
              </li>
+             <li class="nav-item">
+                 <a href="{{ route('app.company') }}"
+                     class="nav-link {{ request()->routeIs('app.company') ? 'active' : '' }}">
+                     <i class="fa-solid fa fa-cog fa-spin fa-1x fa-fw"></i>
+                     <p>
+                        {{-- Section ne doit être visible que par l'admin de la plateforme (concepteur) --}}
+                         {{ __('Nos companies') }}
+                     </p>
+                 </a>
+             </li>
 
              <li class="nav-item has-treeview menu-open">
                  <a href="#" class="nav-link active">

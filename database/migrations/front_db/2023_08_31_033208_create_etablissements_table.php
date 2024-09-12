@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('etablissements', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50); 
+            $table->string('name', 50);
             $table->string('email', 60);
-            $table->tinyInteger('status')->nullable()->comment("2 =>bd non créé, 1 =>bd cré et migré");
+            $table->tinyInteger('status')->nullable()->comment("2 =>bd non créé, 1 =>bd cré et migré, 0=>Environnement en attente d'activation");
             $table->string('domain', 60)->nullable();
             $table->string('website', 60)->nullable();
             $table->string('activity', 50)->nullable();

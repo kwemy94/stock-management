@@ -11,7 +11,7 @@
                         <div class="card-body box-profile">
                             <div class="text-center">
                                 <img class="profile-user-img img-fluid img-circle"
-                                src='{{ $setting->logo ? asset("storage/images/logo/$setting->logo") : asset("front-template/assets/images/logo/logo.png") }}'
+                                src='{{ isset($setting->logo) ? asset("storage/images/logo/$setting->logo") : asset("front-template/assets/images/logo/logo.png") }}'
                                 >
                             </div>
 
@@ -21,16 +21,16 @@
 
                             <ul class="list-group list-group-unbordered mb-3">
                                 <li class="list-group-item">
-                                    <b>App name</b> <a class="float-right">{{ $setting->app_name }}</a>
+                                    <b>App name</b> <a class="float-right">{{ isset($setting->app_name) ? $setting->app_name : ''}}</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Téléphone</b> <a class="float-right">{{ $setting->phone }}</a>
+                                    <b>Téléphone</b> <a class="float-right">{{ isset($setting->phone)? $setting->phone:"" }}</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Email</b> <a class="float-right">{{ $setting->email }}</a>
+                                    <b>Email</b> <a class="float-right">{{isset($setting->phone)? $setting->email:'' }}</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Devise</b> <a class="float-right">{{ $setting->devise }}</a>
+                                    <b>Devise</b> <a class="float-right">{{ isset($setting->phone)? $setting->devise : ''}}</a>
                                 </li>
                             </ul>
 

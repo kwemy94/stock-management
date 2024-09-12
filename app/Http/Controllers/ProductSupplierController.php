@@ -34,7 +34,7 @@ class ProductSupplierController extends Controller
     public function index()
     {
 
-        toggleDatabase();
+        toggleDBsqlite();
         $achats = $this->achatRepository->getAll();
 
         return view('admin.achat.index', compact('achats'));
@@ -43,7 +43,7 @@ class ProductSupplierController extends Controller
 
     public function create()
     {
-        toggleDatabase();
+        toggleDBsqlite();
         $products = $this->productRepository->getAll();
         $suppliers = $this->supplierRepository->getAll();
 
@@ -53,7 +53,7 @@ class ProductSupplierController extends Controller
 
     public function store(Request $request)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         $validation = Validator::make(
             $request->all(),
             [
@@ -98,7 +98,7 @@ class ProductSupplierController extends Controller
 
     public function edit($id)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         $products = $this->productRepository->getAll();
         $suppliers = $this->supplierRepository->getAll();
         try {
@@ -115,7 +115,7 @@ class ProductSupplierController extends Controller
      */
     public function update(Request $request, $id)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         try {
             $achat = $this->achatRepository->getById($id);
             // dd($achat);
@@ -133,7 +133,7 @@ class ProductSupplierController extends Controller
      */
     public function destroy($id)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         try {
             $achat = $this->achatRepository->getById($id);
 
@@ -164,7 +164,7 @@ class ProductSupplierController extends Controller
         $availableStock = $request->available_stock;
         $comments = $request->comment;
 
-        toggleDatabase();
+        toggleDBsqlite();
         #update des produit de achat avec les nouvelles valeurs renseignées
         try {
             DB::transaction(function () use ($quantities, $initialStock, $availableStock, $comments, $products, $suppliers) {

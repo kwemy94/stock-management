@@ -58,7 +58,7 @@
             // e.preventDefault();
 
             if (!ControlRequiredFields($('#registerForm .required'))) {
-                // alert('echec')
+                alert('echec')
                 return;
             }
 

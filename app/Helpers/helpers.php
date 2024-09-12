@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 if (!function_exists('generateProductBarcode')) {
@@ -42,7 +43,7 @@ if (!function_exists('toggleDatabase')) {
             if ($user):
                 // dd(session());
                 // dd($user);
-                $etablissement = \DB::table('etablissements')->where('id', $user->etablissement_id)->first();
+                $etablissement = DB::table('etablissements')->where('id', $user->etablissement_id)->first();
                 // dd($etablissement);
                 $settings = json_decode($etablissement->settings);
 
@@ -70,19 +71,99 @@ if (!function_exists('toggleDatabase')) {
                         'NO_ENGINE_SUBSTITUTION',
                     ],
                 ]);
-                \DB::purge('mobility');
-                $connection = \DB::connection('mobility');
-                \Config::set('database.default', $connection->getName());
+                DB::purge('mobility');
+                $connection = DB::connection('mobility');
+                Config::set('database.default', $connection->getName());
             else:
                 dd('test2');
                 $connection = null;
             endif;
         } else {
 
-            $connection = \DB::connection('mysql');
-            \Config::set('database.default', 'mysql');
+            $connection = DB::connection('mysql');
+            Config::set('database.default', 'mysql');
 
         }
+
+        return $connection;
+    }
+
+}
+if (!function_exists('toggleDBsqlite')) {
+    function toggleDBsqlite($isClientDatabase = true)
+    {
+        if ($isClientDatabase) {
+
+            $user = \Auth::user();
+            if ($user):
+                $etablissement = DB::table('etablissements')->where('id', $user->etablissement_id)->first();
+
+                $settings = json_decode($etablissement->settings);
+
+                // 'database' => $settings->db->database,
+                // 'username' => $settings->db->username,
+                // 'password' => $settings->db->password,
+                config()->set('database.connections.client_db', [
+
+                    'driver' => 'sqlite',
+                    'url' => env('DATABASE_URL'),
+                    'database' => env('DB_DATABASE', database_path('db/' . $settings->db->database . '.sqlite')),
+                    'prefix' => '',
+                    // 'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+                    'foreign_key_constraints' => true,
+                ]);
+                DB::purge('client_db');
+                $connection = DB::connection('client_db');
+                Config::set('database.default', $connection->getName());
+            else:
+                dd('test2');
+                $connection = null;
+            endif;
+        } else {
+
+            $connection = DB::connection('sqlite');
+            Config::set('database.default', 'sqlite');
+
+        }
+
+        return $connection;
+    }
+
+}
+if (!function_exists('toggleDBsqliteByEtsId')) {
+    function toggleDBsqliteByEtsId($etablissementId)
+    {
+        toggleDBsqlite(false);
+        $ets = DB::table('etablissements')->where('id', $etablissementId)->first();
+        
+        if ($ets):
+            // if ($user):
+            try {
+                $settings = json_decode($ets->settings);
+
+                config()->set('database.connections.client_db', [
+
+                    'driver' => 'sqlite',
+                    'url' => env('DATABASE_URL'),
+                    'database' => env('DB_DATABASE', database_path('db/' . $settings->db->database . '.sqlite')),
+                    'prefix' => '',
+                    'foreign_key_constraints' => true,
+                ]);
+                DB::purge('client_db');
+
+                $connection = DB::connection('client_db');
+                Config::set('database.default', $connection->getName());
+            } catch (\Throwable $th) {
+                dd($th);
+                //throw $th;
+            }
+        else:
+            dd("Etablissement N°  $etablissementId non trouvé");
+
+            $connection = DB::connection('sqlite');
+            Config::set('database.default', 'sqlite');
+
+        endif;
 
         return $connection;
     }
@@ -93,14 +174,15 @@ if (!function_exists('errorManager')) {
     function errorManager($action, \Exception $e, $message = null)
     {
         if ($message) {
-            DB::table('error_managers')->insert(['id' => Str::random(30), 'action' => $action, 'message' => $message, 'created_at' => now()]);
+            DB::table('error_managers')->insert(['id' => \Str::random(30), 'action' => $action, 'message' => $message, 'created_at' => now()]);
         }
-        DB::table('error_managers')->insert(['id' => Str::random(30), 'action' => $action, 'message' => $e->getMessage(), 'line' => $e->getLine(), 'code' => $e->getCode(), 'created_at' => now()]);
+        DB::table('error_managers')->insert(['id' => \Str::random(30), 'action' => $action, 'message' => $e->getMessage(), 'line' => $e->getLine(), 'code' => $e->getCode(), 'created_at' => now()]);
     }
 }
 
-if(!function_exists('automationRecipe')){
-    function automationRecipe($inputs){
+if (!function_exists('automationRecipe')) {
+    function automationRecipe($inputs)
+    {
         if ($inputs) {
             DB::table('recipes')->insert($inputs);
             return true;
@@ -110,8 +192,9 @@ if(!function_exists('automationRecipe')){
 }
 
 
-if(!function_exists('automationExpense')){
-    function automationExpense($inputs){
+if (!function_exists('automationExpense')) {
+    function automationExpense($inputs)
+    {
         if ($inputs) {
             DB::table('expenses')->insert($inputs);
             return true;

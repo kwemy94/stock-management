@@ -18,7 +18,7 @@ class CustomerController extends Controller
 
     public function index()
     {
-        toggleDatabase();
+        toggleDBsqlite();
         $customers = $this->customerRepository->getAll();
 
         return view('admin.customer.index', compact('customers'));
@@ -37,7 +37,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         $validation = Validator::make(
             $request->all(),
             [
@@ -78,7 +78,7 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         $customer = $this->customerRepository->getById($id);
         return view('admin.customer.edit', compact('customer'));
     }
@@ -88,7 +88,7 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         $customer = $this->customerRepository->getById($id);
         
         try {
@@ -107,7 +107,7 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         $customer = $this->customerRepository->getById($id);
 
         try {

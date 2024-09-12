@@ -44,8 +44,20 @@ class MultitenancyDBMigrationCommand extends Command
      */
     public function handle()
     {
+        $etsEnCoursActivations = $this->etablissementRepository->getAll(0);
+        foreach ($etsEnCoursActivations as $ets) {
+            $setting = json_decode($ets->settings);
+            $db = $setting->db->database;
+            $dbPath = database_path('db/'.$db.'.sqlite');
+            if(!\File::exists($dbPath)){
+                exec('touch database/db/' . $db . '.sqlite');
+                $this->etablissementRepository->update($ets->id, ['status'=> 1]);
+                $this->info('db crreate : '.$db);
+            }
+        }
+        
         $path = $this->arguments('path');
-        $companies = $this->etablissementRepository->getAll(); # établissements actifs
+        $companies = $this->etablissementRepository->getAll(1); # établissements actifs
 
         foreach($companies as $company) {
             # Switch to current company database
@@ -53,19 +65,28 @@ class MultitenancyDBMigrationCommand extends Command
 
             $database = $settings->db->database;
 
+            // config()->set('database.connections.migration', [
+            //     'driver' => 'mysql',
+            //     'host' => env('DB_HOST', '127.0.0.1'),
+            //     'port' => env('DB_PORT', '3306'),
+            //     'database' => $settings->db->database,
+            //     'username' => $settings->db->username,
+            //     'password' => $settings->db->password,
+            //     'unix_socket' => env('DB_SOCKET', ''),
+            //     'charset' => 'utf8mb4',
+            //     'collation' => 'utf8mb4_unicode_ci',
+            //     'prefix' => '',
+            //     'strict' => true,
+            //     'engine' => null,
+            // ]);
             config()->set('database.connections.migration', [
-                'driver' => 'mysql',
-                'host' => env('DB_HOST', '127.0.0.1'),
-                'port' => env('DB_PORT', '3306'),
-                'database' => $settings->db->database,
-                'username' => $settings->db->username,
-                'password' => $settings->db->password,
-                'unix_socket' => env('DB_SOCKET', ''),
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
+                'driver' => 'sqlite',
+                'url' => env('DATABASE_URL'),
+                // 'database' => 'storage/db/'.$settings->db->database.'.sqlite',
+                'database' => env('DB_DATABASE', database_path('db/'.$settings->db->database.'.sqlite')),
                 'prefix' => '',
-                'strict' => true,
-                'engine' => null,
+                // 'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+                'foreign_key_constraints' => true,
             ]);
 
             DB::purge('migration');

@@ -18,8 +18,14 @@ class EtablissementRepository extends ResourceRepository {
             ->orderBy('name', 'asc')
             ->get();
     }
+    public function getAllCompany() {
+        return $this->model
+            //->orderBy('created_at', 'asc')
+            ->orderBy('id', 'desc')
+            ->get();
+    }
     public function lastField() {
-        toggleDatabase(false);
+        // toggleDatabase(false);
         return $this->model
             ->orderBy('name', 'asc')
             ->where('status',2)

@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Etablissement;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Etablissement;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserFrontEndSeeder extends Seeder
@@ -17,7 +18,7 @@ class UserFrontEndSeeder extends Seeder
      */
     public function run()
     {
-        $etablissement = Etablissement::orderBy('id', 'desc')->first();
+        $etablissement = Etablissement::where('email', 'admin@admin.com')->first();
         
         Role::create([
             'name' => 'client',
@@ -31,22 +32,20 @@ class UserFrontEndSeeder extends Seeder
             'name' => 'collector',
             'description' => 'utilisateur collecteur',
         ]);
-
-        $user1 = User::create([
-            'name' => "admin1",
+        
+        $users= array(
+            array(
+                'name' => "admin1",
             // 'username' => "admin",
             'sexe' => "F",
             'phone' => "675343434",
-            'email' => "admin@seeder.com",
+            'email' => "admin@admin.com",
             'cni' => "12345678",
             'etablissement_id' => $etablissement->id,
-            'password' => Hash::make('2s@Kollect'),
-        ]);
-        
-        $admin->users()->attach($user1->id);
-
-        $user2 = User::create([
-            'name' => "collect1",
+            'password' => Hash::make('admin-shell'),
+            ),
+            array(
+                'name' => "collect1",
             // 'username' => "collect",
             'sexe' => "F",
             'phone' => "6753434",
@@ -54,8 +53,21 @@ class UserFrontEndSeeder extends Seeder
             'cni' => "1345678",
             'etablissement_id' => $etablissement->id,
             'password' => Hash::make('2s@Kollect'),
-        ]);
+            ),
+        );
 
-        $admin->users()->attach($user2->id);
+        foreach ($users as $key => $user) {
+            $exisUser = DB::table('users')->where('email', $user['email'])->first();
+
+            if(!$exisUser){
+                DB::table('users')->insert($user);
+                $newUser = DB::table('users')->where('email', $user['email'])->first();
+                
+                $admin->users()->attach($newUser->id);
+                
+            }
+        }
+
+        
     }
 }

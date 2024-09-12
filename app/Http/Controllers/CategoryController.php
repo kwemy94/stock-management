@@ -19,7 +19,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        toggleDatabase();
+        toggleDBsqlite();
         $categories = $this->categoryRepository->getAll();
         return view('admin.category.index', compact('categories'));
     }
@@ -37,7 +37,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         try {
             $this->categoryRepository->store($request->post());
 
@@ -61,7 +61,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         $category = $this->categoryRepository->getById($id);
         return view('admin.category.edit', compact('category'));
     }
@@ -71,7 +71,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         try {
             $category = $this->categoryRepository->getById($id);
             $this->categoryRepository->update($category->id, $request->post());
@@ -88,7 +88,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        toggleDatabase();
+        toggleDBsqlite();
         try {
             $category = $this->categoryRepository->getById($id);
             $category->delete();

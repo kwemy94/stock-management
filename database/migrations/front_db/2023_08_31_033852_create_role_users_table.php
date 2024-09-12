@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('role_users', function (Blueprint $table) {
+        Schema::create('role_user', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('role_id')->index('role_user_role_id_foreign');
             $table->unsignedBigInteger('user_id')->index('role_user_user_id_foreign');

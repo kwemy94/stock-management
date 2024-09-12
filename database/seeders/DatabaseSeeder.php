@@ -12,13 +12,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-        $this->call(RoleSeeder::class);
-        $this->call(UserFrontEndSeeder::class);
+        /**
+         * Todo: faire en sorte de la condition 
+         * ci dessous s'exécute en front
+         */
+        if (1==0) { #Toute les migrations front
+            $this->call(EtablissementSeeder::class);
+            $this->call(RoleSeeder::class);
+            $this->call(UserFrontEndSeeder::class);
+        } else {
+            $this->call(SettingSeeder::class);
+        }
+        
+        
     }
 }
