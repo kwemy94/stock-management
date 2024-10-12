@@ -20,7 +20,7 @@ class UnitController extends Controller
 
     public function index()
     {
-        toggleDBsqlite();
+        toggleDatabase();
         $units = $this->unitRepository->getAll();
 
         return view('admin.unit.index', compact('units'));
@@ -35,7 +35,7 @@ class UnitController extends Controller
     
     public function store(Request $request)
     {
-        toggleDBsqlite();
+        toggleDatabase();
         $validation = Validator::make(
             $request->all(),
             [
@@ -72,7 +72,7 @@ class UnitController extends Controller
     
     public function edit($id)
     {
-        toggleDBsqlite();
+        toggleDatabase();
         $unit = $this->unitRepository->getById($id);
         return view('admin.unit.create', compact('unit'));
     }
@@ -80,7 +80,7 @@ class UnitController extends Controller
     
     public function update(Request $request, $id)
     {
-        toggleDBsqlite();
+        toggleDatabase();
         try {
             $unit = $this->unitRepository->getById($id);
             $this->unitRepository->update($unit->id, $request->post());
@@ -96,7 +96,7 @@ class UnitController extends Controller
     
     public function destroy($id)
     {
-        toggleDBsqlite();
+        toggleDatabase();
         try {
             $unit = $this->unitRepository->getById($id);
             $unit->delete();

@@ -5,10 +5,34 @@
         em {
             color: red;
         }
+
+        .subscribe {
+            border: none;
+            border-bottom: 1px solid black;
+        }
+
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            z-index: 99999;
+        }
     </style>
 @endsection
 
 @section('front-content')
+    <div class="submit-loading-table col-md-12 text-center" style="display: none;" id="loading">
+        <img src="{{ asset('images/load/preloader.gif') }}" alt="">
+        <div class="text-center">
+            <span
+                style="font-size: 16px; background-color: #ffffff; border-radius: 15px;
+            padding: 5px 10px 5px 10px;">
+                {{ __('messages.loader') }}
+            </span>
+        </div>
+    </div>
     <!-- ====== Hero Start ====== -->
     @include('partials._home')
     <!-- ====== Hero End ====== -->
@@ -54,15 +78,30 @@
 
 @section('front-simpleJs')
     <script>
+        // $(function() {
+            var Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000
+            });
+        // })
+        $('#lapin').click(function() {
+            Toast.fire({
+                icon: 'success',
+                title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+            })
+        });
+        
         $('#btnSubmit').click((e) => {
             // e.preventDefault();
 
             if (!ControlRequiredFields($('#registerForm .required'))) {
-                alert('echec')
                 return;
             }
+            $('#loading').css('display', 'block');
 
-            $('#btnSubmit').attr('disabled', true);
+            $('#btnSubmit').prop('disabled', true);
 
             let name = $('#app_name').val();
             let phone = $('#app_phone').val();
@@ -70,7 +109,7 @@
             let logo = $('#app_logo').val();
             let address = $('#app_address').val();
             let activity = $('#app_domain').val();
-            let captcha = $('#captcha').val();
+            //let captcha = $('#captcha').val();
             // let _token = $("input[name='_token']").val();
             let datas = {
                 name,
@@ -79,7 +118,7 @@
                 logo,
                 address,
                 activity,
-                captcha
+                // captcha
             };
             let url = "{{ route('app.sub.scribt') }}";
             console.log(url);
@@ -88,17 +127,33 @@
                 if (res.success) {
                     $('#registerForm').trigger('reset');
                     $("#supcription_app").modal('hide');
-                    alert('Message de confirmation envoyé dans votre boite mail');
+                    Toast.fire({
+                        icon: 'success',
+                        title: res.msg
+                    });
                 } else {
-                    alert('Une erreur survenue. Essayer plus tard');
+                    let msg = "Une erreur survenue! Essayer plus tard.";
+                    if (res.msg)
+                        msg = res.msg;
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: msg
+                    })
                     $("#supcription_app").modal('hide');
                 }
-
-                $('#btnSubmit').attr('disabled', false);
+                $('#loading').css('display', 'none');
+                $('#btnSubmit').prop('disabled', false);
             }).catch(err => {
                 console.log(err.response);
-                $('#btnSubmit').attr('disabled', false);
+                $('#loading').css('display', 'none');
+                $('#btnSubmit').prop('disabled', false);
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Oups!! Erreur survenue'
+                })
             });
         });
+    // })
     </script>
 @endsection

@@ -77,7 +77,7 @@ class InventoryController extends Controller
     }
 
     public function history(){
-        toggleDBsqlite();
+        toggleDatabase();
        try {
         $inventories = $this->inventoryRepository->getHistoryByDate();
         // dd($histoInvent');
@@ -90,7 +90,7 @@ class InventoryController extends Controller
     }
 
     public function printInventory($inventory_date) {
-        toggleDBsqlite();
+        toggleDatabase();
 
         try {
             $inventories = $this->inventoryRepository->getHistoryByDate($inventory_date);

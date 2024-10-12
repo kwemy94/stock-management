@@ -21,7 +21,7 @@ class SettingController extends Controller
     public function index()
     {
         
-        toggleDBsqlite();
+        toggleDatabase();
         $setting = $this->settingRepository->getFirstSetting();
         return view('admin.settings.structure-setting', compact('setting'));
     }
@@ -69,7 +69,7 @@ class SettingController extends Controller
     {
         $inputs = $request->post();
 
-        toggleDBsqlite();
+        toggleDatabase();
         
         try {
             $setting = $this->settingRepository->getById($id);

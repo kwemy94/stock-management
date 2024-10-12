@@ -41,7 +41,7 @@ class OrderController extends Controller
     
     public function index()
     {
-        toggleDBsqlite();
+        toggleDatabase();
         $orders = $this->orderRepository->getAll();
         $setting = $this->settingRepository->getFirstSetting();
 
@@ -51,7 +51,7 @@ class OrderController extends Controller
     
     public function create()
     {
-        toggleDBsqlite();
+        toggleDatabase();
         $products = $this->productRepository->getAll();
 
         return view('admin.pos.order.create', compact('products'));
@@ -67,7 +67,7 @@ class OrderController extends Controller
         // dd(date('Y-m-d'), $request->post());
         $user = Auth::user();
 
-        toggleDBsqlite();
+        toggleDatabase();
         $products = $this->productRepository->getAll();
         $customer = $this->customerRepository->getAll();
         $categories = $this->categoryRepository->getAll();
@@ -170,7 +170,7 @@ class OrderController extends Controller
 
     public function loadProduct() {
 
-        toggleDBsqlite();
+        toggleDatabase();
         $products = $this->productRepository->getAll();
         $customer = $this->customerRepository->getAll();
         $categories = $this->categoryRepository->getAll();
@@ -188,7 +188,7 @@ class OrderController extends Controller
 
     public function printInvoice($id) {
 
-        toggleDBsqlite();
+        toggleDatabase();
         $order = $this->orderRepository->getById($id);
         $orderProducts = $this->orderProductRepository->getByOrderId($id);
         // dd($product, $id);

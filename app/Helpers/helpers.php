@@ -89,65 +89,39 @@ if (!function_exists('toggleDatabase')) {
     }
 
 }
-if (!function_exists('toggleDBsqlite')) {
-    function toggleDBsqlite($isClientDatabase = true)
+
+if (!function_exists('toggleDatabaseById')) {
+    function toggleDatabaseById($etablissementId)
     {
-        if ($isClientDatabase) {
-
-            $user = \Auth::user();
-            if ($user):
-                $etablissement = DB::table('etablissements')->where('id', $user->etablissement_id)->first();
-
-                $settings = json_decode($etablissement->settings);
-
-                // 'database' => $settings->db->database,
-                // 'username' => $settings->db->username,
-                // 'password' => $settings->db->password,
-                config()->set('database.connections.client_db', [
-
-                    'driver' => 'sqlite',
-                    'url' => env('DATABASE_URL'),
-                    'database' => env('DB_DATABASE', database_path('db/' . $settings->db->database . '.sqlite')),
-                    'prefix' => '',
-                    // 'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
-                    'foreign_key_constraints' => true,
-                ]);
-                DB::purge('client_db');
-                $connection = DB::connection('client_db');
-                Config::set('database.default', $connection->getName());
-            else:
-                dd('test2');
-                $connection = null;
-            endif;
-        } else {
-
-            $connection = DB::connection('sqlite');
-            Config::set('database.default', 'sqlite');
-
-        }
-
-        return $connection;
-    }
-
-}
-if (!function_exists('toggleDBsqliteByEtsId')) {
-    function toggleDBsqliteByEtsId($etablissementId)
-    {
-        toggleDBsqlite(false);
+        toggleDatabase(false);
         $ets = DB::table('etablissements')->where('id', $etablissementId)->first();
         
         if ($ets):
-            // if ($user):
             try {
                 $settings = json_decode($ets->settings);
 
                 config()->set('database.connections.client_db', [
-
-                    'driver' => 'sqlite',
-                    'url' => env('DATABASE_URL'),
-                    'database' => env('DB_DATABASE', database_path('db/' . $settings->db->database . '.sqlite')),
+                    'driver' => 'mysql',
+                    'host' => env('DB_HOST', '127.0.0.1'),
+                    'port' => env('DB_PORT', '3306'),
+                    'database' => $settings->db->database,
+                    'username' => $settings->db->username,
+                    'password' => $settings->db->password,
+                    'unix_socket' => env('DB_SOCKET', ''),
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
                     'prefix' => '',
-                    'foreign_key_constraints' => true,
+                    'strict' => true,
+                    'engine' => null,
+                    'modes' => [
+                        //'ONLY_FULL_GROUP_BY', // Disable this to allow grouping by one column
+                        'STRICT_TRANS_TABLES',
+                        'NO_ZERO_IN_DATE',
+                        'NO_ZERO_DATE',
+                        'ERROR_FOR_DIVISION_BY_ZERO',
+                        //'NO_AUTO_CREATE_USER', // This has been deprecated and will throw an error in mysql v8
+                        'NO_ENGINE_SUBSTITUTION',
+                    ],
                 ]);
                 DB::purge('client_db');
 
@@ -158,10 +132,7 @@ if (!function_exists('toggleDBsqliteByEtsId')) {
                 //throw $th;
             }
         else:
-            dd("Etablissement N°  $etablissementId non trouvé");
-
-            $connection = DB::connection('sqlite');
-            Config::set('database.default', 'sqlite');
+            $connection = null;
 
         endif;
 

@@ -42,7 +42,7 @@ class EtablissementController extends Controller
     public function nosCompany()
     {
         $etablissements = $this->etablissementRepository->getAllCompany();
-        // toggleDBsqlite();
+        
         return view('admin.etablissement.index', compact('etablissements'));
     }
 
@@ -78,81 +78,79 @@ class EtablissementController extends Controller
         $adminUser['email'] = $request->email;
         $pwd = $this->passwordGenerate(8);
         $adminUser['password'] = Hash::make($pwd);
-        // dd(Artisan::call('db:create', ['name'=> $request->name]));
-        // // $createDB =  Process::path('database/db/')->run("touch  $request->name".".sqlite");
-        // // $createDB->run();
-        // exec('whoami');
-        // dd(2);
+        
 
         try {
             $database = null;
-            $transaction = DB::transaction(function () use ($adminUser, $request, &$database, $uploadProfil) {
-                if ($uploadProfil) {
-                    $filename = Str::uuid() . '.' . $uploadProfil->getClientOriginalExtension();
-                    Storage::disk('public')->putFileAs('etablissement/logo/', $uploadProfil, $filename);
+            if ($uploadProfil) {
+                $filename = Str::uuid() . '.' . $uploadProfil->getClientOriginalExtension();
+                Storage::disk('public')->putFileAs('etablissement/logo/', $uploadProfil, $filename);
 
-                    $request['logo'] = $filename;
-                }
+                $request['logo'] = $filename;
+            }
 
 
-                $database = '2s_' . preg_replace("/\s+/", "", $request->name) . '_db';
-                
-                $data = array("db" => array('database' => $database, 'username' => 'root', 'password' => ''), 'momo' => '{}');
-                
-                $request['settings'] = $data;
+            $database = '2s_' . preg_replace("/\s+/", "", $request->name) . '_db';
+            
+            $data = array("db" => array('database' => $database, 'username' => 'root', 'password' => ''), 'momo' => '{}');
+            
+            $request['settings'] = $data;
+
+            $ets = null;
+            $transaction = DB::transaction(function () use (&$adminUser, &$ets, $request) {
                 
                 $ets = $this->etablissementRepository->store($request->post());
                 
                 $adminUser['etablissement_id'] = $ets->id;
                 
                 $this->userRepository->store($adminUser);
-
-                //    Artisan::call('db:seed', ['--class' => 'UserFrontEndSeeder']);
                 
             });
-            // dd(12);
-            // $ets = $this->etablissementRepository->lastField();
             
-            // if (is_null($transaction)) {
+            
+            if (is_null($transaction)) {
                 #création de la bd client
-                // Artisan::call('db:create', ['name'=> $database]);
-                // exec('touch database/db/' . $database . '.sqlite');
-                // toggleDBsqliteById($ets->id);
-                
-                // dd('dsd');
+                Artisan::call('db:create', ['name'=> $database]);
+                // dump($ets);
+                toggleDatabaseById($ets->id);
                 # Exécution des migrations dans les bases de données nouvellement crées
-                // Artisan::call('update:backend_db', ['path' => 'backend_db']);
+                $path = 'database/migrations/backend_db';
+                Artisan::call('migrate', ['--path'=> $path]);
+                // dd(1);
 
-                // Artisan::call('db:seed', ['--class' => 'SettingSeeder']);
-            // }
+                # Exécution des seeds du nouvelle environnement
+                Artisan::call('db:seed', ['--class' => 'SettingSeeder']);
+            } else {
+                # écrire l'erreur dans les logs de laravel
+            }
 
 
         } catch (\Exception $e) {
-            //throw $th;
+            errorManager("Error create new environment",$e, $e->getMessage());
             return response()->json([
                 'success' => false,
                 'error' => 'erreur survenue ' . $e->getFile(),
             ]);
         }
 
-        #changement de statut (passer de 2 =>bd non créé à 1 =>  bd cré et migré)
-        // $etab = $this->etablissementRepository->lastField();
-        // $etab->status = 1;
-        // $this->etablissementRepository->update($ets->id, ['status' => 1]);
         try {
+            #changement de statut (passer de 2 =>bd non créé à 1 =>  bd cré et migré)
+            toggleDatabase(false);
+            $this->etablissementRepository->update($ets->id, ['status' => 1]);
+
             $inputs['url'] = config('app.url') . '/app-connect';
             $inputs['email'] = $adminUser['email'];
             $inputs['password'] = $pwd;
             Mail::to($adminUser['email'])->bcc("grantshell0@gmail.com")
                 ->queue(new MessageGoogle($inputs));
         } catch (\Throwable $th) {
-            //throw $th;
-            // dd($th);
+            errorManager("Error send mail params:",$th, $th->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => "Erreur survenue",
+                'msg' => "Une notification vous sera envoyer pour activer votre compte",
 
-            ], 201);
+            ]);
         }
 
         return response()->json([
@@ -160,6 +158,7 @@ class EtablissementController extends Controller
             'login' => $adminUser['email'],
             'password' => $pwd,
             'url' => $inputs['url'],
+            'msg' => "Message d'activation envoyé dans votre boite mail",
 
         ], 201);
     }

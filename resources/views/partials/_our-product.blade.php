@@ -26,7 +26,7 @@
                 </div>
             </div> --}}
             <div class="col-xl-4 col-md-6 col-sm-9">
-                <div class="single-feature wow fadeInUp" style="background-color: rgb(96, 96, 102)" data-wow-delay=".15s">
+                <div class="single-feature wow fadeInUp" data-wow-delay=".15s">
                     <div class="feature-icon">
                         <i class="lni lni-lock"></i>
                     </div>
@@ -36,26 +36,26 @@
                             Souscrivez à notre produit et bénéficier d'une réduction allant jusqu'à 10%
 
                         </p>
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#supcription_app">
+                        <button type="button" class="main-btn btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#supcription_app" style="padding: 3px 10px;">
                             Souscrire ...
                         </button>
                     </div>
                 </div>
             </div>
-            {{-- <div class="col-xl-4 col-md-6 col-sm-9">
+            <div class="col-xl-4 col-md-6 col-sm-9">
                 <div class="single-feature wow fadeInUp" data-wow-delay=".2s">
                     <div class="feature-icon">
                         <i class="lni lni-layout"></i>
                     </div>
                     <div class="feature-content">
-                        <h3 class="feature-title">High-quality Design</h3>
+                        <h3 class="feature-title" id="lapin">Tech-Lap</h3>
                         <p class="feature-desc">
-                            Lorem Ipsum is simply dummy text of the printing and industry.
+                            Découvrez notre application de gestion de ferme cunicole (100% cloud).
                         </p>
                     </div>
                 </div>
-            </div> --}}
+            </div>
         </div>
     </div>
 

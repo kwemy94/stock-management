@@ -21,7 +21,7 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        toggleDBsqlite();
+        toggleDatabase();
         
         $expenses = $this->expenseRepository->getAll();
         return view('admin.treasury.expense.index', compact('expenses'));

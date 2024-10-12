@@ -19,7 +19,7 @@ class SaleController extends Controller
     
     public function index()
     {
-        toggleDBsqlite();
+        toggleDatabase();
         $sales = $this->saleRepository->getAll();
         // dd($sales);
         return view('admin.sale.index', compact('sales'));

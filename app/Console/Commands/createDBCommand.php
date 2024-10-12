@@ -44,22 +44,24 @@ class createDBCommand extends Command
         // else {
         //     $schemaName = config("database.connections.mysql.database");
         // }
-        $schemaName = $this->argument('name') ?: config("database.connections.mysql.database");
-        $charset = config('database.connections.mysql.charset', 'utf8mb4');
-        $collation = config('database.connections.mysql.collation', 'utf8mb4_unicode_ci');
-
-        config(["database.connections.mysql.database" => null]);
-
-        $query = "CREATE DATABASE IF NOT EXISTS $schemaName CHARACTER SET $charset COLLATE $collation;";
-
-        // DB::statement($query);
+        
         try {
-            shell_exec('touch database/db/'.$schemaName.'.sqlite');
+            $schemaName = $this->argument('name') ?: config("database.connections.mysql.database");
+            $charset = config('database.connections.mysql.charset', 'utf8mb4');
+            $collation = config('database.connections.mysql.collation', 'utf8mb4_unicode_ci');
+    
+            config(["database.connections.mysql.database" => null]);
+    
+            $query = "CREATE DATABASE IF NOT EXISTS $schemaName CHARACTER SET $charset COLLATE $collation;";
+            
+            DB::statement($query);
+            
+            config(["database.connections.mysql.database" => $schemaName]);
         } catch (\Throwable $th) {
-            dd($th);
+            errorManager('error create db :', $th, $th->getMessage());
+            $this->info('Command DB error');
         }
         // dd('OK', $schemaName);
-        config(["database.connections.mysql.database" => $schemaName]);
 
         $this->info("Requête terminée !");
         return 0;

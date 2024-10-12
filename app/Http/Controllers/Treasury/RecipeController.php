@@ -19,7 +19,7 @@ class RecipeController extends Controller
      */
     public function index()
     {
-        toggleDBsqlite();
+        toggleDatabase();
         $recipes = $this->recipeRepository->getAll();
 
         return view('admin.treasury.recipe.index', compact('recipes'));

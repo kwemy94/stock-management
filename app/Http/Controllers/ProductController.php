@@ -31,7 +31,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        toggleDBsqlite();
+        toggleDatabase();
         $products = $this->productRepository->getAll();
         $categories = $this->categoryRepository->getAll();
         return view('admin.product.index', compact('products', 'categories'));
@@ -42,7 +42,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        toggleDBsqlite();
+        toggleDatabase();
         $categories = $this->categoryRepository->getAll();
         $units = $this->unitRepository->getAll();
         return view('admin.product.create', compact('categories', 'units'));
@@ -54,7 +54,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // dd($request->post());
-        toggleDBsqlite();
+        toggleDatabase();
         $validation = Validator::make(
             $request->all(),
             [
@@ -120,7 +120,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        toggleDBsqlite();
+        toggleDatabase();
         $product = $this->productRepository->getById($id);
         return view('admin.product.show', compact('product'));
     }
@@ -131,7 +131,7 @@ class ProductController extends Controller
     public function edit($id)
     {
         // dd($product);
-        toggleDBsqlite();
+        toggleDatabase();
         $product = $this->productRepository->getById($id);
         $categories = $this->categoryRepository->getAll();
         $units = $this->unitRepository->getAll();
@@ -144,7 +144,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         // dd($product, $request->post());
-        toggleDBsqlite();
+        toggleDatabase();
         $product = $this->productRepository->getById($id);
         $inputs = $request->post();
         try {
@@ -174,7 +174,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        toggleDBsqlite();
+        toggleDatabase();
         
         try {
             $product = $this->productRepository->getById($id);
@@ -195,7 +195,7 @@ class ProductController extends Controller
 
     public function BarcodeToPDF()
     {
-        toggleDBsqlite();
+        toggleDatabase();
         $products = $this->productRepository->getAll();
 
         $data = [

@@ -35,36 +35,30 @@ class UpdateSeedCommand extends Command
      */
     public function handle()
     {
-        
-        
-        $etablissements = $this->etablissementRepository->getAll(1);
+
+
+        $etablissements = $this->etablissementRepository->getAll();
         try {
             foreach ($etablissements as $ets) {
                 $settings = json_decode($ets->settings);
                 $dbName = $settings->db->database;
-                $pathDB = database_path('db/'.$dbName.'.sqlite');
 
-                if(\File::exists($pathDB)){
-                    $this->info("run db : ".$dbName);
+                toggleDatabaseById($ets->id);
 
-                    toggleDBsqliteByEtsId($ets->id);
+                # cette ligne recupère la config de la bd dans le fichier database.connections
+                $name = DB::connection()->getName();
 
-                    # cette ligne recupère la config de la bd dans le fichier database.connections
-                    $name = DB::connection()->getName();
-    
-                    Artisan::call('db:seed', ['--database' => $name, '--force' => true,]);
-                    $this->info(Artisan::output());
-        
-                    $this->info("seed Database: $dbName");
-                }else{
-                    $this->info("DB $dbName does't exist!!");
-                }
+                Artisan::call('db:seed', ['--database' => $name, '--force' => true,]);
+                $this->info(Artisan::output());
+
+                $this->info("seed Database: $dbName complet !");
+
 
 
             }
         } catch (\Throwable $th) {
-            dd($th);
-            $this->info($th);
+            // dd($th);
+            $this->info("Seed error");
         }
     }
 }

@@ -13,14 +13,14 @@
                         <div class="col-sm-6 mb-2">
                             <div class="form-group">
                                 <label for="app_name">{{ __('home.subscription.app-name') }} <em>*</em></label>
-                                <input type="text" class="form-control form-control-border border-width-2 required"
+                                <input type="text" class="form-control form-control-border border-width-2 required subscribe"
                                     name="name" id="app_name">
                             </div>
                         </div>
                         <div class="col-sm-6 mb-2">
                             <div class="form-group">
                                 <label for="app_phone">{{ __('home.subscription.app-phone') }} <em>*</em></label>
-                                <input type="text" class="form-control form-control-border border-width-2 required"
+                                <input type="text" class="form-control form-control-border border-width-2 required subscribe"
                                     name="phone" id="app_phone">
                             </div>
                         </div>
@@ -30,14 +30,14 @@
                         <div class="col-sm-6 mb-2">
                             <div class="form-group">
                                 <label for="app_email">{{ __('home.subscription.app-email') }}</label>
-                                <input type="email" class="form-control form-control-border border-width-2 required"
+                                <input type="email" class="form-control form-control-border border-width-2 required subscribe"
                                     name="email" id="app_email">
                             </div>
                         </div>
                         <div class="col-sm-6 mb-2">
                             <div class="form-group">
                                 <label for="app_address">{{ __('home.subscription.app-address') }}</label>
-                                <input type="text" class="form-control form-control-border border-width-2"
+                                <input type="text" class="form-control form-control-border border-width-2 subscribe"
                                     name="address" id="app_address">
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                         <div class="col-sm-12 mb-2">
                             <div class="form-group">
                                 <label for="app_domain">{{ __('home.subscription.app-domain') }} <em>*</em></label>
-                                <textarea type="text" name="activity" class="form-control form-control-border border-width-2 required" name="domain"
+                                <textarea type="text" name="activity" class="form-control form-control-border border-width-2 required subscribe" name="domain"
                                     id="app_domain"></textarea>
                             </div>
                         </div>
@@ -56,14 +56,14 @@
                         <div class="col-sm-12 mb-2">
                             <div class="form-group">
                                 <label for="app_logo">{{ __('home.subscription.app-logo') }}</label>
-                                <input type="file" class="form-control form-control-border border-width-2"
+                                <input type="file" class="form-control form-control-border border-width-2 subscribe"
                                     name="logo" id="app_logo">
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 m-3">
+                        {{-- <div class="col-md-6 m-3">
                             <div class="captcha">
                                 <span>{!! captcha_img() !!}</span>
                                 <button type="button" class="btn btn-success btn-refresh"><i
@@ -79,10 +79,11 @@
                                     <i>{{ $errors->first('captcha') }}</i>
                                 </span>
                             @endif
-                        </div>
+                        </div> --}}
                     </div>
-                    <div class="row">
-                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">Enregister</button>
+                    <div class="text-center">
+                        
+                        <button type="button" id="btnSubmit" class="main-btn btn-sm" style="padding: 3px 10px;">Souscrire</button>
                     </div>
                 </form>
             </div>

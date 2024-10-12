@@ -44,7 +44,7 @@ class DashboardController extends Controller
         $user = Auth::user();
         $users = $this->userRepository->getUserByCompany($user->etablissement_id);
         
-        toggleDBsqlite();
+        toggleDatabase();
 
         $categories = $this->categoryRepository->getAll();
         $products = $this->productRepository->getAll();

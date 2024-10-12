@@ -27,6 +27,8 @@
     <link rel="stylesheet" href="{{ asset('front-template/assets/css/about.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{asset('css/_contact.css')}}">
+    {{-- sweetalert --}}
+    <link rel="stylesheet" href="{{ asset('dashboard-template/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
 
     @yield('front-css')
 
@@ -55,6 +57,7 @@
     <script src="{{ asset('front-template/assets/js/wow.min.js')}}"></script>
     <script src="{{ asset('front-template/assets/js/glightbox.min.js')}}"></script>
     <script src="{{ asset('front-template/assets/js/main.js')}}"></script>
+    <script src="{{ asset('dashboard-template/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ asset('js/custom.js')}}"></script>
     @yield('front-simpleJs')
     {{-- Traduction du site --}}
