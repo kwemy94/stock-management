@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import useScanDetection from 'use-scan-detection';
 import { QrReader } from 'react-qr-reader';
 import PaymentModal from './PaymentModal';
+import { Color } from 'pspdfkit';
 
 function Pos() {
 
@@ -371,7 +372,7 @@ function Pos() {
     <>
       <div className="row">
         <div className="toast-container"><ToastContainer limit={3} /></div>
-        <div className="col-md-6 col-lg-4 mb-2" style={{ border: '3px solid', borderColor: '#007bff' }}>
+        <div className="col-md-6 col-lg-4 mb-2" style={{ border: '1px solid' }}>
           <div className="row mb-2">
             <div className="col mt-2">
 
@@ -475,7 +476,7 @@ function Pos() {
 
         </div>
 
-        <div className="col-md-6 col-lg-8 " style={{ border: '3px solid', borderColor: '#007bff' }}>
+        <div className="col-md-6 col-lg-8 " style={{ border: '1px solid' }}>
           <Loader load={loading} />
           <div className="row mt-2">
             <div className="col-sm-6">
