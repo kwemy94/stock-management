@@ -18,7 +18,7 @@ class EtablissementSeeder extends Seeder
                 'name' => "app-aministration-tech-briva",
                 'email' => 'tigod2302@gmail.com',
                 'status' => 1,
-                'settings' => json_encode(array("db" => array('database' => 'admin_db_app', 'username' => 'root', 'password' => ''), 'momo' => '{}')),
+                'settings' => json_encode(array("db" => array('database' => 'audien6989_db_gt2', 'username' => 'audien6989_gt2', 'password' => 'P4?D7dv2rnf'), 'momo' => '{}')),
             )
         );
 

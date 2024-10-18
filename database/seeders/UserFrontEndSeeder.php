@@ -18,7 +18,7 @@ class UserFrontEndSeeder extends Seeder
      */
     public function run()
     {
-        $etablissement = Etablissement::where('email', 'admin@admin.com')->first();
+        $etablissement = Etablissement::where('email', 'tigod2302@gmail.com')->first();
         
         Role::create([
             'name' => 'client',
@@ -39,7 +39,7 @@ class UserFrontEndSeeder extends Seeder
             // 'username' => "admin",
             'sexe' => "F",
             'phone' => "675343434",
-            'email' => "admin@admin.com",
+            'email' => "tigod2302@gmail.com",
             'cni' => "12345678",
             'etablissement_id' => $etablissement->id,
             'password' => Hash::make('admin-shell'),
