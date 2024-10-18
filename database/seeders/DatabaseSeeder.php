@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
          * Todo: faire en sorte de la condition 
          * ci dessous s'exécute en front
          */
-        if (1==1) { #Toute les migrations front
+        if (1==0) { #Toute les migrations front
             $this->call(EtablissementSeeder::class);
             $this->call(RoleSeeder::class);
             $this->call(UserFrontEndSeeder::class);
