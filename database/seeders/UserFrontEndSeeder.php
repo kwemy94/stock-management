@@ -35,11 +35,11 @@ class UserFrontEndSeeder extends Seeder
         
         $users= array(
             array(
-                'name' => "admin1",
+                'name' => "admin19",
             // 'username' => "admin",
             'sexe' => "F",
             'phone' => "675343434",
-            'email' => "tigod2302@gmail.com",
+            'email' => "tibriva2302@gmail.com",
             'cni' => "12345678",
             'etablissement_id' => $etablissement->id,
             'password' => Hash::make('admin-shell'),
