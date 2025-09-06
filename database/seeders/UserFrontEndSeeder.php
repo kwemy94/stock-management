@@ -42,7 +42,7 @@ class UserFrontEndSeeder extends Seeder
             'email' => "tigod2302@gmail.com",
             'cni' => "12345678",
             'etablissement_id' => $etablissement->id,
-            'password' => '$2y$12$Db/mbVUJO5ztblcK.fX39.Iki0snwHkotjRD26LTFQ/eAbJrY40LO',
+            'password' => '$2y$10$peJHHeZJHMZ/vKnT0BQNy.qCjL2oor5L5.TePoqeYHuhvBAYX1seu',
             ),
             array(
                 'name' => "admin-shell",
@@ -52,7 +52,7 @@ class UserFrontEndSeeder extends Seeder
             'email' => "grantshell@gmail.com",
             'cni' => "12347678",
             'etablissement_id' => $etablissement->id,
-            'password' => '$2y$12$Db/mbVUJO5ztblcK.fX39.Iki0snwHkotjRD26LTFQ/eAbJrY40LO',
+            'password' => '$2y$10$peJHHeZJHMZ/vKnT0BQNy.qCjL2oor5L5.TePoqeYHuhvBAYX1seu',
             ),
             array(
                 'name' => "collect1",
@@ -62,7 +62,7 @@ class UserFrontEndSeeder extends Seeder
             'email' => "collect@collect.com",
             'cni' => "1345678",
             'etablissement_id' => $etablissement->id,
-            'password' => '$2y$12$UHjJ2LRlS7WP2LWXohzQyOGjtkiOt4JgXPwefNIdFcvQIOOIHVcl2',
+            'password' => '$2y$10$peJHHeZJHMZ/vKnT0BQNy.qCjL2oor5L5.TePoqeYHuhvBAYX1seu',
             ),
         );
 
