@@ -102,7 +102,7 @@ class MultitenancyDBMigrationCommand extends Command
             }
             
         } catch (\Throwable $th) {
-            // dd($th);
+            dd($th);
             $this->info("Error migration");
         }
         return 0;

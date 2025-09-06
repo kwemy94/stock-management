@@ -48,7 +48,11 @@ class UpdateSeedCommand extends Command
                 # cette ligne recupère la config de la bd dans le fichier database.connections
                 $name = DB::connection()->getName();
 
-                Artisan::call('db:seed', ['--database' => $name, '--force' => true,]);
+                Artisan::call('db:seed', [
+                    '--database' => $name, 
+                    '--force' => true,
+                    '--class'    => \Database\Seeders\BackendDatabaseSeeder::class,
+                ]);
                 $this->info(Artisan::output());
 
                 $this->info("seed Database: $dbName complet !");
@@ -57,7 +61,7 @@ class UpdateSeedCommand extends Command
 
             }
         } catch (\Throwable $th) {
-            // dd($th);
+            dd($th);
             $this->info("Seed error");
         }
     }

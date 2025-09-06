@@ -4,7 +4,7 @@
 
 <style>
     .inner >p{
-        color: rgb(11, 47, 211);
+        color: #1f2d3d;
         font-weight: bold;
     }
 
@@ -14,7 +14,7 @@
         border-radius: 0 0 4px 4px;
     }
     .bg-white>a {
-        color: rgb(11, 47, 211) !important;
+        /* color: #007bff !important; */
     }
     .small-box {
         

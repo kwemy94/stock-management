@@ -1,6 +1,6 @@
  <style>
      .nav-header {
-         color: blue;
+         color: #1f2d3d;
          font-weight: bold;
      }
  </style>

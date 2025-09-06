@@ -62,8 +62,10 @@ class SupplierController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Supplier $supplier)
+    public function edit($id)
     {
+        toggleDatabase();
+        $supplier = $this->supplierRepository->getById($id);
         return view('admin.supplier.edit', compact('supplier'));
     }
 

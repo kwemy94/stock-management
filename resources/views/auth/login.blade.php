@@ -93,7 +93,7 @@
                             autocomplete="current-password" placeholder="Password">
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                                <span class="fas fa-lock" id="show-pwd"></span>
                             </div>
                         </div>
                     </div>
@@ -140,6 +140,14 @@
     <script src="{{ 'dashboard-template/plugins/bootstrap/js/bootstrap.bundle.min.js' }}"></script>
 
     <script src="{{ asset('dashboard-template/dist/js/adminlte.min.js') }}"></script>
+    <script>
+        $('#show-pwd').click( () => {
+            let input = $("#password");
+    
+            $(this).toggleClass("fa-lock fa-unlock");
+            input.attr("type", input.attr("type") === "password" ? "text" : "password");
+                });
+    </script>
 </body>
 
 </html>

@@ -45,7 +45,7 @@
         </div>
 
         {{--  Navbar  --}}
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light bg-primary">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="background-color: #84b7ee">
             {{-- Left navbar links  --}}
             @include('admin.layouts.partials._navbar-left')
 
@@ -54,7 +54,7 @@
         </nav>
 
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar elevation-4" style="background-color: rgba(20, 29, 70, 1)">
+        <aside class="main-sidebar elevation-4" style="background-color: #ffffff">
 
 
             {{-- Sidebar --}}
