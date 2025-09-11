@@ -54,7 +54,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tech briva | login</title>
+    <title>Street smart | login</title>
 
 
     <link rel="stylesheet"

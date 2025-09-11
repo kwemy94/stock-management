@@ -5,30 +5,95 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tech Briva | @yield('title')</title>
+    <title>Street Smart | @yield('title')</title>
 
-    
+
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="{{__('home.web-description')}}">
+    <meta name="description" content="{{ __('home.web-description') }}">
     {{-- <meta name="description" content="site web, application web sur mesure, site vitrine, site carte de visite."> --}}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     {{-- ====== Favicon Icon ====== --}}
     <link rel="shortcut icon" href="{{ asset('front-template/assets/images/favicon-32x32.png') }}" type="image/svg" />
-    <link rel="apple-touch-icon" href="{{asset('front-template/assets/images/logo/logo.png')}}">
+    <link rel="apple-touch-icon" href="{{ asset('front-template/assets/images/logo/logo.png') }}">
 
-    <!-- ===== All CSS files ===== -->
-    <link rel="stylesheet" href="{{ asset('front-template/assets/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('front-template/assets/css/animate.css') }}" />
-    <link rel="stylesheet" href="{{ asset('front-template/assets/css/glightbox.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('front-template/assets/css/lineicons.css') }}" />
-    <link rel="stylesheet" href="{{ asset('front-template/assets/css/styles.css') }}" />
-    <link rel="stylesheet" href="{{ asset('front-template/assets/css/about.css') }}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{asset('css/_contact.css')}}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f9fafb;
+        }
+
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(6px);
+        }
+
+        .navbar-custom .nav-link {
+            color: #111;
+            font-weight: 500;
+        }
+
+        .navbar-custom .nav-link.active {
+            color: #2563eb;
+        }
+
+        .hero {
+            background-color: #2563eb;
+            color: #fff;
+            padding: 5rem 0;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .hero .btn {
+            background: #fff;
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .product-card {
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+        }
+
+        .badge-category {
+            font-size: .72rem;
+        }
+
+        .carousel-item img {
+            object-fit: cover;
+            height: 420px;
+            width: 100%;
+        }
+
+        .lang-select {
+            min-width: 72px;
+            border-radius: .5rem;
+        }
+
+        @media (max-width: 576px) {
+            .carousel-item img {
+                height: 200px;
+            }
+        }
+    </style>
     {{-- sweetalert --}}
-    <link rel="stylesheet" href="{{ asset('dashboard-template/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('dashboard-template/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
 
     @yield('front-css')
 
@@ -53,12 +118,8 @@
 
     <!-- ====== All Javascript Files ====== -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="{{ asset('front-template/assets/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{ asset('front-template/assets/js/wow.min.js')}}"></script>
-    <script src="{{ asset('front-template/assets/js/glightbox.min.js')}}"></script>
-    <script src="{{ asset('front-template/assets/js/main.js')}}"></script>
-    <script src="{{ asset('dashboard-template/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
-    <script src="{{ asset('js/custom.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('js/custom.js') }}"></script>
     @yield('front-simpleJs')
     {{-- Traduction du site --}}
     <script type="text/javascript">

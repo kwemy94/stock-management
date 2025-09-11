@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Tech Briva | Inventory</title>
+    <title>Street Smart | Inventory</title>
 </head>
 <style type="text/css">
     body {

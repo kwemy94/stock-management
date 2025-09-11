@@ -1,49 +1,31 @@
-<header class="header">
+<nav class="navbar navbar-expand-lg navbar-light navbar-custom shadow-sm fixed-top">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="navbar-wrapper">
-                    <nav class="navbar navbar-expand-lg">
-                        <a class="navbar-brand" href="index.html">
-                            <img src="{{ asset('front-template/assets/images/logo/logo.png') }}" alt="Logo"
-                                width="65px" height="65px" style="border-radius: 50px" />
-                        </a>
-                        <button class="navbar-toggler">
-                            <span class="toggler-icon"> </span>
-                            <span class="toggler-icon"> </span>
-                            <span class="toggler-icon"> </span>
-                        </button>
+        <a class="navbar-brand fw-bold text-primary" href="#">Street Smart</a>
+        {{-- <a class="navbar-brand" href="index.html">
+            <img src="{{ asset('front-template/assets/images/logo/logo.png') }}" alt="Logo" width="65px"
+                height="45px" style="border-radius: 35px" />
+        </a> --}}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
+            aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                        <div class="navbar-collapse">
-                            <ul id="nav" class="navbar-nav ms-auto">
-                                <li class="nav-item">
-                                    <a class="menu-scroll" href="#home">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="menu-scroll" href="#about">About</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="menu-scroll" href="#team">Team</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="menu-scroll" href="#features">{{ __('home.our-item.our-product') }}</a>
-                                </li>
-                                <li class="nav-item"> 
-                                    {{-- <div class="col-md-4"> --}}
-                                    {{-- <img src="https://flagcdn.com/16x12/us.png"
-                                        srcset="https://flagcdn.com/32x24/us.png 2x, https://flagcdn.com/48x36/us.png 3x"
-                                        width="16" height="12" alt="us"> --}}
-                                    <select class="Langchange">
-                                        <option value="fr" {{ session()->get('locale') == 'fr' ? 'selected' : '' }}>Fr</option>
-                                        <option value="en" {{ session()->get('locale') == 'en' ? 'selected' : '' }}>En</option>
-                                    </select>
-                                    {{-- </div> --}}
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
-            </div>
+        <div class="collapse navbar-collapse" id="navMain">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link active" href="{{ route('home-page') }}">Accueil</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('home-page') }}">À propos</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('home-page') }}">Produits</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('contact.us') }}">Contact</a></li>
+            </ul>
         </div>
+
+        <!-- Language selector (visible en permanence) -->
+        {{-- <div class="d-flex align-items-center ms-3">
+            <select id="langchange" class="form-select form-select-sm langchange lang-select"
+                aria-label="Sélection de la langue">
+                <option value="fr" {{ session()->get('locale') == 'fr' ? 'selected' : '' }}>Fr</option>
+                <option value="en" {{ session()->get('locale') == 'en' ? 'selected' : '' }}>En</option>
+            </select>
+        </div> --}}
     </div>
-</header>
+</nav>

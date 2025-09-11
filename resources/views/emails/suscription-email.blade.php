@@ -4,7 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Tech Briva | Souscription</title>
+    <title>Street Smart | Souscription</title>
 
     <style>
         /* -------------------------------------
@@ -365,7 +365,7 @@
                             <td class="align-center" width="100%">
                                 <a href="{{ config('app.url').'/login'}}"><img
                                         src="{{asset('/front-template/assets/images/logo/logo.png')}}"
-                                        height="40" alt="tech briva"></a>
+                                        height="40" alt="street smart"></a>
                             </td>
                         </tr>
                     </table>
@@ -434,7 +434,7 @@
                             </tr> --}}
                             <tr>
                                 <td class="content-block powered-by">
-                                    Powered by <a href="https://techbriva.">Tech Briva</a>.
+                                    Powered by <a href="https://techbriva.">Street Smart</a>.
                                 </td>
                             </tr>
                         </table>

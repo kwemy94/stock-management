@@ -4,7 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Tech Briva | Contact</title>
+    <title>Street Smart | Contact</title>
 
     <style>
         /* -------------------------------------
@@ -365,7 +365,7 @@
                             <td class="align-center" width="100%">
                                 <a href="{{ env('APP_URL')}}"><img
                                         src="{{asset('/front-template/assets/images/logo/logo.png')}}"
-                                        height="40" alt="tech briva"></a>
+                                        height="40" alt="street smart"></a>
                             </td>
                         </tr>
                     </table>
@@ -383,7 +383,7 @@
                                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                     <tr>
                                         <td>
-                                            <p>👋&nbsp; Notification de Tech briva</p>
+                                            <p>👋&nbsp; Notification de Street smart</p>
                                             
                                             <p> Informations :</p>
                                             
@@ -435,7 +435,7 @@
                             </tr> --}}
                             <tr>
                                 <td class="content-block powered-by">
-                                    Powered by <a href="http://techbriva.com">Tech Briva</a>.
+                                    Powered by <a href="http://techbriva.com">Street Smart</a>.
                                 </td>
                             </tr>
                         </table>

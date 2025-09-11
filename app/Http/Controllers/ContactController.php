@@ -18,6 +18,10 @@ class ContactController extends Controller
         $this->contactRepository = $contactRepository;
     }
 
+    public function index(){
+        return view('contact');
+    }
+
 
     public function store(Request $request)
     {

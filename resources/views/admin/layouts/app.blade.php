@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tech briva| Dashboard</title>
+    <title>Street smart| Dashboard</title>
 
     <link rel="shortcut icon" href="{{ asset('front-template/assets/images/favicon-32x32.png') }}" type="image/svg" />
     <!-- Google Font: Source Sans Pro -->
@@ -41,7 +41,7 @@
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
             <img class="animation__shake" src="{{ asset('front-template/assets/images/logo/logo.png') }}"
-                alt="Tech briva" height="60" width="60" style="border-radius: 50px;">
+                alt="Street smart" height="60" width="60" style="border-radius: 50px;">
         </div>
 
         {{--  Navbar  --}}

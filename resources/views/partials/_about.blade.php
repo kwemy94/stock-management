@@ -8,7 +8,7 @@
                         <h2>Une boîte à outils pour créer plus rapidement des solutions Web Nextgen.</h2>
                     </div>
                     <p>
-                        Tech briva est une équipe spécialisée dans la conception, le developpement et la gestion de solutions 
+                        Street smart est une équipe spécialisée dans la conception, le developpement et la gestion de solutions 
                         informatiques. <br>Constituée d'eperts developpeurs, chefs de projet, chercheurs
                         oeuvrant au quotidien dans l'accompagnement des clients vers le numérique.
                     </p>

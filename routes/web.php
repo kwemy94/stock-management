@@ -48,6 +48,7 @@ Route::get('refresh_captcha', [HomeController::class, 'refreshCaptcha'])->name('
 #endregion captcha
 
 #endregion contact
+Route::get('contactez-nous', [ContactController::class, 'index'])->name('contact.us');
 Route::post('contact-us', [ContactController::class, 'store'])->name('contact.us.message');
 #region contact
 

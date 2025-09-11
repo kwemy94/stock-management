@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Tech Briva | invoice</title>
+    <title>Street Smart | invoice</title>
 </head>
 <style type="text/css">
     body {
@@ -140,7 +140,7 @@
             <tr>
                 <td>
                     <div class="box-text">
-                        <p>Ets : <strong>{{ isset($setting) ? $setting->app_name : 'Tech Briva' }} </strong></p>
+                        <p>Ets : <strong>{{ isset($setting) ? $setting->app_name : 'Street Smart' }} </strong></p>
                         <p>Tél : <strong>{{ isset($setting) ? $setting->phone : '+237 672517118' }} </strong></p>
                         <p>Email : <strong>{{ isset($setting) ? $setting->email : 'infos@techbriva.com' }} </strong></p>
                     </div>

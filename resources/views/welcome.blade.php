@@ -42,19 +42,19 @@
     <!-- ====== Features End ====== -->
 
     <!-- ====== About Start ====== -->
-    @include('partials._about')
+    {{-- @include('partials._about') --}}
     <!-- ====== About End ====== -->
 
     <!-- ====== Team Start ====== -->
-    @include('partials._team')
+    {{-- @include('partials._team') --}}
     <!-- ====== Team End ====== -->
 
     <!-- ====== FAQ Start ====== -->
-    @include('partials._faq')
+    {{-- @include('partials._faq') --}}
     <!-- ====== FAQ End ====== -->
 
     <!-- ====== Contact Start ====== -->
-    @include('partials._contact')
+    {{-- @include('partials._contact') --}}
     <!-- ====== Contact End ====== -->
 
 
@@ -79,12 +79,12 @@
 @section('front-simpleJs')
     <script>
         // $(function() {
-            var Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 5000
-            });
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 5000
+        });
         // })
         $('#lapin').click(function() {
             Toast.fire({
@@ -92,7 +92,7 @@
                 title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
             })
         });
-        
+
         $('#btnSubmit').click((e) => {
             // e.preventDefault();
 
@@ -154,6 +154,6 @@
                 })
             });
         });
-    // })
+        // })
     </script>
 @endsection
