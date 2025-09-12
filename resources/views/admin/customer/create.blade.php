@@ -19,7 +19,7 @@
                                 <div class="form-group">
                                     <label for="name">{{ __('Nom client') }} <em>*</em></label>
                                     <input type="text" class="form-control form-control-border border-width-2 required"
-                                        name="name" id="name" placeholder="Ex: Fer de 6">
+                                        name="name" id="name">
                                 </div>
                                 <div class="form-group">
                                     <label for="cni">{{ __('CNI') }} <em>*</em></label>

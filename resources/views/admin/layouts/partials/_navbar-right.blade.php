@@ -30,4 +30,10 @@
         </div>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button" title="Configuration de base">
+          <i class="fa-solid fa fa-cog fa-spin fa-1x fa-fw"></i>
+        </a>
+      </li>
+
 </ul>

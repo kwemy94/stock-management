@@ -34,7 +34,7 @@
                                 </li>
                             </ul>
 
-                            <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+                            {{-- <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a> --}}
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -47,7 +47,7 @@
                     <div class="card">
                         <div class="card-header p-2">
                             <ul class="nav nav-pills">
-                                <li class="nav-item"><a class="nav-link active" href="#settings"
+                                <li class="nav-item"><a class="nav-link active" href="#settings" style="background-color: #84b7ee; color: black; font-weight: bold;"
                                         data-toggle="tab">Settings</a></li>
                             </ul>
                         </div><!-- /.card-header -->

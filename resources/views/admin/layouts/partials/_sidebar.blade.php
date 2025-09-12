@@ -19,15 +19,6 @@
          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
              <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
-             <li class="nav-item">
-                 <a href="{{ route('category.index') }}"
-                     class="nav-link {{ request()->routeIs('category.index') ? 'active' : '' }}">
-                     <i class="nav-icon far fa-calendar-alt"></i>
-                     <p>
-                         {{ __('dashboard.category') }}
-                     </p>
-                 </a>
-             </li>
 
              <li class="nav-item">
                  <a href="{{ route('product.index') }}"
@@ -38,25 +29,7 @@
                      </p>
                  </a>
              </li>
-             <li class="nav-item">
-                 <a href="{{ route('customer.index') }}"
-                     class="nav-link {{ request()->routeIs('customer.index') ? 'active' : '' }}">
-                     <i class="nav-icon fas fa-users"></i>
-                     <p>
-                         {{ __('dashboard.customer') }}
-                     </p>
-                 </a>
-             </li>
              <li class="nav-header">Approvisionnement</li>
-             <li class="nav-item">
-                 <a href="{{ route('supplier.index') }}"
-                     class="nav-link {{ request()->routeIs('supplier.index') ? 'active' : '' }}">
-                     <i class="nav-icon far fa-user"></i>
-                     <p>
-                         {{ __('dashboard.supplier') }}
-                     </p>
-                 </a>
-             </li>
              <li class="nav-item">
                  <a href="{{ route('achat.index') }}"
                      class="nav-link {{ request()->routeIs('achat.index') ? 'active' : '' }}">
@@ -78,51 +51,16 @@
                  </a>
              </li>
              <li class="nav-item">
-                 <a href="{{ route('sale.index') }}" class="nav-link">
+                 <a href="{{ route('order.create') }}" class="nav-link">
                      <i class="nav-icon far fa-calendar-alt"></i>
                      <p>
                          {{ __('dashboard.sale') }}
                      </p>
                  </a>
              </li>
-             <li class="nav-header">Administration</li>
-             <li class="nav-item">
-                 <a href="{{ route('unite-mesure.index') }}" class="nav-link">
-                     <i class="nav-icon fas fa-balance-scale"></i>
-                     <p>
-                         {{ __('Unité de mesure') }}
-                     </p>
-                 </a>
-             </li>
-             <li class="nav-item">
-                 <a href="#" class="nav-link">
-                     <i class="nav-icon fas fa-user-cog"></i>
-                     <p>
-                         {{ __('dashboard.user') }}
-                     </p>
-                 </a>
-             </li>
-             <li class="nav-item">
-                 <a href="{{ route('setting.index') }}"
-                     class="nav-link {{ request()->routeIs('setting.index') ? 'active' : '' }}">
-                     <i class="fa-solid fa fa-cog fa-spin fa-1x fa-fw"></i>
-                     <p>
-                         {{ __('dashboard.setting') }}
-                     </p>
-                 </a>
-             </li>
-             <li class="nav-item">
-                 <a href="{{ route('app.company') }}"
-                     class="nav-link {{ request()->routeIs('app.company') ? 'active' : '' }}">
-                     <i class="fa-solid fa fa-cog fa-spin fa-1x fa-fw"></i>
-                     <p>
-                        {{-- Section ne doit être visible que par l'admin de la plateforme (concepteur) --}}
-                         {{ __('Nos companies') }}
-                     </p>
-                 </a>
-             </li>
+             {{-- <li class="nav-header">Administration</li> --}}
 
-             <li class="nav-item has-treeview menu-open">
+             {{-- <li class="nav-item has-treeview menu-open">
                  <a href="#" class="nav-link active">
                      <i class="nav-icon fas fa-book"></i>
                      <p>
@@ -151,7 +89,7 @@
                      </li>
                     
                  </ul>
-             </li>
+             </li> --}}
          </ul>
      </nav>
 

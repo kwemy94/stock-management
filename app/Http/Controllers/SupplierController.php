@@ -43,7 +43,7 @@ class SupplierController extends Controller
         toggleDatabase();
         try {
             $this->supplierRepository->store($inputs);
-            return redirect(route('supplier.index'))->with('success', 'Fournisseur crée !');
+            return redirect(route('supplier.index'))->with('success', 'Fournisseur crée avec succès  !');
         } catch (\Throwable $th) {
             //throw $th;
             // dd($th);
@@ -83,7 +83,7 @@ class SupplierController extends Controller
 
         try {
             $this->supplierRepository->update($id, $inputs);
-            return redirect()->route('supplier.index')->with('success', "Fournisseur mis à jour!");
+            return redirect()->route('supplier.index')->with('success', "Fournisseur mis à jour avec succès !");
         } catch (\Exception $e) {
             //throw $th;
             return redirect()->back()->with('error', "Oups!! Echec de mis à jour...");
@@ -104,7 +104,7 @@ class SupplierController extends Controller
 
         try {
             $supplier->delete();
-            return redirect()->route('supplier.index')->with('Success', "Fournisseur supprimé");
+            return redirect()->route('supplier.index')->with('success', "Fournisseur supprimé avec succès !");
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', "Oups!! Echec de suppression");
             

@@ -65,8 +65,8 @@
                                                 
                                                 <form method="post" action="{{ route('product.destroy', $product->id) }}"
                                                     id="form-delete-product{{ $product->id }}">
-                                                    <a href="{{ route('product.show', $product->id) }}" class="fas fa-eye"
-                                                        style="color: green"></a>
+                                                    {{-- <a href="{{ route('product.show', $product->id) }}" class="fas fa-eye"
+                                                        style="color: green"></a> --}}
                                                     <a href="{{ route('product.edit', $product->id) }}" class="fas fa-pen-alt"
                                                         style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
                                                         

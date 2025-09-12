@@ -25,12 +25,12 @@
 
                                 <div class="form-group">
                                     <label for="phone">{{ __('supplier.phone') }}</label>
-                                    <input type="text" class="form-control form-control-border border-width-2 required"
+                                    <input type="text" class="form-control form-control-border border-width-2"
                                         name="phone" value="{{$supplier->phone}}" id="phone" value="">
                                 </div>
                                 <div class="form-group">
                                     <label for="email">{{ __('Email') }}</label>
-                                    <input type="email" class="form-control form-control-border border-width-2 required"
+                                    <input type="email" class="form-control form-control-border border-width-2"
                                         name="email" value="{{$supplier->email}}" id="email" value="">
                                 </div>
                             </div>

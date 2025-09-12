@@ -54,15 +54,15 @@
 
                                         <form method="post" action="{{ route('category.destroy', $category->id) }}"
                                             id="form-delete-category{{ $category->id }}">
-                                            <a href="{{ route('category.show', $category->id) }}" class="fas fa-eye"
-                                                style="color: green"></a>
+                                            {{-- <a href="{{ route('category.show', $category->id) }}" class="fas fa-eye"
+                                                style="color: green"></a> --}}
                                             <a href="{{ route('category.edit', $category->id) }}" class="fas fa-pen-alt"
                                                 style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
                                             @csrf
                                             @method('delete')
-                                            <span id="btn-delete-category{{ $category->id }}"
+                                            {{-- <span id="btn-delete-category{{ $category->id }}"
                                                 onclick="deleteCategory({{ $category->id }})" class="fas fa-trash-alt"
-                                                style="color: red"></span>
+                                                style="color: red"></span> --}}
                                         </form>
                                     </td>
                                 </tr>

@@ -18,7 +18,7 @@
                             @method('PUT')
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="name">{{ __('product.info.name') }} <em>*</em></label>
+                                    <label for="name">{{ __('category.name') }} <em>*</em></label>
                                     <input type="text" class="form-control form-control-border border-width-2 required"
                                         name="name" id="name" value="{{$category->name}}" value="">
                                 </div>

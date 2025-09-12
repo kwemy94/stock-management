@@ -55,7 +55,7 @@ class UnitController extends Controller
         try {
             $this->unitRepository->store($request->post());
 
-            return redirect(route('unite-mesure.index'))->with('success', 'Unité de mesure crée');
+            return redirect(route('unite-mesure.index'))->with('success', 'Unité de mesure crée avec succès !');
         } catch (\Exception $e) {
             dd($e);
             
@@ -85,7 +85,7 @@ class UnitController extends Controller
             $unit = $this->unitRepository->getById($id);
             $this->unitRepository->update($unit->id, $request->post());
 
-            return redirect(route('unite-mesure.index'))->with('success', 'Unité mise à jour !');
+            return redirect(route('unite-mesure.index'))->with('success', 'Unité mise à jour avec succès !');
         } catch (\Exception $e) {
             dd($e);
             
@@ -100,7 +100,7 @@ class UnitController extends Controller
         try {
             $unit = $this->unitRepository->getById($id);
             $unit->delete();
-            return redirect(route('unite-mesure.index'))->with('success', 'Unité supprimée !');
+            return redirect(route('unite-mesure.index'))->with('success', 'Unité supprimée avec succès !');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Oups!! Echec de suppression');
         }

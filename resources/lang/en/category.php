@@ -1,7 +1,7 @@
 <?php
 return [
-    'name' => 'Intitulé de la catégorie',
-    "title"=>"Catégorie",
+    'name' => 'Nom de la catégorie',
+    "title"=>"Category",
     'info' => [
         'new-category'  => 'Nouvelle catégorie',
     ],

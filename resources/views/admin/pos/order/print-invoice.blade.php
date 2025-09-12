@@ -185,19 +185,19 @@
             @for ($i = 0; $i < count($orderProducts); $i++)
                 <tr align="center">
                     @php
-                        $total += $orderProducts[$i]['quantity'] * $orderProducts[$i]->product->sale_price;
+                        $total += $orderProducts[$i]['quantity'] * $orderProducts[$i]['unit_price'];
                         // $totalTax += (19.25/100) * $orderProducts[$i]->product->sale_price * $orderProducts[$i]['quantity'];
                         $totalTax += 0;
                     @endphp
                     <td>{{ $orderProducts[$i]->product->code }}</td>
                     <td>{{ $orderProducts[$i]->product->product_name }}</td>
-                    <td>{{ $orderProducts[$i]->product->sale_price }} {{$setting->devise}}</td>
+                    <td>{{ $orderProducts[$i]['unit_price'] }} {{$setting->devise}}</td>
                     <td>{{ $orderProducts[$i]['quantity'] }}</td>
                     <td>{{ $orderProducts[$i]['quantity'] * $orderProducts[$i]->product->sale_price }} {{$setting->devise}}</td>
                     <td>0</td>
                     <td>
                         {{-- Ajouter la taxe au montant total --}}
-                        {{ $orderProducts[$i]['quantity'] * $orderProducts[$i]->product->sale_price }} {{$setting->devise}}
+                        {{ $orderProducts[$i]['quantity'] * $orderProducts[$i]['unit_price'] }} {{$setting->devise}}
                     </td>
 
                 </tr>

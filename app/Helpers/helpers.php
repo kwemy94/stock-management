@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -171,5 +172,15 @@ if (!function_exists('automationExpense')) {
             return true;
         }
         return false;
+    }
+}
+
+if(!function_exists('checkCompany')){
+    function checkCompany(){
+        toggleDatabase(false);
+        $user = Auth::user();
+        $company = DB::table('etablissements')->where('email', 'tigod2302@gmail.com')->first();
+
+        return $user->etablissement_id == $company->id && $user->email == "tigod2302@gmail.com";
     }
 }

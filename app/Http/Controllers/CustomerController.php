@@ -58,7 +58,7 @@ class CustomerController extends Controller
         try {
             $this->customerRepository->store($inputs);
 
-            return redirect()->route('customer.index')->with('success',"Utilisateur crée");
+            return redirect()->route('customer.index')->with('success',"Client crée avec succès !");
         } catch (\Exception $e) {
             dd($e);
             return redirect()->back()->with('error',"Oups!! Echec d'enregistrement");
@@ -96,7 +96,7 @@ class CustomerController extends Controller
             $inputs = $request->post();
             $this->customerRepository->update($customer->id, $inputs);
 
-            return redirect()->route('customer.index')->with('success',"Utilisateur mis à jour!");
+            return redirect()->route('customer.index')->with('success',"Client mis à jour avec succès !");
         } catch (\Exception $e) {
             return redirect()->back()->with('error',"Oups!! Echec de mis à jour");
         }
@@ -112,7 +112,7 @@ class CustomerController extends Controller
 
         try {
             $customer->delete();
-            return redirect()->route('customer.index')->with('success',"Utilisateur supprimé!");
+            return redirect()->route('customer.index')->with('success',"Client supprimé avec succès !");
         } catch (\Exception $e) {
             return redirect()->back()->with('error',"Oups!! Echec de suppression");
         }

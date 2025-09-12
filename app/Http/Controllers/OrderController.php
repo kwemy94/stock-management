@@ -97,6 +97,7 @@ class OrderController extends Controller
                     $inputs['product_id'] = $panier[$i]['prod_id'];
                     $inputs['order_id'] = $order->id;
                     $inputs['quantity'] = $panier[$i]['quantity'];
+                    $inputs['unit_price'] =  $panier[$i]['total_price']/$panier[$i]['quantity'];
                     $inputs['price'] = $panier[$i]['total_price'];
 
                     $this->orderProductRepository->store($inputs);
@@ -191,7 +192,7 @@ class OrderController extends Controller
         toggleDatabase();
         $order = $this->orderRepository->getById($id);
         $orderProducts = $this->orderProductRepository->getByOrderId($id);
-        // dd($product, $id);
+        // dd($orderProducts, $id);
         $customer = null;
         if ($order->customer_id) {
             $customer = $this->customerRepository->getById($order->customer_id);

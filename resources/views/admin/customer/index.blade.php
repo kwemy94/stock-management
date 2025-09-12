@@ -34,7 +34,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 10px">#</th>
-                                        <th>{{ __('product.info.name') }} </th>
+                                        <th>{{ __('Nom du client') }} </th>
                                         <th>{{ __('CNI') }} </th>
                                         <th>{{ __('Téléphone') }} </th>
                                         <th>{{ __('Email') }} </th>
