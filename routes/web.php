@@ -14,6 +14,8 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Sale\SaleController;
+use App\Http\Controllers\Sale\SaleInvoiceController;
+use App\Http\Controllers\buy\BuyInvoiceController;
 use App\Http\Controllers\ProductSupplierController;
 use App\Http\Controllers\Treasury\RecipeController;
 use App\Http\Controllers\Treasury\AnalyseController;
@@ -93,6 +95,15 @@ Route::middleware('auth')->group(function () {
 
     ## Vente
     Route::resource('sale', SaleController::class);
+    Route::get('sale-invoice', [SaleInvoiceController::class, 'index'])->name('sale.invoice');
+    Route::get('sale-invoice-create', [SaleInvoiceController::class, 'create'])->name('sale.invoice.create');
+    Route::get('sale-invoice-data', [SaleInvoiceController::class, 'dataCreateInvoice'])->name('sale.invoice.data');
+    Route::post('sale-invoice-store', [SaleInvoiceController::class, 'store'])->name('sale.invoice.store');
+
+
+    ## Buy
+    Route::get('buy-home', [BuyInvoiceController::class, 'index'])->name('buy.home');
+    Route::get('buy-invoice-create', [BuyInvoiceController::class, 'create'])->name('buy.invoice.create');
 
     ## inventory
     Route::resource('/inventory', InventoryController::class);

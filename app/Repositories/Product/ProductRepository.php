@@ -13,7 +13,7 @@ class ProductRepository extends ResourceRepository {
 
     public function getAll() 
     {
-        return $this->model->with('category')->orderBy('id', 'DESC')->get();
+        return $this->model->with('category', 'unitMeasure')->orderBy('id', 'DESC')->get();
     }
 
 }

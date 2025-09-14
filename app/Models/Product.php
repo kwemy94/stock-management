@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Inventory\Inventory;
+use App\Models\Sale\SaleInvoiceLine;
+use App\Models\Sale\SalePricing;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,5 +31,15 @@ class Product extends Model
 
     public function category() {
         return $this->belongsTo(Category::class);
+    }
+    public function unitMeasure() {
+        return $this->belongsTo(Unit::class, 'unit_id');
+    }
+
+    public function salePricing() {
+        return  $this->hasMany(SalePricing::class);
+    }
+    public function saleInvoiceLines() {
+        return  $this->hasMany(SaleInvoiceLine::class);
     }
 }

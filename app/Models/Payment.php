@@ -18,4 +18,7 @@ class Payment extends Model
     public function order() {
         return $this->belongsTo(Order::class);
     }
+    public function paymentMode() {
+        return $this->belongsTo(PaymentMode::class, 'mode_id');
+    }
 }

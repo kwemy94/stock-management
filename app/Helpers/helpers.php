@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -96,7 +97,7 @@ if (!function_exists('toggleDatabaseById')) {
     {
         toggleDatabase(false);
         $ets = DB::table('etablissements')->where('id', $etablissementId)->first();
-        
+
         if ($ets):
             try {
                 $settings = json_decode($ets->settings);
@@ -175,12 +176,38 @@ if (!function_exists('automationExpense')) {
     }
 }
 
-if(!function_exists('checkCompany')){
-    function checkCompany(){
+if (!function_exists('checkCompany')) {
+    function checkCompany()
+    {
         toggleDatabase(false);
         $user = Auth::user();
         $company = DB::table('etablissements')->where('email', 'tigod2302@gmail.com')->first();
 
         return $user->etablissement_id == $company->id && $user->email == "tigod2302@gmail.com";
+    }
+}
+
+if (!function_exists('generateInvoiceNumber')) {
+    function generateInvoiceNumber($_table, $init = 'FV', $client_db = true)
+    {
+        $today = Carbon::now();
+        $dateCode = $today->format('y-m-d');
+
+        // toggleDatabase($client_db);
+        # Récupérer la dernière facture du jour
+        $lastInvoice = DB::table($_table)
+            ->whereDate('created_at', $today->toDateString())
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if ($lastInvoice) {
+            # Extraire la séquence de la dernière facture
+            $lastNumber = intval(substr($lastInvoice->invoice_number, -3));
+            $nextNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $nextNumber = '001'; # première facture de la journée
+        }
+
+        return "{$init}-{$dateCode}-{$nextNumber}";
     }
 }

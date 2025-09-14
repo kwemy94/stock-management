@@ -35,8 +35,8 @@
     @yield('dashboard-datatable-css')
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed">
-    {{-- <body class="hold-transition sidebar-mini sidebar-collapse layout-fixed"> --}}
+{{-- <body class="hold-transition sidebar-mini layout-fixed"> --}}
+<body class="hold-transition sidebar-mini sidebar-collapse layout-fixed">
     <div class="wrapper">
 
         <!-- Preloader -->
@@ -109,6 +109,7 @@
                     <li><a href="{{ route('customer.index') }}">Clients</a></li>
                     <li><a href="{{ route('supplier.index') }}">Fournisseurs</a></li>
                     <li><a href="{{ route('unite-mesure.index') }}">Unité de mesure</a></li>
+                    <li><a href="{{ route('product.index') }}">Produit</a></li>
                     <li><a href="#">Utilisateur</a></li>
                     <li><a href="{{ route('setting.index') }}">Configuration</a></li>
                     @if ($adminCompany)

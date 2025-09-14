@@ -20,16 +20,16 @@
              <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
 
+             
+             <li class="nav-header">Approvisionnement</li>
              <li class="nav-item">
-                 <a href="{{ route('product.index') }}"
-                     class="nav-link {{ request()->routeIs('product.index') ? 'active' : '' }}">
+                 <a href="{{ route('buy.home') }}" class="nav-link">
                      <i class="nav-icon far fa-calendar-alt"></i>
                      <p>
-                         {{ __('dashboard.product') }}
+                         {{ __('Home achat') }}
                      </p>
                  </a>
              </li>
-             <li class="nav-header">Approvisionnement</li>
              <li class="nav-item">
                  <a href="{{ route('achat.index') }}"
                      class="nav-link {{ request()->routeIs('achat.index') ? 'active' : '' }}">
@@ -51,7 +51,7 @@
                  </a>
              </li>
              <li class="nav-item">
-                 <a href="{{ route('order.create') }}" class="nav-link">
+                 <a href="{{ route('sale.invoice') }}" class="nav-link">
                      <i class="nav-icon far fa-calendar-alt"></i>
                      <p>
                          {{ __('dashboard.sale') }}

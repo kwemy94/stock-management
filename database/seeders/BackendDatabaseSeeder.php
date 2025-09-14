@@ -11,6 +11,7 @@ class BackendDatabaseSeeder extends Seeder
         # Tous mes seeds backends ici
         $this->call([
             SettingSeeder::class,
+            PaymentModeSeeder::class,
         ]);
     }
 }
