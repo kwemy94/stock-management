@@ -6,7 +6,7 @@ import { addSaleInvoice, getDataForInvoice } from "./services/sale";
 import Loader from "./Loader";
 import { toast, ToastContainer } from "react-toastify";
 
-export default function SaleInvoice() {
+export default function SaleInvoice({ type }) {
     // État de l’en-tête
     const [form, setForm] = useState({
         client: null,
@@ -169,13 +169,18 @@ export default function SaleInvoice() {
             return;
         }
 
-        if (statut == 1 && form.montantEncaisse == 0) {
-            confirm("⭕❌ Voulez-vous confirmer sans encaisser ?");
+        if (statut == "confirmed" && form.montantEncaisse == 0) {
+            const ok = confirm("⭕❌ Voulez-vous confirmer sans encaisser ?");
+            if (!ok) return;
         } else {
-            if (statut == 1 && form.montantFacture != form.montantEncaisse) {
-                confirm(
+            if (
+                statut == "confirmed" &&
+                form.montantFacture != form.montantEncaisse
+            ) {
+                const ok = confirm(
                     "♻ Montant à encaisser différent du montant de la facture. Voulez-vous confirmer cet encaisser ?"
                 );
+                if (!ok) return;
             }
         }
 
@@ -238,7 +243,7 @@ export default function SaleInvoice() {
             toast.error("Echec de création de facture");
         } finally {
             setLoading(false);
-            setDisableBtn(false)
+            setDisableBtn(false);
         }
     };
 
@@ -348,7 +353,11 @@ export default function SaleInvoice() {
                             className="btn btn-danger btn-sm"
                             onClick={() => setRows(rows.slice(0, -1))}
                         >
-                            - Delete
+                            <span
+                                className="fas fa-trash"
+                                aria-hidden="true"
+                            ></span>{" "}
+                            Delete
                         </button>
                     </div>
 
@@ -455,36 +464,52 @@ export default function SaleInvoice() {
                 </div>
                 <div className="d-flex justify-content-center gap-2 mt-3 pb-3">
                     {/* <button className="btn btn-secondary" disabled={disableBtn}>Annuler</button> */}
-                    <button
-                        className="btn btn-success"
-                        disabled={disableBtn}
-                        onClick={(e) => {
-                            handleSubmit(e, 1);
-                        }}
-                    >
-                        Confirmer
-                    </button>
-                    <button
-                        className="btn btn-primary"
-                        disabled={disableBtn}
-                        onClick={(e) => {
-                            handleSubmit(e, 0);
-                        }}
-                    >
-                        Enregistrer comme brouillon
-                    </button>
+                    {type == "proformat" ? (
+                        <button
+                            className="btn btn-primary"
+                            disabled={disableBtn}
+                            onClick={(e) => {
+                                handleSubmit(e, "proformat");
+                            }}
+                        >
+                            Enegistrer dévis
+                        </button>
+                    ) : (
+                        <>
+                            <button
+                                className="btn btn-success"
+                                disabled={disableBtn}
+                                onClick={(e) => {
+                                    handleSubmit(e, "confirmed");
+                                }}
+                            >
+                                Confirmer
+                            </button>
+                            <button
+                                className="btn btn-primary"
+                                disabled={disableBtn}
+                                onClick={(e) => {
+                                    handleSubmit(e, "draft");
+                                }}
+                            >
+                                Enregistrer comme brouillon
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         </div>
     );
 }
 
-if (document.getElementById("sale-invoice")) {
-    const Index = ReactDOM.createRoot(document.getElementById("sale-invoice"));
+const container = document.getElementById("sale-invoice");
+if (container) {
+    const Index = ReactDOM.createRoot(container);
+    const type = container.getAttribute("data-type");
 
     Index.render(
         <React.StrictMode>
-            <SaleInvoice />
+            <SaleInvoice type={type} />
         </React.StrictMode>
     );
 }

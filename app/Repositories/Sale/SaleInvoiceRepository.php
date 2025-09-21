@@ -19,6 +19,12 @@ class SaleInvoiceRepository extends ResourceRepository
             ->where('status', 'confirmed')
             ->orderBy('id', 'DESC')->get();
     }
+    public function getDevisInvoice()
+    {
+        return $this->model->with('customer', 'payments', 'invoiceLines')
+            ->where('status', 'proformat')
+            ->orderBy('id', 'DESC')->get();
+    }
     public function getDraftInvoice()
     {
         return $this->model->with('customer', 'payments', 'invoiceLines')

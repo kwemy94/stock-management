@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const addSaleInvoice = async (data) => {
     try {
-        const res = await axios.post(`sale-invoice-store`, data, {
+        const res = await axios.post(`/sale-invoice-store`, data, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },

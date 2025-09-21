@@ -96,7 +96,7 @@ Route::middleware('auth')->group(function () {
     ## Vente
     Route::resource('sale', SaleController::class);
     Route::get('sale-invoice', [SaleInvoiceController::class, 'index'])->name('sale.invoice');
-    Route::get('sale-invoice-create', [SaleInvoiceController::class, 'create'])->name('sale.invoice.create');
+    Route::get('sale-invoice-create/{type}', [SaleInvoiceController::class, 'create'])->name('sale.invoice.create');
     Route::get('sale-invoice-data', [SaleInvoiceController::class, 'dataCreateInvoice'])->name('sale.invoice.data');
     Route::post('sale-invoice-store', [SaleInvoiceController::class, 'store'])->name('sale.invoice.store');
 

@@ -45,15 +45,16 @@ class SaleInvoiceController extends Controller
 
         $draftInvoices = $this->saleInvoiceRepository->getDraftInvoice();
         $confirmInvoices = $this->saleInvoiceRepository->getConfirmInvoice();
+        $devisInvoices = $this->saleInvoiceRepository->getDevisInvoice();
 
-        return view('admin.sale.invoice.index', compact('saleInvoices', 'draftInvoices', 'confirmInvoices'));
+        return view('admin.sale.invoice.index', compact('saleInvoices', 'draftInvoices', 'confirmInvoices', 'devisInvoices'));
     }
-    public function create()
+    public function create($type = 'facture')
     {
         toggleDatabase();
         $saleInvoices = $this->saleInvoiceRepository->getAll();
 
-        return view('admin.sale.invoice.create');
+        return view('admin.sale.invoice.create', compact('type'));
     }
 
     public function dataCreateInvoice()
@@ -72,20 +73,22 @@ class SaleInvoiceController extends Controller
 
     public function store(Request $request)
     {
-        toggleDatabase();
-        $inputs = $request->except(['lines']);
-        $lines = $request->lines;
-        // dd($request->all());
-
-        $invoiceInputs['customer_id'] = $inputs['client'];
-        $invoiceInputs['date'] = $inputs['dateFacture'];
-        $invoiceInputs['type_vente'] = 'detail';
-        $invoiceInputs['montant_facture'] = $inputs['montantFacture'];
-        $invoiceInputs['montant_encaisse'] = $inputs['montantEncaisse'];
-        $invoiceInputs['montant_du'] = $inputs['montantDu'];
-        $invoiceInputs['status'] = $inputs['status'] == 1 ? 'confirmed' : 'draft';
-        $invoiceInputs['invoice_number'] = generateInvoiceNumber('sale_invoices', 'FV', true);
         try {
+            toggleDatabase();
+            $inputs = $request->except(['lines']);
+            $lines = $request->lines;
+            // dd($request->all());
+
+            $invoiceInputs['customer_id'] = $inputs['client'];
+            $invoiceInputs['date'] = $inputs['dateFacture'];
+            $invoiceInputs['type_vente'] = 'detail';
+            $invoiceInputs['montant_facture'] = $inputs['montantFacture'];
+            $invoiceInputs['montant_encaisse'] = $inputs['montantEncaisse'];
+            $invoiceInputs['montant_du'] = $inputs['montantDu'];
+            // $invoiceInputs['status'] = $inputs['status'] == 1 ? 'confirmed' : 'draft';
+            $invoiceInputs['status'] = $inputs['status'];
+            $invoiceInputs['invoice_number'] = generateInvoiceNumber('sale_invoices', 'FV', true);
+
             DB::beginTransaction();
             $invoice = $this->saleInvoiceRepository->store($invoiceInputs);
 
