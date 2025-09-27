@@ -38,21 +38,21 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         toggleDatabase();
-        $validation = Validator::make(
-            $request->all(),
-            [
-                'email' => 'required|unique:customers',
-            ],
-            [
-                'email.unique' => 'Email dejà utilisée.',
-            ]
-        );
+        // $validation = Validator::make(
+        //     $request->all(),
+        //     [
+        //         'email' => 'unique:customers',
+        //     ],
+        //     [
+        //         'email.unique' => 'Email dejà utilisée.',
+        //     ]
+        // );
 
-        if ($validation->fails()) {;
-            dd($validation->errors());
+        // if ($validation->fails()) {;
+        //     dd($validation->errors());
 
-            return redirect()->back()->withErrors($validation->errors())->withInput();
-        }
+        //     return redirect()->back()->withErrors($validation->errors())->withInput();
+        // }
         $inputs = $request->post();
         $inputs['user_id'] = Auth::user()->id;
         try {

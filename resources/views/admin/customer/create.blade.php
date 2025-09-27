@@ -22,16 +22,17 @@
                                         name="name" id="name">
                                 </div>
                                 <div class="form-group">
-                                    <label for="cni">{{ __('CNI') }} <em>*</em></label>
+                                    <label for="phone">Téléphone <em>*</em></label>
+                                    <input type="text" class="form-control form-control-border border-width-2 required"
+                                        name="phone" id="phone">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cni">{{ __('CNI') }} <em></em></label>
                                     <input type="text" class="form-control form-control-border border-width-2"
                                         name="cni" id="name">
                                 </div>
         
-                                <div class="form-group">
-                                    <label for="phone">Téléphone</label>
-                                    <input type="text" class="form-control form-control-border border-width-2 required"
-                                        name="phone" id="phone">
-                                </div>
+                                
                                 <div class="form-group">
                                     <label for="email">Email</label>
                                     <input type="email" class="form-control form-control-border border-width-2"

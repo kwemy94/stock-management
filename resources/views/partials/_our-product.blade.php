@@ -30,7 +30,8 @@
             <!-- Card 2 -->
             <div class="col-sm-6 col-md-4 col-lg-3">
                 <div class="card product-card h-100">
-                    <img src="https://picsum.photos/600/400?random=12" class="card-img-top" alt="Produit 2">
+                    {{-- <img src="https://picsum.photos/600/400?random=12" class="card-img-top" alt="Produit 2"> --}}
+                    <img src="{{ asset('front-template/assets/images/hero/onboard3.png') }}" class="card-img-top" alt="Produit 2">
                     <div class="card-body d-flex flex-column">
                         <span class="badge bg-success badge-category mb-2">Application mobile</span>
                         <h5 class="card-title">Qr Notify</h5>

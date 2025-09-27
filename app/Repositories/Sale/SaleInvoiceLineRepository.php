@@ -16,4 +16,8 @@ class SaleInvoiceLineRepository extends ResourceRepository {
         return $this->model->with('product', 'invoice')->orderBy('id', 'DESC')->get();
     }
 
+    public function destroyInvoiceLine($invoice_id) {
+        $this->model->where('invoice_id',$invoice_id)->delete();
+    }
+
 }

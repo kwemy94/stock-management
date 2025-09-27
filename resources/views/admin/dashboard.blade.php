@@ -33,7 +33,7 @@
                             <p>{{__('dashboard.user')}}</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-users"></i>
+                            <i class="fa fa-users"></i>
                         </div>
                         <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
@@ -48,7 +48,7 @@
                             <p>{{__('dashboard.supplier')}}</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-stats-bars"></i>
+                            <i class="fa fa-industry"></i>
                         </div>
                         <a href="{{route('supplier.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
@@ -78,7 +78,7 @@
                             <p>{{__('dashboard.category')}}</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-pie-graph"></i>
+                            <i class="fa fa-tags"></i>
                         </div>
                         <a href="{{ route('category.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
@@ -92,7 +92,7 @@
                             <p>{{__('dashboard.product')}}</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-pie-graph"></i>
+                            <i class="fa fa-boxes"></i>
                         </div>
                         <a href="{{ route('product.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
@@ -106,7 +106,7 @@
                             <p>{{__('dashboard.order')}}</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-pie-graph"></i>
+                            <i class="fa fa-file-invoice"></i>
                         </div>
                         <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
@@ -120,7 +120,7 @@
                             <p>{{__('dashboard.payment')}}</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-pie-graph"></i>
+                            <i class="fa fa-credit-card"></i>
                         </div>
                         <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
@@ -149,7 +149,7 @@
                                             <p>{{__('POS')}}</p>
                                         </div>
                                         <div class="icon">
-                                            <i class="ion ion-card"></i>
+                                            <i class="fa fa-cash-register"></i>
                                         </div>
                                         <a href="{{ route('order.create') }}" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
                                     </div>
@@ -160,7 +160,7 @@
                                             <p>{{__('Stock')}}</p>
                                         </div>
                                         <div class="icon">
-                                            <i class="fa fa-cubes sidebar-left-icon"></i>
+                                            <i class="fa fa-warehouse"></i>
                                         </div>
                                         <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
                                     </div>
@@ -171,7 +171,7 @@
                                             <p>{{__('Bilan')}}</p>
                                         </div>
                                         <div class="icon">
-                                            <i class="ion ion-stats-bars"></i>
+                                            <i class="fa fa-chart-line"></i>
                                         </div>
                                         <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
                                     </div>

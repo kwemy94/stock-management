@@ -36,4 +36,9 @@ class SaleInvoiceRepository extends ResourceRepository
         return $this->model->with('customer', 'payments', 'invoiceLines')->orderBy('id', 'DESC')->get();
     }
 
+    public function getById($id) 
+    {
+        return $this->model->where('id', $id)->with('customer', 'payments', 'invoiceLines', 'invoiceLines.product', 'invoiceLines.product.unitMeasure')->first();
+    }
+
 }

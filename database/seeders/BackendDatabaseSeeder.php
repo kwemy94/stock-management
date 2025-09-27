@@ -12,6 +12,9 @@ class BackendDatabaseSeeder extends Seeder
         $this->call([
             SettingSeeder::class,
             PaymentModeSeeder::class,
+            CategorySeeder::class,
+            UnitMeasureSeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }

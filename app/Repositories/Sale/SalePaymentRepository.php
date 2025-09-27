@@ -16,4 +16,9 @@ class SalePaymentRepository extends ResourceRepository {
         return $this->model->with('saleInvoice')->orderBy('id', 'DESC')->get();
     }
 
+    public function getByInvoiceId($invoice_id)
+    {
+        return $this->model->with('invoice')->where('invoice_id', $invoice_id)->first();
+    }
+
 }

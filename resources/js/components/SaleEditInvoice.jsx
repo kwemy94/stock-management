@@ -2,20 +2,34 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ReactDOM from "react-dom/client";
-import { addSaleInvoice, getDataForInvoice } from "./services/sale";
+import { addSaleInvoice, getDataForInvoice, updateSaleInvoice } from "./services/sale";
 import Loader from "./Loader";
 import { toast, ToastContainer } from "react-toastify";
+import { stringify } from "postcss";
 
-export default function SaleInvoice({ type }) {
+export default function SaleEditInvoice({invoice}) {
     // État de l’en-tête
-    const [form, setForm] = useState({
-        client: null,
-        dateFacture: new Date().toISOString().slice(0, 10),
-        montantFacture: 0,
-        montantEncaisse: 0,
-        montantDu: 0,
-        modePaiement: [],
-    });
+    // const [form, setForm] = useState({
+    //     client: null,
+    //     dateFacture: new Date().toISOString().slice(0, 10),
+    //     montantFacture: 0,
+    //     montantEncaisse: 0,
+    //     montantDu: 0,
+    //     modePaiement: [],
+    // });
+
+    const [form, setForm] = useState(() => ({
+        client: invoice
+            ? { value: invoice.customer.id, label: `${invoice.customer.name} (${invoice.customer.phone})`, ...invoice.customer }
+            : null,
+        dateFacture: invoice ? invoice.date : new Date().toISOString().slice(0, 10),
+        montantFacture: invoice ? invoice.montant_facture : 0,
+        montantEncaisse: invoice ? invoice.montant_encaisse : 0,
+        montantDu: invoice ? invoice.montant_du : 0,
+        modePaiement: invoice
+            ? { value: invoice.payments[0]?.mode_id, label: invoice.payments[0]?.name, ...invoice.payments }
+            : [],
+    }));
 
     const [articlesData, setArticlesData] = useState([]);
     const [clients, setClients] = useState([]);
@@ -24,17 +38,49 @@ export default function SaleInvoice({ type }) {
     const [disableBtn, setDisableBtn] = useState(false);
 
     // Lignes d’articles
-    const [rows, setRows] = useState([
-        {
-            article: null,
-            description: "",
-            quantite: 1,
-            prix: 0,
-            taxe: 0,
-            unite: "",
-            remise: 0,
-        },
-    ]);
+    // const [rows, setRows] = useState([
+    //     {
+    //         article: null,
+    //         description: "",
+    //         quantite: 1,
+    //         prix: 0,
+    //         taxe: 0,
+    //         unite: "",
+    //         remise: 0,
+    //     },
+    // ]);
+
+    const [rows, setRows] = useState(() => {
+        if (invoice && invoice.invoice_lines) {
+            return invoice.invoice_lines.map((line) => ({
+                article: {
+                    id: line.product_id,
+                    prix: line.unit_price,
+                    taxe: line.taxe,
+                    unite: line.unit_measure?.name,
+                    description: line.product.description,
+                    label: `${line.product.product_name} - ${line.product.id}`,
+                },
+                description: line.product.description,
+                quantite: line.quantity,
+                prix: line.unit_price,
+                taxe: line.taxe,
+                unite: line.unit_measure?.name,
+                remise: line.remise,
+            }));
+        }
+        return [
+            {
+                article: null,
+                description: "",
+                quantite: 1,
+                prix: 0,
+                taxe: 0,
+                unite: "",
+                remise: 0,
+            },
+        ];
+    });
 
     useEffect(() => {
         loadData();
@@ -42,6 +88,7 @@ export default function SaleInvoice({ type }) {
 
     const loadData = async () => {
         try {
+            console.log('invoice', invoice, invoice.id, invoice.payments[0]);
             const res = await getDataForInvoice();
             console.log("data", res);
             if (res.success) {
@@ -153,7 +200,7 @@ export default function SaleInvoice({ type }) {
         );
     };
     // Fonction de soumission
-    const handleSubmit = async (e, statut, another = false) => {
+    const handleSubmit = async (e, statut) => {
         e.preventDefault();
 
         // Vérification des champs obligatoires
@@ -211,9 +258,9 @@ export default function SaleInvoice({ type }) {
         setLoading(true);
         setDisableBtn(true);
         try {
-            const res = await addSaleInvoice(invoiceData);
+            const res = await updateSaleInvoice(invoiceData, invoice.id);
             console.log("save", res);
-            if (res.status == 201) {
+            if (res.status == 200) {
                 toast.success(res.message || "Facture créer avec succès !!!");
                 setForm({
                     client: null,
@@ -234,16 +281,15 @@ export default function SaleInvoice({ type }) {
                         remise: 0,
                     },
                 ]);
-                if (!another) {
-                    window.location.href = "/sale-invoice/true";
-                }
+                window.location.href = "/sale-invoice/true";
+
             } else {
-                const msg = res.message || "Echec sauvegarde facture";
+                const msg = res.message || "Echec mise à jour de la facture";
                 toast.error(msg);
             }
         } catch (error) {
-            console.log("Erreur d'enregistrement", error);
-            toast.error("Echec de création de facture");
+            console.log("Erreur d'update", error);
+            toast.error("Echec de mise à jour de facture");
         } finally {
             setLoading(false);
             setDisableBtn(false);
@@ -256,7 +302,7 @@ export default function SaleInvoice({ type }) {
             <div className="toast-container">
                 <ToastContainer limit={3} />
             </div>
-            <h4>Nouvelle facture</h4>
+            <h4>Modification facture N°  {invoice.invoice_number} </h4>
             <div
                 className="row g-3 border rounded p-3 mb-4"
                 style={{ backgroundColor: "white" }}
@@ -314,7 +360,7 @@ export default function SaleInvoice({ type }) {
                     <input
                         type="text"
                         className="form-control"
-                        value={form.montantFacture.toFixed(2)}
+                        value={form?.montantFacture}
                         readOnly
                     />
                 </div>
@@ -323,7 +369,7 @@ export default function SaleInvoice({ type }) {
                     <input
                         type="text"
                         className="form-control"
-                        value={form.montantDu.toFixed(2)}
+                        value={form.montantDu}
                         readOnly
                     />
                 </div>
@@ -467,27 +513,16 @@ export default function SaleInvoice({ type }) {
                 </div>
                 <div className="d-flex justify-content-center gap-2 mt-3 pb-3">
                     {/* <button className="btn btn-secondary" disabled={disableBtn}>Annuler</button> */}
-                    {type == "proformat" ? (
-                        <>
-                            <button
-                                className="btn btn-primary"
-                                disabled={disableBtn}
-                                onClick={(e) => {
-                                    handleSubmit(e, "proformat");
-                                }}
-                            >
-                                Enegistrer
-                            </button>
-                            <button
-                                className="btn btn-primary"
-                                disabled={disableBtn}
-                                onClick={(e) => {
-                                    handleSubmit(e, "proformat", true);
-                                }}
-                            >
-                                Enegistrer & Continuer
-                            </button>
-                        </>
+                    {invoice?.status == "proformat" ? (
+                        <button
+                            className="btn btn-primary"
+                            disabled={disableBtn}
+                            onClick={(e) => {
+                                handleSubmit(e, "proformat");
+                            }}
+                        >
+                            Enegistrer dévis
+                        </button>
                     ) : (
                         <>
                             <button
@@ -506,16 +541,7 @@ export default function SaleInvoice({ type }) {
                                     handleSubmit(e, "draft");
                                 }}
                             >
-                                Enregistrer
-                            </button>
-                            <button
-                                className="btn btn-primary"
-                                disabled={disableBtn}
-                                onClick={(e) => {
-                                    handleSubmit(e, "draft", true);
-                                }}
-                            >
-                                Enregistrer & Continuer
+                                Enregistrer comme brouillon
                             </button>
                         </>
                     )}
@@ -525,14 +551,14 @@ export default function SaleInvoice({ type }) {
     );
 }
 
-const container = document.getElementById("sale-invoice");
+const container = document.getElementById("sale-invoice-edit");
 if (container) {
     const Index = ReactDOM.createRoot(container);
-    const type = container.getAttribute("data-type");
+    const invoice = JSON.parse(container.getAttribute("data-invoice"));
 
     Index.render(
         <React.StrictMode>
-            <SaleInvoice type={type} />
+            <SaleEditInvoice invoice={invoice} />
         </React.StrictMode>
     );
 }
