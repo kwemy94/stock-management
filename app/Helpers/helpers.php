@@ -211,3 +211,12 @@ if (!function_exists('generateInvoiceNumber')) {
         return "{$init}-{$dateCode}-{$nextNumber}";
     }
 }
+
+if(!function_exists('getCompanyInfo')){
+    function getCompanyInfo(){
+        $setting = DB::table('settings')->first();
+        
+        return $setting;
+
+    }
+}

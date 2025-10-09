@@ -4,14 +4,15 @@ namespace App\Http\Controllers\Sale;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Repositories\Product\ProductRepository;
 use App\Repositories\Sale\SaleInvoiceRepository;
+use App\Repositories\Sale\SalePaymentRepository;
 use App\Repositories\Customer\CustomerRepository;
+use App\Repositories\Sale\SaleInvoiceLineRepository;
 use Illuminate\Database\Events\TransactionBeginning;
 use App\Repositories\PaymentMode\PaymentModeRepository;
-use App\Repositories\Sale\SaleInvoiceLineRepository;
-use App\Repositories\Sale\SalePaymentRepository;
 
 class SaleInvoiceController extends Controller
 {
@@ -47,9 +48,10 @@ class SaleInvoiceController extends Controller
         $draftInvoices = $this->saleInvoiceRepository->getDraftInvoice();
         $confirmInvoices = $this->saleInvoiceRepository->getConfirmInvoice();
         $devisInvoices = $this->saleInvoiceRepository->getDevisInvoice();
+        $paymentModes = $this->paymentModeRepository->getAll();
 
         if ($all) {
-            $result = view('admin.sale.invoice.index_all', compact('saleInvoices', 'draftInvoices', 'confirmInvoices', 'devisInvoices'));
+            $result = view('admin.sale.invoice.index_all', compact('saleInvoices', 'draftInvoices', 'confirmInvoices', 'devisInvoices', 'paymentModes'));
         } else {
             $result = view('admin.sale.invoice.index', compact('saleInvoices', 'draftInvoices', 'confirmInvoices', 'devisInvoices'));
         }
@@ -94,7 +96,15 @@ class SaleInvoiceController extends Controller
             $invoiceInputs['montant_du'] = $inputs['montantDu'];
             // $invoiceInputs['status'] = $inputs['status'] == 1 ? 'confirmed' : 'draft';
             $invoiceInputs['status'] = $inputs['status'];
-            $invoiceInputs['invoice_number'] = generateInvoiceNumber('sale_invoices', 'FV', true);
+            // dd((int)$invoiceInputs['montant_du'], (int)$invoiceInputs['montant_du'] == 0 && $invoiceInputs['status'] == 'confirmed', $invoiceInputs);
+            if ((int) $invoiceInputs['montant_du'] == 0 && $invoiceInputs['status'] == 'confirmed') {
+                $invoiceInputs['status'] = 'Payé';
+            }
+            if ($invoiceInputs['status'] == 'proformat') {
+                $invoiceInputs['invoice_number'] = generateInvoiceNumber('sale_invoices', 'PF', true);
+            } else {
+                $invoiceInputs['invoice_number'] = generateInvoiceNumber('sale_invoices', 'FV', true);
+            }
 
             DB::beginTransaction();
             $invoice = $this->saleInvoiceRepository->store($invoiceInputs);
@@ -110,11 +120,14 @@ class SaleInvoiceController extends Controller
 
             foreach ($lines as $line) {
                 $line['invoice_id'] = $invoice->id;
+
+                $prod = $this->productRepository->getById($line['product_id']);
+                $line['buy_price'] = $prod->unit_price;
+                // dd($prod, $line);
                 $this->saleInvoiceLineRepository->store($line);
 
-                if ($invoiceInputs['status'] == 'Confirmé') {
+                if ($invoiceInputs['status'] == 'confirmed') {
                     #décrémenter le stock du produit
-                    $prod = $this->productRepository->getById($line['product_id']);
                     $qty = $prod->stock_quantity - $line['quantity'];
                     $this->productRepository->update($prod->id, ['stock_quantity' => $qty]);
                 }
@@ -162,6 +175,9 @@ class SaleInvoiceController extends Controller
             $invoiceInputs['montant_du'] = $inputs['montantDu'];
             // $invoiceInputs['status'] = $inputs['status'] == 1 ? 'confirmed' : 'draft';
             $invoiceInputs['status'] = $inputs['status'];
+            if ($invoiceInputs['montant_du'] == 0 && $invoiceInputs['status'] == 'confirmed') {
+                $invoiceInputs['status'] = 'Payé';
+            }
             // $invoiceInputs['invoice_number'] = generateInvoiceNumber('sale_invoices', 'FV', true);
 
             DB::beginTransaction();
@@ -174,9 +190,9 @@ class SaleInvoiceController extends Controller
                 $payInputs['montant'] = $inputs['montantEncaisse'];
                 $payInputs['date'] = $inputs['dateFacture'];
                 $oldPayment = $this->salePaymentRepository->getByInvoiceId($id);
-                if($oldPayment){
+                if ($oldPayment) {
                     $this->salePaymentRepository->update($oldPayment->id, $payInputs);
-                }else{
+                } else {
                     $this->salePaymentRepository->store($payInputs);
                 }
             }
@@ -184,11 +200,13 @@ class SaleInvoiceController extends Controller
             $this->saleInvoiceLineRepository->destroyInvoiceLine($id);
             foreach ($lines as $line) {
                 $line['invoice_id'] = $id;
+                $prod = $this->productRepository->getById($line['product_id']);
+                $line['buy_price'] = $prod->unit_price;
+
                 $this->saleInvoiceLineRepository->store($line);
 
-                if ($invoiceInputs['status'] == 'Confirmé') {
+                if ($invoiceInputs['status'] == 'confirmed') {
                     #décrémenter le stock du produit
-                    $prod = $this->productRepository->getById($line['product_id']);
                     $qty = $prod->stock_quantity - $line['quantity'];
                     $this->productRepository->update($prod->id, ['stock_quantity' => $qty]);
                 }
@@ -197,7 +215,7 @@ class SaleInvoiceController extends Controller
             DB::commit();
             return response()->json([
                 "success" => true,
-                "message" => $invoiceInputs['status'] == 'proformat'? "Dévis mis à jour avec succès" : "Facture crée avec succès !"
+                "message" => $invoiceInputs['status'] == 'proformat' ? "Dévis mis à jour avec succès" : "Facture crée avec succès !"
             ], 200);
 
         } catch (\Throwable $th) {
@@ -209,4 +227,93 @@ class SaleInvoiceController extends Controller
             ], 500);
         }
     }
+
+
+    public function rapport()
+    {
+        toggleDatabase();
+        // $total = $this->salePaymentRepository->getTotal();
+        $encaissements = $this->salePaymentRepository->getEncaissement();
+        $chiffreAffaire = $this->saleInvoiceRepository->chiffreAffaire();
+        // dd($chiffreAffaire, $encaissements);
+
+        return $result = view('admin.sale.invoice.rapport', compact('encaissements', 'chiffreAffaire'));
+
+    }
+
+    public function payment(Request $request)
+    {
+        toggleDatabase();
+        $inputs = $request->all();
+
+        try {
+            DB::beginTransaction();
+            if ($inputs['amount_encaisse'] > 0) {
+                $payInputs['invoice_id'] = $inputs['invoice_id'];
+                $payInputs['mode_id'] = $inputs['mode_id'];
+                $payInputs['montant'] = $inputs['amount_encaisse'];
+                $payInputs['date'] = $inputs['date_pay'];
+                $this->salePaymentRepository->store($payInputs);
+            }
+            // dd($inputs['amount_encaisse'] == $inputs['amount']);
+            if ($inputs['amount_encaisse'] == $inputs['amount']) {
+                $updateInputs['status'] = "Payé";
+            }
+            $invoice = $this->saleInvoiceRepository->getById($request->invoice_id);
+
+
+            $updateInputs['montant_du'] = $invoice->montant_du - $inputs['amount_encaisse'];
+            $updateInputs['montant_encaisse'] = $invoice->montant_encaisse + $inputs['amount_encaisse'];
+            $this->saleInvoiceRepository->update($invoice->id, $updateInputs);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::error("Echec de paiement " . $th->getMessage());
+            return redirect()->back()->with("error", "Echec de paiement");
+        }
+
+
+        return redirect()->back()->with("success", "Paiement effectué avec succès");
+    }
+
+    public function show($id)
+    {
+        toggleDatabase();
+        $invoice = $this->saleInvoiceRepository->getById($id);
+        $paymentModes = $this->paymentModeRepository->getAll();
+        // dd($invoice);
+        return view('admin.sale.invoice.details', compact('invoice', 'paymentModes'));
+    }
+
+    public function confirmInvoice($id)
+    {# la confirmation de la facture entraine le mvt de stock
+
+        toggleDatabase();
+        try {
+            $invoice = $this->saleInvoiceRepository->getById($id);
+            if ($invoice->status == 'proformat') {
+                $this->saleInvoiceRepository->update($id, ['status' => 'draft']);
+                $message = 'Proformat validé avec succès';
+            } else {
+                DB::beginTransaction();
+                $this->saleInvoiceRepository->update($id, ['status' => 'confirmed']);
+
+                foreach ($invoice->invoiceLines as $key => $line) {
+                    #décrémenter le stock du produit
+                    $prod = $this->productRepository->getById($line->product_id);
+                    $qty = $prod->stock_quantity - $line->quantity;
+                    $this->productRepository->update($prod->id, ['stock_quantity' => $qty]);
+                }
+                DB::commit();
+                $message = "Commande confirmée avec succès";
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            Log::error("Echec confirmation facture : " . $th->getMessage());
+            return redirect()->back()->with("error", "Echec de confirmation de la facture");
+        }
+        return redirect()->back()->with("success", $message);
+    }
+
 }

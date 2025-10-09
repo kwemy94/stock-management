@@ -36,6 +36,7 @@
 </head>
 
 {{-- <body class="hold-transition sidebar-mini layout-fixed"> --}}
+
 <body class="hold-transition sidebar-mini sidebar-collapse layout-fixed">
     <div class="wrapper">
 
@@ -67,10 +68,10 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
 
-            <div class="row">
-                <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-sm-6 col-md-6 mt-2">
                     @if (session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
                             {{ session('success') }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -78,7 +79,7 @@
                         </div>
                     @endif
                     @if (session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
                             {{ session('error') }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -347,6 +348,12 @@
         $(".Langchange").change(function() {
             window.location.href = url + "?lang=" + $(this).val();
         });
+    </script>
+    <script>
+        // Faire disparaire l'alerte
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 3500);
     </script>
 </body>
 

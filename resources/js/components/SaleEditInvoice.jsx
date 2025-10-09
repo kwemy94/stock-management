@@ -101,7 +101,7 @@ export default function SaleEditInvoice({invoice}) {
 
                 const prod = res.data.products.map((p) => ({
                     id: p.id,
-                    prix: p.unit_price,
+                    prix: p.sale_price,
                     taxe: 0,
                     unite: p?.unit_measure?.name,
                     label: `${p.product_name} - ${p.id}`, // affichage
