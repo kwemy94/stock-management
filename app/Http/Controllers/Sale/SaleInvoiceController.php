@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Sale;
 
+use PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -314,6 +315,27 @@ class SaleInvoiceController extends Controller
             return redirect()->back()->with("error", "Echec de confirmation de la facture");
         }
         return redirect()->back()->with("success", $message);
+    }
+
+
+    public function printInvoice($id)
+    {
+        toggleDatabase();
+        try {
+            $invoice = $this->saleInvoiceRepository->getById($id);
+
+            $data = [
+                'invoice' => $invoice,
+            ];
+
+            $customPaper = array(0, 0, 792.00, 1224.00);
+            $pdf = PDF::loadView('admin.sale.invoice.print_invoice', $data)->setPaper($customPaper, 'portrait')->setWarnings(false);
+            // return $pdf->download('command.pdf');
+            return $pdf->stream();
+        } catch (\Throwable $th) {
+            Log::error("Echec impression facture : " . $th->getMessage());
+            return redirect()->back()->with("error", "Erreur survenue");
+        }
     }
 
 }

@@ -11,7 +11,7 @@ import { Color } from 'pspdfkit';
 
 function Pos() {
 
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState();
 
   // Copie des prod pour afficher par catégorie
   const [copyProducts, setCopyProducts] = useState();
@@ -414,7 +414,6 @@ function Pos() {
                       <th>Quantity</th>
                       <th className="text-right">Price</th>
                       <th className="text-right">Total</th>
-                      <th className="text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -427,18 +426,15 @@ function Pos() {
                             <input
                               // onBlur={(e) => changeProductQuantity(e.target.value, i)} 
                               onChange={(e) => changeProductQuantity(e, i)}
-                              type="number"
-                              min={1}
-                              step={0.5}
-                              style={{ width: "70px" }}
+                              type="text"
                               pattern="[0-9]*"
                               value={prod.quantity}
                               className='form-control' />
-                            {/* {prod.quantity} */}
+                            {prod.quantity}
                           </td>
-                          <td className='text-center'> {prod.price}</td>
-                          <td className='text-center'> {prod.total_price}</td>
-                          <td className='text-center'><button className='btn btn-danger btn-sm' onClick={(e) => deleteProdInCart(e, prod.prod_id)}><span className='fas fa-times'></span></button></td>
+                          <td> {prod.price}</td>
+                          <td> {prod.total_price}</td>
+                          <td><button className='btn btn-danger btn-sm' onClick={(e) => deleteProdInCart(e, prod.prod_id)}><span className='fas fa-times'></span></button></td>
 
                         </tr>
                       ))
@@ -507,8 +503,7 @@ function Pos() {
                   onClick={() => selectProduct(prod.id)}
                 // onClick={() => selectProduct_new(prod)}
                 >
-                  {/* <img src={`http://localhost:8000/storage/images/products/${prod.product_image}`} width={50} height={50} alt="" style={{ borderRadius: '10px' }} /> */}
-                  <img src={`http://localhost:8000/images/default_product.png`} width={50} height={50} alt="" style={{ borderRadius: '10px' }} />
+                  <img src={`http://localhost:8000/storage/images/products/${prod.product_image}`} width={50} height={50} alt="" style={{ borderRadius: '10px' }} />
                   <h6>{prod.product_name} ({prod.stock_quantity})</h6>
                 </div>
               ))

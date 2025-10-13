@@ -103,6 +103,7 @@ Route::middleware('auth')->group(function () {
     Route::get('sale-invoice-edit/{id}', [SaleInvoiceController::class, 'edit'])->name('sale.invoice.edit');
     Route::get('sale-invoice-details/{id}', [SaleInvoiceController::class, 'show'])->name('sale.invoice.show');
     Route::get('sale-invoice-confirm/{id}', [SaleInvoiceController::class, 'confirmInvoice'])->name('sale.invoice.confirm');
+    Route::get('sale-invoice-print/{id}', [SaleInvoiceController::class, 'printInvoice'])->name('sale.invoice.print');
     Route::get('sale-invoice-rapport', [SaleInvoiceController::class, 'rapport'])->name('sale.invoice.rapport');
     Route::post('sale-invoice-payment', [SaleInvoiceController::class, 'payment'])->name('sale.invoice.payment');
 

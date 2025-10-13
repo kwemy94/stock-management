@@ -116,8 +116,7 @@
 
                             @case('proformat')
                                 <a href="{{ route('sale.invoice.confirm', $invoice->id) }}" onclick="return confirmProformat()"
-                                    class="btn btn-outline-primary" id="valid-proformat">Valider le
-                                    proformat</a>
+                                    class="btn btn-outline-primary" id="valid-proformat">Convertir</a>
                             @break
 
                             @default

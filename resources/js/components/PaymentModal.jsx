@@ -12,18 +12,18 @@ const PaymentModal = (props) => {
                         </button>
                     </div>
                     <div className="modal-body">
-                        <div class="row">
-                            <div class="col-sm-6 mb-2">
-                                <div class="form-group">
-                                    <label for="app_name">Montant Total<em>*</em></label>
-                                    <input type="text" value={props.totalAmount} readOnly class="form-control form-control-border border-width-2 required"
+                        <div className="row">
+                            <div className="col-sm-6 mb-2">
+                                <div className="form-group">
+                                    <label htmlFor="app_name">Montant Total<em>*</em></label>
+                                    <input type="text" value={props.totalAmount} readOnly className="form-control form-control-border border-width-2 required"
                                         name="totalAmount" id="app_name" />
                                 </div>
                             </div>
-                            <div class="col-sm-6 mb-2">
-                                <div class="form-group">
-                                    <label for="app_phone">Montant perçu <em>*</em></label>
-                                    <input type="text" class="form-control form-control-border border-width-2 required"
+                            <div className="col-sm-6 mb-2">
+                                <div className="form-group">
+                                    <label htmlFor="app_phone">Montant perçu <em>*</em></label>
+                                    <input type="text" className="form-control form-control-border border-width-2 required"
                                         value={props.amount_received}
                                         name="received_amount" id="app_phone" />
                                 </div>

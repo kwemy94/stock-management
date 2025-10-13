@@ -72,7 +72,7 @@
         
         <div class="card card-outline card-success">
             <div class="card-header text-center">
-                <a href="#techbriva.com" class="h2"><b>{{ __('login.info-login.title') }} </b> TB</a>
+                <a href="#techbriva.com" class="h2"><b>{{ __('login.info-login.title') }} </b> </a>
             </div>
             <div class="card-body">
                 <p class="login-box-msg h4">{{ __('login.info-login.login') }}</p>
@@ -117,13 +117,13 @@
 
                 
 
-                <p class="mb-1">
+                {{-- <p class="mb-1">
                     @if (Route::has('password.request'))
                         <a href="{{ route('password.request') }}">
                             {{ __('login.info-login.password-forgot') }}
                         </a>
                     @endif
-                </p>
+                </p> --}}
                 <p class="mb-0">
                     <a href="#new" class="text-center">{{ __('login.info-login.register') }}</a>
                 </p>

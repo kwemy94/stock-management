@@ -80,8 +80,13 @@
                                                         data-amount_du={{ $invoice->montant_du }} {{-- data-amount_ ={{ $invoice->montant_facture }} --}}
                                                         style="color: #09c240; margin-left: 5px; margin-right: 5px;"></a>
                                                 @endif
-                                                <a href="{{ route('sale.invoice.show', $invoice->id) }}" title="Détails" class="fas fa-eye"
-                                                    style=" margin-left: 5px; margin-right: 5px;"></a>
+                                                <a href="{{ route('sale.invoice.show', $invoice->id) }}" title="Détails"
+                                                    class="fas fa-eye" style=" margin-left: 5px; margin-right: 5px;"></a>
+                                                @if (in_array($invoice->status, ['confirmed', 'proformat', 'Payé']))
+                                                    <a href="{{ route('sale.invoice.print', $invoice->id) }}"
+                                                        title="Imprimer" class="fas fa-print"
+                                                        style="color:grey; margin-left: 5px; margin-right: 5px;"></a>
+                                                @endif
 
                                                 <form method="post" action="{{ route('product.destroy', $invoice->id) }}"
                                                     id="form-delete-invoice{{ $invoice->id }}">

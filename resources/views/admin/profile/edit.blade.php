@@ -60,7 +60,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Email address</label>
-                                    <input type="email" name="email" class="form-control" id="email"
+                                    <input type="email" name="email" class="form-control" id="email" readonly
                                         value="{{ old('email', $user->email) }}" required autocomplete="username">
                                     <span class="mt-2" :messages="$errors - > get('email')"></span>
                                 </div>

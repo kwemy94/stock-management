@@ -4,15 +4,23 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 if (!function_exists('generateProductBarcode')) {
-    function generateProductBarcode($path = '/dashboard/produit')
+    function generateProductBarcode($code = null)
     {
-        $code = rand(555000, 699699);
-        $barcode = QrCode::size(60)->generate($code);
+        // $code = rand(555000, 699699);
+        // $barcode = QrCode::size(60)->generate($code);
 
-        return [$code, $barcode];
+        // return [$code, $barcode];
+        $generator = new BarcodeGeneratorPNG();
+        if(!$code){
+            $code = 'PROD-' . rand(1000, 9999); // Exemple : code unique
+        }
+        $barcode = $generator->getBarcode($code, $generator::TYPE_CODE_128);
+
+        return [$code, $barcode]; // retourne code + image binaire
     }
 }
 
@@ -212,10 +220,11 @@ if (!function_exists('generateInvoiceNumber')) {
     }
 }
 
-if(!function_exists('getCompanyInfo')){
-    function getCompanyInfo(){
+if (!function_exists('getCompanyInfo')) {
+    function getCompanyInfo()
+    {
         $setting = DB::table('settings')->first();
-        
+
         return $setting;
 
     }
