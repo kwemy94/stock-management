@@ -4,7 +4,7 @@ return [
     'product' => 'Produit',
     'category' => 'Categorie',
     'sale' => 'Vente',
-    'order' => 'Ordre de vente',
+    'order' => 'Facture POS',
     'user' => 'Utilisateur',
     'setting' => 'Paramètre',
     'supplier' => 'Fournisseur',

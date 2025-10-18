@@ -73,7 +73,7 @@
                     <!-- small box -->
                     <div class="small-box bg-white">
                         <div class="inner">
-                            <h3>{{count($customers)}}</h3>
+                            <h3>{{count($categories)}}</h3>
 
                             <p>{{__('dashboard.category')}}</p>
                         </div>

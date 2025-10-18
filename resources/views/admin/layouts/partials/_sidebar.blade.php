@@ -3,11 +3,15 @@
          color: #1f2d3d;
          font-weight: bold;
      }
+     .brand-link:hover .brand-text {
+         color: #1385ff !important;
+     }
  </style>
+
 
  {{-- Brand Logo  --}}
  <a href="{{ route('dashboard') }}" class="brand-link">
-     <img src='{{ isset($setting->logo) ? asset("storage/images/logo/$setting->logo") : asset('front-template/assets/images/logo/logo.png') }}'
+     <img src='{{ asset('front-template/assets/images/logo/logo.png') }}'
          alt="TechB" class="brand-image img-circle elevation-3" style="opacity: .8">
      <span class="brand-text ">Street Smart</span>
  </a>
