@@ -50,7 +50,7 @@
                      <i class="nav-icon fas fa-box"></i>
                      <p>
                          {{ __('dashboard.order') }}
-                         <span class="badge badge-info right">2</span>
+                         {{-- <span class="badge badge-info right">2</span> --}}
                      </p>
                  </a>
              </li>
