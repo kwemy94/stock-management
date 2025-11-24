@@ -28,7 +28,7 @@
                 <h1>Expertise et développement d'application sur mesure</h1>
                 <p>D’un simple site web à un logiciel complet, notre équipe analyse vos besoins et développe la solution
                     la plus adaptée en s’appuyant sur des technologies modernes.</p>
-                <a href="#contact" class="btn btn-lg mt-3">Avez-vous un projet ? Contactez-nous !</a>
+                <a href="{{ route('contact.us') }}" class="btn btn-lg mt-3">Avez-vous un projet ? Contactez-nous !</a>
             </div>
             <!-- Colonne droite : Carousel -->
             <div class="col-lg-6 text-center d-none d-lg-block">
