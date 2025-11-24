@@ -13,9 +13,10 @@
         <div class="collapse navbar-collapse" id="navMain">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link active" href="{{ route('home-page') }}">Accueil</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('home-page') }}">À propos</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('home-page') }}">Produits</a></li>
+                {{-- <li class="nav-item"><a class="nav-link" href="{{ route('home-page') }}">À propos</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('home-page') }}">Produits</a></li> --}}
                 <li class="nav-item"><a class="nav-link" href="{{ route('contact.us') }}">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Log in</a></li>
             </ul>
         </div>
 

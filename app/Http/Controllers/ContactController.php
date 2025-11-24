@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Mail\MessageGoogle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Contact\ContactRepository;
-use Illuminate\Support\Facades\DB;
 
 class ContactController extends Controller
 {
@@ -18,7 +20,8 @@ class ContactController extends Controller
         $this->contactRepository = $contactRepository;
     }
 
-    public function index(){
+    public function index()
+    {
         return view('contact');
     }
 
@@ -26,38 +29,32 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        $validation = Validator::make(
-            $request->all(),
-            [
+        
+        try {
+            $request->validate([
+                'name' => 'required',
+                'phone' => 'required',
                 'email' => 'required|email',
                 'subject' => 'required',
                 'message' => 'required',
-                'captcha' => 'required|captcha'
-            ],
-            [
-                'captcha.captcha' => 'Invalid captcha code.'
-            ]
-        );
+                // 'g-recaptcha-response' => 'required',
+            ]);
+            // dd('');
+            $inputs = $request->post();
+            unset($inputs['_token']);
 
-        // if ($validation->fails()) {
-
-        //     return redirect()->back()->withErrors($validation->errors())->withInput();
-        // }
-        // dd('');
-        $inputs = $request->post();
-        unset($inputs['_token']);
-        try {
-            DB::transaction(function() use($inputs) {
+            DB::transaction(function () use ($inputs) {
                 $this->contactRepository->store($inputs);
 
                 Mail::to('grantshell0@gmail.com')->bcc("tiwagrant@yahoo.fr")
                     ->queue(new MessageGoogle($inputs));
             });
-            
+
             return redirect()->back()->with('success', 'Message envoyé !');
         } catch (\Throwable $th) {
             //throw $th;
-            dd($th->getMessage());
+            // dd($th->getMessage());
+            Log::error('Contact form submission error: ' . $th->getMessage());
             return redirect()->back()->with('error', 'Oups! Une erreur s\'est produite !');
         }
     }

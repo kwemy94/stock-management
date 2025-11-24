@@ -11,7 +11,7 @@
 
  {{-- Brand Logo  --}}
  <a href="{{ route('dashboard') }}" class="brand-link">
-     <img src='{{ asset('front-template/assets/images/logo/logo.png') }}'
+     <img src='{{ asset('logo_chre2.png') }}'
          alt="TechB" class="brand-image img-circle elevation-3" style="opacity: .8">
      <span class="brand-text ">Street Smart</span>
  </a>

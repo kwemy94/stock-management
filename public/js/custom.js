@@ -1,18 +1,22 @@
-function ControlRequiredFields(inputs = $('.required')) {
+function ControlRequiredFields(inputs = $(".required")) {
     let success = true;
-    console.log('Nombre de champ requis : '+inputs.length);
+    console.log("Nombre de champ requis : " + inputs.length);
+
+    // Réinitialiser toutes les bordures de tab-pane
+    $(".tab-pane").removeClass("tab-error");
+
     for (let i = 0; i < inputs.length; i++) {
-        if ($(inputs[i]).val() == null || $(inputs[i]).val().trim() == '') { // trim permet d'enlever les tabulation inutile sur un champ
-            $(inputs[i]).addClass('error');
+        if ($(inputs[i]).val() == null || $(inputs[i]).val().trim() == "") {
+            // trim permet d'enlever les tabulation inutile sur un champ
+            $(inputs[i]).addClass("error-field");
             success = false;
         } else {
-            $(inputs[i]).removeClass('error');
+            $(inputs[i]).removeClass("error-field");
         }
     }
 
     return success;
 }
-
 
 async function postData(url = "", data, method = "POST") {
     // Default options are marked with *
