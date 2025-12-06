@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Repositories\Product\ProductRepository;
+use App\Repositories\Setting\SettingRepository;
 use App\Repositories\Sale\SaleInvoiceRepository;
 use App\Repositories\Sale\SalePaymentRepository;
 use App\Repositories\Customer\CustomerRepository;
@@ -23,6 +26,7 @@ class SaleInvoiceController extends Controller
     private $paymentModeRepository;
     private $saleInvoiceLineRepository;
     private $salePaymentRepository;
+    private $settingRepository;
 
     public function __construct(
         SaleInvoiceRepository $saleInvoiceRepository,
@@ -30,7 +34,8 @@ class SaleInvoiceController extends Controller
         ProductRepository $productRepository,
         PaymentModeRepository $paymentModeRepository,
         SaleInvoiceLineRepository $saleInvoiceLineRepository,
-        SalePaymentRepository $salePaymentRepository
+        SalePaymentRepository $salePaymentRepository,
+        SettingRepository $settingRepository
     ) {
         $this->saleInvoiceRepository = $saleInvoiceRepository;
         $this->customerRepository = $customerRepository;
@@ -38,6 +43,7 @@ class SaleInvoiceController extends Controller
         $this->paymentModeRepository = $paymentModeRepository;
         $this->saleInvoiceLineRepository = $saleInvoiceLineRepository;
         $this->salePaymentRepository = $salePaymentRepository;
+        $this->settingRepository = $settingRepository;
     }
 
     public function index($all = null)
@@ -320,15 +326,27 @@ class SaleInvoiceController extends Controller
 
     public function printInvoice($id)
     {
+        $user = Auth::user();
         toggleDatabase();
         try {
             $invoice = $this->saleInvoiceRepository->getById($id);
+            $setting = $this->settingRepository->getFirstSetting();
+
+            $qrContent = "Facture #{$invoice->invoice_number} | Montant: {$invoice?->montant_encaisse} FCFA";
+
+            // dd($qrContent, $invoice);
+            $qrCode = QrCode::size(150)->generate($qrContent);
 
             $data = [
                 'invoice' => $invoice,
+                'setting' => $setting,
+                'user' => $user,
+                'qrCode' => $qrCode
             ];
 
             $customPaper = array(0, 0, 792.00, 1224.00);
+            // dd($data);
+            // return view('admin.sale.invoice.print_invoice', $data);
             $pdf = PDF::loadView('admin.sale.invoice.print_invoice', $data)->setPaper($customPaper, 'portrait')->setWarnings(false);
             // return $pdf->download('command.pdf');
             return $pdf->stream();

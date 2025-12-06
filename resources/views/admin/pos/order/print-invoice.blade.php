@@ -1,230 +1,275 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
-    <title>Street Smart | invoice</title>
+    <meta charset="UTF-8">
+    <title>Facture – {{ $order_id }}</title>
+
+    <style>
+        /* ----------------------------------------------
+           GLOBAL PAGE STYLE A4
+        ------------------------------------------------*/
+        @page {
+            size: A4;
+            margin: 20mm;
+            /* marge imprimable */
+        }
+
+        body.landscape {
+            transform: rotate(-90deg) translate(-100%);
+            transform-origin: top left;
+            width: 100vh;
+            height: 100vw;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            margin: auto;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ----------------------------------------------
+           HEADER STYLE
+        ------------------------------------------------*/
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        .logo img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .header-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        /* ----------------------------------------------
+           TABLE STYLE
+        ------------------------------------------------*/
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+
+        th {
+            background: #d5e2f7;
+            /* gris clair premium */
+            color: #333;
+            /* texte foncé lisible */
+            padding: 10px;
+            font-weight: 600;
+            border-bottom: 2px solid #E3E6EB;
+        }
+
+
+        td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+        }
+
+        tr:nth-child(even) {
+            background: #f7f9fc;
+        }
+
+        /* ----------------------------------------------
+           TOTAL SECTION
+        ------------------------------------------------*/
+        .totals {
+            margin-top: 25px;
+            float: right;
+            width: 45%;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .totals table td {
+            border: none !important;
+            font-size: 15px;
+            padding: 4px;
+        }
+
+        .totals .amount {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        /* ----------------------------------------------
+           SIGNATURE + QR + CACHE
+        ------------------------------------------------*/
+        .footer-section {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .signature-box {
+            width: 45%;
+            border-top: 2px solid #555;
+            padding-top: 10px;
+            text-align: center;
+        }
+
+        .stamp img {
+            width: 120px;
+            opacity: 0.85;
+        }
+
+        .qrcode-box {
+            width: 45%;
+            text-align: right;
+        }
+
+        .qrcode-box img {
+            width: 120px;
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 6px;
+        }
+    </style>
 </head>
-<style type="text/css">
-    body {
-        font-family: 'Roboto Condensed', sans-serif;
-    }
 
+<body class="{{ $orientation ?? 'portrait' }}"> <!-- portrait ou landscape -->
 
-    .m-0 {
-        margin: 0px;
-    }
+    <div class="container">
 
-    .p-0 {
-        padding: 0px;
-    }
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo">
+                <img src="{{ 'data:image/png;base64,' . base64_encode(file_get_contents(storage_path('app/public/images/logo/' . $setting->logo))) }}"
+                    alt="Logo">
+            </div>
 
-    .pt-5 {
-        padding-top: 5px;
-    }
-
-    .mt-10 {
-        margin-top: 10px;
-    }
-
-    .text-center {
-        text-align: center !important;
-    }
-
-    .w-100 {
-        width: 100%;
-    }
-
-    .w-50 {
-        width: 50%;
-    }
-
-    .w-85 {
-        width: 85%;
-    }
-
-    .w-15 {
-        width: 15%;
-    }
-
-    .logo img {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    .logo {
-        margin-bottom: 5%;
-    }
-
-    .gray-color {
-        color: #5D5D5D;
-    }
-
-    .text-bold {
-        font-weight: bold;
-    }
-
-    .border {
-        border: 1px solid black;
-    }
-
-    table tr,
-    th,
-    td {
-        border: 1px solid #d2d2d2;
-        border-collapse: collapse;
-        padding: 7px 8px;
-    }
-
-    table tr th {
-        background: #F4F4F4;
-        font-size: 15px;
-    }
-
-    table tr td {
-        font-size: 13px;
-    }
-
-    table {
-        border-collapse: collapse;
-    }
-
-    .box-text p {
-        line-height: 10px;
-    }
-
-    .float-left {
-        float: left;
-    }
-
-    .total-part {
-        font-size: 16px;
-        line-height: 12px;
-    }
-
-    .total-right p {
-        padding-right: 20px;
-    }
-
-    
-</style>
-
-<body>
-    <div class="logo">
-        <img src="{{ isset($setting->logo)? 'data:image/png;base64,' . base64_encode(file_get_contents('storage/images/logo/' . $setting->logo)) : 'data:image/png;base64,' . base64_encode(file_get_contents('front-template/assets/images/logo/logo.png')) }}"
-            width="50px" height="50px" alt="logo">
-    </div>
-    {{-- <div class="head-title">
-        <h1 class="text-center m-0 p-0">Invoice</h1>
-    </div> --}}
-    <div class="add-detail mt-10">
-        {{-- @dd($orders): --}}
-        <div class="w-50 float-left mt-10">
-            <p class="m-0 pt-5 text-bold w-100">Invoice Id - <span class="gray-color">#00{{ $order_id }} </span></p>
-            <p class="m-0 pt-5 text-bold w-100">Order Id - <span class="gray-color">R00{{ $order_id }}I</span></p>
-            <p class="m-0 pt-5 text-bold w-100">Order Date - <span class="gray-color">{{ date('d-M-Y H:m:s') }}</span>
-            </p>
+            <div class="header-title">FACTURE</div>
+            <small>N° : <strong>#INV-{{ $order_id }}</strong></small><br>
+            <small>Date : {{ now()->format('d/m/Y H:i') }}</small>
         </div>
 
-
-        <div style="clear: both;"></div>
-    </div>
-    <div class="table-section bill-tbl w-100 mt-10">
-        <table class="table w-100 mt-10">
+        <!-- FROM - TO -->
+        <table>
             <tr>
-                <th class="w-50">From</th>
-                <th class="w-50">To</th>
+                <th>Émetteur</th>
+                <th>Client</th>
             </tr>
             <tr>
                 <td>
-                    <div class="box-text">
-                        <p>Ets : <strong>{{ isset($setting) ? $setting->app_name : 'Street Smart' }} </strong></p>
-                        <p>Tél : <strong>{{ isset($setting) ? $setting->phone : '+237 672517118' }} </strong></p>
-                        <p>Email : <strong>{{ isset($setting) ? $setting->email : 'infos@techbriva.com' }} </strong></p>
-                    </div>
+                    <strong>{{ $setting->app_name }}</strong><br>
+                    Tél : {{ $setting->phone }}<br>
+                    Email : {{ $setting->email }}<br>
                 </td>
                 <td>
-                    <div class="box-text">
-                        <p>Nom : <strong>{{ isset($customer) ? $customer->name : 'xxx' }} </strong></p>
-                        <p>Tél : <strong>{{ isset($customer) ? $customer->phone : 'xxx' }} </strong></p>
-                        <p>Email : <strong>{{ isset($customer) ? $customer->email : 'xxx' }} </strong></p>
-                    </div>
+                    <strong>{{ $customer?->name ?? 'xxx' }}</strong><br>
+                    Tél : {{ $customer?->phone ?? 'xxx' }}<br>
+                    Email : {{ $customer?->email ?? 'xxx' }}<br>
                 </td>
             </tr>
         </table>
-    </div>
-    {{-- <div class="table-section bill-tbl w-100 mt-10">
-    <table class="table w-100 mt-10">
-        <tr>
-            <th class="w-50">Payment Method</th>
-            <th class="w-50">Shipping Method</th>
-        </tr>
-        <tr>
-            <td>Cash On Delivery</td>
-            <td>Free Shipping - Free Shipping</td>
-        </tr>
-    </table>
-</div> --}}
-    <div class="table-section bill-tbl w-100 mt-10">
-        <table class="table w-100 mt-10">
+
+        <!-- PRODUCTS -->
+        <table>
             <tr>
-                <th class="w-50">Code</th>
-                <th class="w-50">Produit</th>
-                <th class="w-50">Price</th>
-                <th class="w-50">Qty</th>
-                <th class="w-50">total</th>
-                <th class="w-50">TVA</th>
-                <th class="w-50">Grand Total</th>
+                <th>Code</th>
+                <th>Produit</th>
+                <th>Prix</th>
+                <th>Qté</th>
+                <th>Total</th>
+                <th>TVA</th>
+                <th>Total TTC</th>
             </tr>
+
             @php
                 $total = 0;
-                $totalTax = 0;
+                $tva = 0;
             @endphp
-            @for ($i = 0; $i < count($orderProducts); $i++)
+
+            @foreach ($orderProducts as $item)
+                @php
+                    $subtotal = $item->quantity * $item->unit_price;
+                    $total += $subtotal;
+                @endphp
+
                 <tr align="center">
-                    @php
-                        $total += $orderProducts[$i]['quantity'] * $orderProducts[$i]['unit_price'];
-                        // $totalTax += (19.25/100) * $orderProducts[$i]->product->sale_price * $orderProducts[$i]['quantity'];
-                        $totalTax += 0;
-                    @endphp
-                    <td>{{ $orderProducts[$i]->product->code }}</td>
-                    <td>{{ $orderProducts[$i]->product->product_name }}</td>
-                    <td>{{ $orderProducts[$i]['unit_price'] }} {{$setting->devise}}</td>
-                    <td>{{ $orderProducts[$i]['quantity'] }}</td>
-                    <td>{{ $orderProducts[$i]['quantity'] * $orderProducts[$i]->product->sale_price }} {{$setting->devise}}</td>
+                    <td>{{ $item->product->code }}</td>
+                    <td>{{ $item->product->product_name }}</td>
+                    <td>{{ number_format($item->unit_price, 0, ',', '.') }} {{ $setting->devise }}</td>
+                    <td>{{ $item->quantity }}</td>
+                    <td>{{ number_format($subtotal, 0, ',', '.') }} {{ $setting->devise }}</td>
                     <td>0</td>
-                    <td>
-                        {{-- Ajouter la taxe au montant total --}}
-                        {{ $orderProducts[$i]['quantity'] * $orderProducts[$i]['unit_price'] }} {{$setting->devise}}
-                    </td>
-
+                    <td>{{ number_format($subtotal, 0, ',', '.') }} {{ $setting->devise }}</td>
                 </tr>
-            @endfor
-
-
-            {{-- @endforeach --}}
-
-
-            <tr>
-                <td colspan="7">
-                    <div class="total-part">
-                        <div class="total-left w-85 float-left" align="right">
-                            <p>Sub Total</p>
-                            <p>Tax </p>
-                            <p>Total Payable</p>
-                        </div>
-                        <div class="total-right w-15 float-left text-bold" align="right">
-                            <p>{{ $total }} {{ $setting->devise }} </p>
-                            <p>{{ $totalTax }} {{ $setting->devise }}</p>
-                            <p>{{ $total + $totalTax }} {{ $setting->devise }}</p>
-                        </div>
-                        <div style="clear: both;"></div>
-                    </div>
-                </td>
-            </tr>
+            @endforeach
         </table>
+
+        <!-- TOTALS -->
+        <div class="totals">
+            <table>
+                <tr>
+                    <td>Sous-total :</td>
+                    <td class="amount">{{ number_format($total, 0, ',', '.') }} {{ $setting->devise }}</td>
+                </tr>
+                <tr>
+                    <td>TVA :</td>
+                    <td class="amount">{{ number_format($tva, 0, ',', '.') }} {{ $setting->devise }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Total à payer :</strong></td>
+                    <td class="amount"><strong>{{ number_format($total + $tva, 0, ',', '.') }}
+                            {{ $setting->devise }}</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="clear: both;"></div>
+
+        <!-- FOOTER WITH SIGNATURE + STAMP + QR -->
+        <div class="footer-section">
+
+            <!-- SIGNATURE -->
+            <div class="signature-box">
+                <div>Signature</div>
+                <br><br><br>
+                <small>{{ $setting->app_name }}</small>
+            </div>
+
+            <!-- QR CODE + STAMP -->
+            <div class="qrcode-box">
+                <strong>Paiement par QR Code</strong><br>
+                <img src="{{ $payment_qr ?? '' }}" alt="QR Code">
+
+                <div class="stamp">
+                    <img src="{{ $stamp_image ?? '' }}" alt="Cachet">
+                </div>
+            </div>
+
+        </div>
+
     </div>
+
+</body>
 
 </html>

@@ -130,33 +130,60 @@
                 <th>Nom du produit</th>
                 <th>Code-barres</th>
                 <th>Date d’enregistrement</th>
+
+                <th>#</th>
+                <th>Nom du produit</th>
+                <th>Code-barres</th>
+                <th>Date d’enregistrement</th>
             </tr>
         </thead>
+
         <tbody>
-            @php $cpte = 1; @endphp
-            @foreach ($products as $product)
-                {{-- @dd($product) --}}
+            @php $index = 1; @endphp
+
+            @foreach ($products->chunk(2) as $chunk)
                 <tr>
-                    <td>{{ $cpte++ }}</td>
-                    <td>{{ $product->product_name }}</td>
+                    {{-- 🔹 Produit 1 --}}
+                    @php $p1 = $chunk[0]; @endphp
+                    <td>{{ $index }}</td>
+                    <td>{{ $p1->product_name }}</td>
                     <td style="text-align:center;">
-    @if (!empty($product->barcode_base64))
-        <div style="text-align:center;">
-            <img class="barcode" 
-                 src="data:image/png;base64, {{ $product->barcode_base64 }}" 
-                 alt="Code-barres"
-                 style="width:150px; height:50px; object-fit:contain; display:block; margin:0 auto;">
-            
-            <span style="display:block; margin-top:4px; font-size:0.85rem; font-family:monospace;">
-                {{ $product->code }}
-            </span>
-        </div>
-    @endif
-</td>
+                        @if (!empty($p1->barcode_base64))
+                            <img class="barcode" src="data:image/png;base64, {{ $p1->barcode_base64 }}"
+                                alt="Code-barres">
+                            <br>
+                            <span style="font-size:0.85rem; font-family:monospace;">
+                                {{ $p1->code }}
+                            </span>
+                        @endif
+                    </td>
+                    <td>{{ \Carbon\Carbon::parse($p1->created_at)->format('d/m/Y H:i') }}</td>
 
-
-                    <td>{{ \Carbon\Carbon::parse($product->created_at)->format('d/m/Y H:i') }}</td>
+                    {{-- 🔹 Produit 2 (ou vide si nombre impair) --}}
+                    @if (isset($chunk[1]))
+                        @php $p2 = $chunk[1]; @endphp
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $p2->product_name }}</td>
+                        <td style="text-align:center;">
+                            @if (!empty($p2->barcode_base64))
+                                <img class="barcode" src="data:image/png;base64, {{ $p2->barcode_base64 }}"
+                                    alt="Code-barres">
+                                <br>
+                                <span style="font-size:0.85rem; font-family:monospace;">
+                                    {{ $p2->code }}
+                                </span>
+                            @endif
+                        </td>
+                        <td>{{ \Carbon\Carbon::parse($p2->created_at)->format('d/m/Y H:i') }}</td>
+                    @else
+                        {{-- colonnes vides si pas de 2e produit --}}
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    @endif
                 </tr>
+                @php $index += 2; @endphp
             @endforeach
         </tbody>
     </table>

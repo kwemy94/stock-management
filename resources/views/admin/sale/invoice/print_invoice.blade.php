@@ -2,252 +2,291 @@
 <html>
 
 <head>
-    <title>Street Smart | invoice</title>
-    <link rel="stylesheet"
-        href="{{ asset('dashboard-template/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+    <meta charset="UTF-8">
+
+    <title>Facture - {{ $setting->app_name ?? 'Street Smart' }}</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 13px;
+            color: #1f1f1f;
+        }
+
+        /* A4 layout */
+        .page {
+            width: 100%;
+            padding: 25px 40px;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            text-align: left;
+            border-bottom: 3px solid #0099ff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+        .company-info {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        h1 {
+            text-align: right;
+            margin: -70px 0 0 0;
+            color: #0099ff;
+            letter-spacing: 1px;
+            font-size: 30px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 15px;
+            color: #0099ff;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-left: 4px solid #0099ff;
+            padding-left: 8px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background: #eaf6ff;
+            font-weight: bold;
+            padding: 7px;
+            border: 1px solid #cbddee;
+            font-size: 12px;
+        }
+
+        table td {
+            padding: 7px;
+            border: 1px solid #d5d5d5;
+            font-size: 12px;
+        }
+
+        /* Totals */
+        .total-box {
+            width: 280px;
+            float: right;
+            margin-top: 15px;
+            border: 1px solid #bcd6eb;
+            padding: 10px;
+            background: #f7fbff;
+            border-radius: 5px;
+        }
+
+        .total-box table td {
+            border: none;
+            padding: 4px 0;
+            font-size: 13px;
+        }
+
+        .total-right {
+            text-align: right;
+        }
+
+        .strong {
+            font-weight: bold;
+        }
+
+        /* QR CODE container */
+        .qr-section {
+            margin-top: 40px;
+            text-align: left;
+            border-top: 2px dashed #ddd;
+            padding-top: 20px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 11px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+        .badge {
+            padding: 3px 6px;
+            border-radius: 3px;
+            color: white;
+            font-size: 11px;
+        }
+
+        .bg-danger {
+            background: #dc3545;
+        }
+
+        .bg-primary {
+            background: #0d6efd;
+        }
+
+        .bg-warning {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .bg-success {
+            background: #28a745;
+        }
+    </style>
 </head>
-<style type="text/css">
-    body {
-        font-family: 'Roboto Condensed', sans-serif;
-    }
-
-
-    .m-0 {
-        margin: 0px;
-    }
-
-    .p-0 {
-        padding: 0px;
-    }
-
-    .pt-5 {
-        padding-top: 5px;
-    }
-
-    .mt-10 {
-        margin-top: 10px;
-    }
-
-    .text-center {
-        text-align: center !important;
-    }
-
-    .w-100 {
-        width: 100%;
-    }
-
-    .w-50 {
-        width: 50%;
-    }
-
-    .w-85 {
-        width: 85%;
-    }
-
-    .w-15 {
-        width: 15%;
-    }
-
-    .logo img {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .logo {
-        margin-bottom: 5%;
-    }
-
-    .gray-color {
-        color: #5D5D5D;
-    }
-
-    .text-bold {
-        font-weight: bold;
-    }
-
-    .border {
-        border: 1px solid black;
-    }
-
-    table tr,
-    th,
-    td {
-        border: 1px solid #d2d2d2;
-        border-collapse: collapse;
-        padding: 7px 8px;
-    }
-
-    table tr th {
-        background: #F4F4F4;
-        font-size: 15px;
-    }
-
-    table tr td {
-        font-size: 13px;
-    }
-
-    table {
-        border-collapse: collapse;
-    }
-
-    .box-text p {
-        line-height: 10px;
-    }
-
-    .float-left {
-        float: left;
-    }
-
-    .total-part {
-        font-size: 16px;
-        line-height: 12px;
-    }
-
-    .total-right p {
-        padding-right: 20px;
-    }
-</style>
 
 <body>
-    @php
-        $setting = getCompanyInfo();
-    @endphp
-    <div class="logo">
-        <img src="{{ isset($setting->logo) ? 'data:image/png;base64,' . base64_encode(file_get_contents('storage/images/logo/' . $setting->logo)) : 'data:image/png;base64,' . base64_encode(file_get_contents('front-template/assets/images/logo/logo.png')) }}"
-            width="50px" height="50px" alt="logo">
-    </div>
-    {{-- <div class="head-title">
-        <h1 class="text-center m-0 p-0">Invoice</h1>
-    </div> --}}
-    <div class="add-detail mt-10">
-        {{-- @dd($orders): --}}
-        <div class="w-50 float-left mt-10">
-            <p class="m-0 pt-5 text-bold w-100">N° facture - <span class="gray-color">#{{ $invoice->invoice_number }}
-                </span></p>
-            {{-- <p class="m-0 pt-5 text-bold w-100">Order Id - <span class="gray-color">R00{{ $order_id }}I</span></p> --}}
-            <p class="m-0 pt-5 text-bold w-100">Print Date - <span class="gray-color">{{ date('d-M-Y H:m:s') }}</span>
-            </p>
+
+    <div class="page">
+
+        <!-- HEADER -->
+        <div class="header">
+            <img class="logo"
+                src="{{ isset($setting->logo)
+                    ? 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('storage/images/logo/' . $setting->logo)))
+                    : 'data:image/png;base64,' .
+                        base64_encode(file_get_contents(public_path('front-template/assets/images/logo/logo.png'))) }}">
+
+            <h1>FACTURE</h1>
+
+            <div class="company-info">
+                <strong style="font-size: 15px;">
+                    {{ $setting->app_name ?? 'Street Smart' }}
+                </strong><br>
+                {{ $setting->address ?? 'Douala, Cameroun' }} <br>
+                Tél : {{ $setting->phone ?? '+237 672 517 118' }} <br>
+                Email : {{ $setting->email ?? 'infos@techbriva.com' }} <br>
+            </div>
         </div>
 
+        <!-- INFO FACTURE -->
+        <div class="section-title">Informations facture</div>
 
-        <div style="clear: both;"></div>
-    </div>
-    <div class="table-section bill-tbl w-100 mt-10">
-        <table class="table w-100 mt-10">
+        <table>
             <tr>
-                <th class="w-50">
-                    @switch($invoice->status)
-                        @case('draft')
-                            <span class="badge bg-danger">{{ $invoice->status }}</span>
-                        @break
-
-                        @case('confirmed')
-                            <span class="badge bg-primary">{{ $invoice->status }}</span>
-                        @break
-
-                        @case('proformat')
-                            <span class="badge bg-warning">{{ $invoice->status }}</span>
-                        @break
-
-                        @case('Payé')
-                            <span class="badge bg-success">{{ $invoice->status }}</span>
-                        @break
-
-                        @default
-                    @endswitch
-                    From
-                </th>
-                <th class="w-50">To</th>
-            </tr>
-            <tr>
-                <td>
-                    <div class="box-text">
-                        <p>Ets : <strong>{{ isset($setting) ? $setting->app_name : 'Street Smart' }} </strong></p>
-                        <p>Tél : <strong>{{ isset($setting) ? $setting->phone : '+237 672517118' }} </strong></p>
-                        <p>Email : <strong>{{ isset($setting) ? $setting->email : 'infos@techbriva.com' }} </strong>
-                        </p>
-                    </div>
+                <td width="50%">
+                    <strong>Facture N° :</strong> {{ $invoice->invoice_number }} <br>
+                    <strong>Date impression :</strong> {{ date('d/m/Y H:i') }} <br>
+                    <strong>Statut :</strong>
+                    @if ($invoice->status)
+                        <span
+                            class="badge 
+                        {{ $invoice->status == 'draft' ? 'bg-danger' : '' }}
+                        {{ $invoice->status == 'confirmed' ? 'bg-primary' : '' }}
+                        {{ $invoice->status == 'proformat' ? 'bg-warning' : '' }}
+                        {{ $invoice->status == 'Payé' ? 'bg-success' : '' }}">
+                            {{ ucfirst($invoice->status) }}
+                        </span>
+                    @endif
                 </td>
-                <td>
-                    <div class="box-text">
-                        <p>Nom : <strong>{{ isset($invoice->customer) ? $invoice->customer->name : 'xxx' }} </strong></p>
-                        <p>Tél : <strong>{{ isset($invoice->customer) ? $invoice->customer->phone : 'xxx' }} </strong></p>
-                        <p>Email : <strong>{{ isset($invoice->customer) ? $invoice->customer->email : 'xxx' }} </strong></p>
-                    </div>
+
+                <td width="50%">
+                    <strong>Client :</strong> {{ $invoice->customer->name ?? '---' }} <br>
+                    <strong>Tél :</strong> {{ $invoice->customer->phone ?? '---' }} <br>
+                    <strong>Email :</strong> {{ $invoice->customer->email ?? '---' }} <br>
                 </td>
             </tr>
         </table>
-    </div>
-    <div class="table-section bill-tbl w-100 mt-10">
-        <table class="table w-100 mt-10">
+
+
+        <!-- PRODUITS -->
+        <div class="section-title">Détails des produits</div>
+
+        <table>
             <tr>
-                <th class="w-50">Code</th>
-                <th class="w-50">Produit</th>
-                <th class="w-50">Qté</th>
-                <th class="w-50">Price</th>
-                <th class="w-50">Remise</th>
-                <th class="w-50">Taxe</th>
-                <th class="w-50">Total HT</th>
-                <th class="w-50">Total TTC</th>
+                <th>Code</th>
+                <th>Produit</th>
+                <th>Qté</th>
+                <th>PU</th>
+                <th>Remise</th>
+                <th>Taxe</th>
+                <th>Total HT</th>
+                <th>Total TTC</th>
             </tr>
+
             @php
                 $totalHT = 0;
                 $totalTTC = 0;
                 $totalTax = 0;
             @endphp
-            @foreach  ($invoice->invoiceLines as $line)
+
+            @foreach ($invoice->invoiceLines as $line)
+                @php
+                    $ht = $line->quantity * $line->unit_price * (1 - $line->remise / 100);
+                    $ttc = $ht + $line->taxe;
+
+                    $totalHT += $ht;
+                    $totalTTC += $ttc;
+                    $totalTax += $line->taxe;
+                @endphp
+
                 <tr align="center">
-                    @php
-                        $total1 = $line->quantity * $line->unit_price * (1-$line->remise/100);
-                        $total2 = $line->quantity * $line->unit_price * (1-$line->remise/100) + $line->taxe;
-                        $totalHT += $total1;
-                        $totalTTC += $total2;
-                        
-                        $totalTax += $line->taxe;
-                    @endphp
                     <td>{{ $line->product->code }}</td>
                     <td>{{ $line->product->product_name }}</td>
                     <td>{{ $line->quantity }}</td>
-                    <td>{{ $line->unit_price }} </td>
-                    <td>{{ $line->remise }}</td>
-                    <td>{{ $line->taxe }}</td>
-                    <td>
-                        {{ $total1 }}
-                        {{ $setting->devise }}
-                    </td>
-                    <td>
-                        {{ $total2 }}
-                        {{ $setting->devise }}
-                    </td>
-
+                    <td>{{ number_format($line->unit_price, 0, ',', ' ') }}</td>
+                    <td>{{ $line->remise }}%</td>
+                    <td>{{ number_format($line->taxe, 0, ',', ' ') }}</td>
+                    <td>{{ number_format($ht, 0, ',', ' ') }} {{ $setting->devise }}</td>
+                    <td>{{ number_format($ttc, 0, ',', ' ') }} {{ $setting->devise }}</td>
                 </tr>
-
-
             @endforeach
 
-
-            <tr>
-                <td colspan="8">
-                    <div class="total-part">
-                        <div class="total-left w-85 float-left" align="right">
-                            <p>Total HT</p>
-                            <p>Tax </p>
-                            <p>Total TTC</p>
-                        </div>
-                        <div class="total-right w-15 float-left text-bold" align="right">
-                            <p>{{ $totalHT }} {{ $setting->devise }} </p>
-                            <p>{{ $totalTax }} {{ $setting->devise }}</p>
-                            <p>{{ $totalTTC }} {{ $setting->devise }}</p>
-                        </div>
-                        <div style="clear: both;"></div>
-                    </div>
-                </td>
-            </tr>
         </table>
+
+
+        <!-- TOTALS -->
+        <div class="total-box">
+            <table width="100%">
+                <tr>
+                    <td>Total HT :</td>
+                    <td class="total-right strong">{{ number_format($totalHT, 0, ',', ' ') }} {{ $setting->devise }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Taxe :</td>
+                    <td class="total-right strong">{{ number_format($totalTax, 0, ',', ' ') }} {{ $setting->devise }}
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Total TTC :</strong></td>
+                    <td class="total-right strong" style="font-size: 15px; color:#0099ff;">
+                        {{ number_format($totalTTC, 0, ',', ' ') }} {{ $setting->devise }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+        <!-- QR CODE SECTION -->
+        <div class="qr-section">
+            <strong>QR Code facture :</strong><br>
+
+            {{-- QR Code basé sur numéro + montant --}}
+            {{-- <img src="data:image/png;base64,{{ base64_encode(QrCode::format('png')->size(120)->generate('FACTURE:' . $invoice->invoice_number . ' | MONTANT:' . $totalTTC)) }}"
+                alt="QR Code"> --}}
+            {!! $qrCode !!}
+        </div>
+
+        <div class="footer">
+            Merci pour votre confiance – {{ $setting->app_name ?? 'Street Smart' }}
+        </div>
     </div>
+
+</body>
 
 </html>
