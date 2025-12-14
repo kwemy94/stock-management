@@ -1,0 +1,13 @@
+.hidden-input {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    padding: 0;
+    text-align: center; /* optionnel pour aligner les nombres */
+    font-size: 0.95rem;
+}
+.hidden-input:focus {
+    outline: none;
+    background-color: #e9ecef; /* léger survol optionnel */
+}
+

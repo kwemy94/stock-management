@@ -46,11 +46,10 @@
 
              <li class="nav-header">POS</li>
              <li class="nav-item">
-                 <a href="{{ route('order.index') }}" class="nav-link">
+                 <a href="{{ route('order.dashboard') }}" class="nav-link">
                      <i class="nav-icon fas fa-box"></i>
                      <p>
-                         {{ __('dashboard.order') }}
-                         {{-- <span class="badge badge-info right">2</span> --}}
+                         {{ 'POS' }}
                      </p>
                  </a>
              </li>

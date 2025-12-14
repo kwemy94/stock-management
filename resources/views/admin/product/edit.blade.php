@@ -56,7 +56,7 @@
                                             <label for="init_stock">{{ __('product.info.qantity-init') }} <em>*</em></label>
                                             <input type="number"
                                                 class="form-control form-control-border border-width-2 required"
-                                                name="stock_quantity" id="init_stock" min="0" value="{{$product->stock_quantity}}">
+                                                name="stock_quantity" id="init_stock" min="0" value="{{$product->stock_quantity}}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">

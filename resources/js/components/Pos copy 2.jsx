@@ -43,7 +43,7 @@ function Pos() {
   }, [cartField]);
 
   const loadData = () => {
-    axios.get('/pos-data-loading').then((res) => {
+    axios.get('/dashboard/pos-data-loading').then((res) => {
       console.log(res);
       setProducts(res.data.products);
       setCopyProducts(res.data.products);
@@ -269,7 +269,7 @@ function Pos() {
 
     setLoading(true);
     setDisableBtn(true);
-    axios.post('/order', {
+    axios.post('/dashboard/order', {
       cartField,
       customer,
       totalCart

@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use PDF;
 use App\Models\Product;
+use DNS1D;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Picqer\Barcode\GeneratorHTML;
 use Illuminate\Support\Facades\Storage;
+use App\Repositories\Unit\UnitRepository;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Repositories\Product\ProductRepository;
 use App\Repositories\Category\CategoryRepository;
-use App\Repositories\Unit\UnitRepository;
 
 class ProductController extends Controller
 {
@@ -197,10 +198,10 @@ class ProductController extends Controller
         foreach ($products as $product) {
             [$code, $barcode] = generateProductBarcode($product->code);
             $product->barcode_base64 = base64_encode($barcode);
-        //     $product->qrcode_base64 = base64_encode(
-        // QrCode::format('png')
-        //       ->size(150)          // taille en pixels
-        //       ->generate($product->code));  // ici on encode le code unique du produit
+            //     $product->qrcode_base64 = base64_encode(
+            // QrCode::format('png')
+            //       ->size(150)          // taille en pixels
+            //       ->generate($product->code));  // ici on encode le code unique du produit
         }
 
 
@@ -220,4 +221,55 @@ class ProductController extends Controller
         return $pdf->download('client.pdf');
         return $pdf->stream('produits.pdf');
     }
+
+
+    // public function printBarcodePdf($id)
+    // {
+    //     // dd($id, request()->all());
+    //     toggleDatabase();
+    //     $product = $this->productRepository->getById($id);
+    //     $qty = request()->get('qty', 2);
+
+    //     $barcodes = [];
+    //     for ($i = 0; $i < $qty; $i++) {
+    //         $barcodes[] = DNS1D::getBarcodeHTML($product->code, 'C128', 1, 50);
+    //     }
+
+    //     $title = "Code barre produit " . $product->product_name;
+
+    //     $pdf = Pdf::loadView('admin.product.barcode-product', compact('product', 'barcodes', 'title'))
+    //         ->setPaper('A4', 'portrait');
+
+    //     return $pdf->stream("barcode-{$product->id}.pdf");
+    // }
+
+    public function printBarcodePdf($id)
+{
+    toggleDatabase();
+    $product = $this->productRepository->getById($id);
+    $qty = request()->get('qty', 2);
+
+    // Utilisation de la classe DNS1D en instance
+    $dns = new \Milon\Barcode\DNS1D();
+    $dns->setStorPath(storage_path('framework/barcodes/'));
+
+    $barcodes = [];
+
+    for ($i = 0; $i < $qty; $i++) {
+        $barcodes[] = [
+            'image' => $dns->getBarcodeHTML($product->code, 'C128', 1, 50),
+            'text'  => $product->code,  // ⬅️ Le scanner retournera cette valeur
+        ];
+    }
+
+    $title = "Code barre produit " . $product->product_name;
+
+    $pdf = Pdf::loadView('admin.product.barcode-product', compact('product', 'barcodes', 'title'))
+        ->setPaper('A4', 'portrait');
+
+    return $pdf->stream("barcode-{$product->id}.pdf");
+}
+
+
+
 }

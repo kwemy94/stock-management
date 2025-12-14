@@ -281,7 +281,7 @@ export default function SaleEditInvoice({invoice}) {
                         remise: 0,
                     },
                 ]);
-                window.location.href = "/sale-invoice/true";
+                window.location.href = "/dashboard/sale-invoice/true";
 
             } else {
                 const msg = res.message || "Echec mise à jour de la facture";

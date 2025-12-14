@@ -16,3 +16,7 @@ import './components/Example';
 import './components/Pos';
 import './components/SaleInvoice';
 import './components/SaleEditInvoice';
+
+import './components/buy/BuyCommand';
+import './components/buy/BuyEditCommand';
+import './components/buy/BuyReceipt';

@@ -15,14 +15,14 @@ class MultitenancyDBMigrationCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'update:backend_db {path} {--artisanPath= : The absolute path to project root folder} {--targetDomain= : The specific domain to handle}';
+    protected $signature = 'update:backend_db {path} {--artisanPath= : The absolute path to project root folder} {--targetDomain= : The specific domain to handle} {--rollback : Rollback migrations instead of running them} {--step=1 : Number of migrations to rollback}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command de migration de la base de données backend (path: chemin relatif vers le repertoire des migrations backend)';
+    protected $description = 'Command de migration/rollback de la base de données backend (path: chemin relatif vers le repertoire des migrations backend)';
 
     protected $etablissementRepository;
 
@@ -90,7 +90,20 @@ class MultitenancyDBMigrationCommand extends Command
                 // dd($path);
                 // dd($path['path']);
 
-                Artisan::call('migrate', ['--path' => '/database/migrations/' . $path['path'], '--force' => true]);
+                if ($this->option('rollback')) {
+                    Artisan::call('migrate:rollback', [
+                        '--path' => '/database/migrations/' . $path['path'],
+                        '--force' => true,
+                        '--step' => $this->option('step')
+                    ]);
+                    $this->info("Rollback complet !");
+                } else {
+                    Artisan::call('migrate', [
+                        '--path' => '/database/migrations/' . $path['path'],
+                        '--force' => true
+                    ]);
+                    $this->info("Migration complet !");
+                }
 
                 $data = Artisan::output();
 
@@ -98,9 +111,9 @@ class MultitenancyDBMigrationCommand extends Command
 
                 $this->info($data);
 
-                $this->info("Migation complet !");
+                $this->info($this->option('rollback')? "Rollback complet" : "Migation complet !");
             }
-            
+
         } catch (\Throwable $th) {
             dd($th);
             $this->info("Error migration");

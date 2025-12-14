@@ -91,6 +91,9 @@ class CategoryController extends Controller
         toggleDatabase();
         try {
             $category = $this->categoryRepository->getById($id);
+            if ($category->products()->exists()) {
+                return redirect()->back()->with('error', 'Cette catégorie contient des produits. Impossible de la supprimer.');
+            }   
             $category->delete();
 
             return redirect()->back()->with('success', 'Catégorie supprimée !');

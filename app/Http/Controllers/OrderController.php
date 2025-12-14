@@ -214,4 +214,11 @@ class OrderController extends Controller
         // return $pdf->download('command.pdf');
         return $pdf->stream();
     }
+
+    public function dashboard(){
+        return view('admin.pos.pos-dashboard.pos-dashboard');
+    }
+    public function rapport(){
+        return view('admin.pos.pos-dashboard.rapport');
+    }
 }

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Inventory\Inventory;
-use App\Models\Sale\SaleInvoiceLine;
 use App\Models\Sale\SalePricing;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Inventory\Inventory;
+use App\Models\Buy\GoodsReceiptLine;
+use App\Models\Sale\SaleInvoiceLine;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
@@ -41,5 +42,9 @@ class Product extends Model
     }
     public function saleInvoiceLines() {
         return  $this->hasMany(SaleInvoiceLine::class);
+    }
+
+    public function goodsReceiptLines() {
+        return  $this->hasMany(GoodsReceiptLine::class);
     }
 }

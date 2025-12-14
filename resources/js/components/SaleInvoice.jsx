@@ -235,7 +235,7 @@ export default function SaleInvoice({ type }) {
                     },
                 ]);
                 if (!another) {
-                    window.location.href = "/sale-invoice/true";
+                    window.location.href = "/dashboard/sale-invoice/true";
                 }
             } else {
                 const msg = res.message || "Echec sauvegarde facture";

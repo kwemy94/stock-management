@@ -60,9 +60,9 @@
                                                 style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
                                             @csrf
                                             @method('delete')
-                                            {{-- <span id="btn-delete-category{{ $category->id }}"
+                                            <span id="btn-delete-category{{ $category->id }}"
                                                 onclick="deleteCategory({{ $category->id }})" class="fas fa-trash-alt"
-                                                style="color: red"></span> --}}
+                                                style="color: red"></span>
                                         </form>
                                     </td>
                                 </tr>
@@ -113,7 +113,7 @@
         });
 
         function deleteCategory(i) {
-            if (confirm('Voulez-vous supprimer cette catégory ??')) {
+            if (confirm('Voulez-vous supprimer cette catégorie ??')) {
                 $('#form-delete-category' + i).submit();
             }
         }

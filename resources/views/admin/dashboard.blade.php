@@ -1,187 +1,159 @@
 @extends('admin.layouts.app')
 
 @section('dashboard-content')
+    <style>
+        .small-box {
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
 
-<style>
-    .inner >p{
-        color: #1f2d3d;
-        font-weight: bold;
-    }
+        .small-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
 
-    .small-box-footer{
-        /* background-color: rgba(20, 29, 70, 1) !important; */
-        /* color: rgb(11, 47, 211) !important; */
-        border-radius: 0 0 4px 4px;
-    }
-    .bg-white>a {
-        /* color: #007bff !important; */
-    }
-    .small-box {
-        
-    }
-</style>
-    <section class="content mt-2">
+        .small-box .inner p {
+            font-weight: 600;
+            color: #1f2d3d;
+        }
+
+        .small-box-footer {
+            border-radius: 0 0 10px 10px;
+            background: #f4f6f9;
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        .small-box-footer:hover {
+            background: #e2e6ea;
+            color: #0056b3;
+        }
+
+        .icon {
+            color: #28a745 !important;
+            opacity: 0.65;
+        }
+
+        @media(max-width: 768px) {
+            .small-box h3 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+
+    <section class="content mt-3">
         <div class="container-fluid">
-            {{-- Small boxes (Stat box) --}}
+
+            {{-- Stats top --}}
             <div class="row">
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-white">
-                        <div class="inner">
-                            <h3>{{count($users)}}</h3>
 
-                            <p>{{__('dashboard.user')}}</p>
+                @php
+                    $items = [
+                        ['count' => count($users), 'label' => __('dashboard.user'), 'icon' => 'fa-users', 'url' => '#'],
+                        [
+                            'count' => count($suppliers),
+                            'label' => __('dashboard.supplier'),
+                            'icon' => 'fa-industry',
+                            'url' => route('supplier.index'),
+                        ],
+                        [
+                            'count' => count($customers),
+                            'label' => __('dashboard.customer'),
+                            'icon' => 'ion-person-add',
+                            'url' => route('customer.index'),
+                        ],
+                        [
+                            'count' => count($categories),
+                            'label' => __('dashboard.category'),
+                            'icon' => 'fa-tags',
+                            'url' => route('category.index'),
+                        ],
+                        [
+                            'count' => count($products),
+                            'label' => __('dashboard.product'),
+                            'icon' => 'fa-boxes',
+                            'url' => route('product.index'),
+                        ],
+                        [
+                            'count' => count($orders),
+                            'label' => __('dashboard.order'),
+                            'icon' => 'fa-file-invoice',
+                            'url' => '#',
+                        ],
+                        [
+                            'count' => count($payments),
+                            'label' => __('dashboard.payment'),
+                            'icon' => 'fa-credit-card',
+                            'url' => '#',
+                        ],
+                    ];
+                @endphp
+
+                @foreach ($items as $item)
+                    <div class="col-lg-3 col-md-4 col-6 mb-3">
+                        <div class="small-box bg-white">
+                            <div class="inner">
+                                <h3>{{ $item['count'] }}</h3>
+                                <p>{{ $item['label'] }}</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa {{ $item['icon'] }}"></i>
+                            </div>
+                            <a href="{{ $item['url'] }}" class="small-box-footer">
+                                More info <i class="fas fa-arrow-circle-right"></i>
+                            </a>
                         </div>
-                        <div class="icon">
-                            <i class="fa fa-users"></i>
-                        </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
-                </div>
-
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-white">
-                        <div class="inner">
-                            <h3>{{count($suppliers)}}<sup style="font-size: 20px"></sup></h3>
-
-                            <p>{{__('dashboard.supplier')}}</p>
-                        </div>
-                        <div class="icon">
-                            <i class="fa fa-industry"></i>
-                        </div>
-                        <a href="{{route('supplier.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-white">
-                        <div class="inner">
-                            <h3>{{count($customers)}}</h3>
-
-                            <p >{{__('dashboard.customer')}}</p>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-person-add"></i>
-                        </div>
-                        <a href="{{route('customer.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-white">
-                        <div class="inner">
-                            <h3>{{count($categories)}}</h3>
-
-                            <p>{{__('dashboard.category')}}</p>
-                        </div>
-                        <div class="icon">
-                            <i class="fa fa-tags"></i>
-                        </div>
-                        <a href="{{ route('category.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-white">
-                        <div class="inner">
-                            <h3>{{count($products)}}</h3>
-
-                            <p>{{__('dashboard.product')}}</p>
-                        </div>
-                        <div class="icon">
-                            <i class="fa fa-boxes"></i>
-                        </div>
-                        <a href="{{ route('product.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-white">
-                        <div class="inner">
-                            <h3>{{count($orders)}}</h3>
-
-                            <p>{{__('dashboard.order')}}</p>
-                        </div>
-                        <div class="icon">
-                            <i class="fa fa-file-invoice"></i>
-                        </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-white">
-                        <div class="inner">
-                            <h3>{{count($payments)}}</h3>
-
-                            <p>{{__('dashboard.payment')}}</p>
-                        </div>
-                        <div class="icon">
-                            <i class="fa fa-credit-card"></i>
-                        </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
+                @endforeach
 
             </div>
 
-            {{-- Main row --}}
-            <div class="row">
-
-                <section class="col-lg-7">
-                    {{-- Custom tabs (Charts with tabs) --}}
-                    <div class="card">
-                        <div class="card-header">
+            {{-- Modules --}}
+            <div class="row mt-4">
+                <section class="col-lg-7 col-md-12">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white">
                             <h3 class="card-title">
-                                <i class="fas fa-chart-pie mr-1"></i>
-                                Modules
+                                <i class="fas fa-th-large mr-1 text-success"></i> Modules
                             </h3>
-                            
                         </div>
+
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-2 col-4">
-                                    <div class="small-box bg-white">
-                                        <div class="inner">
-                                            <p>{{__('POS')}}</p>
+
+                                @php
+                                    $modules = [
+                                        [
+                                            'label' => __('POS'),
+                                            'icon' => 'fa-cash-register',
+                                            'url' => route('order.create'),
+                                        ],
+                                        ['label' => __('Stock'), 'icon' => 'fa-warehouse', 'url' => '#'],
+                                        ['label' => __('Bilan'), 'icon' => 'fa-chart-line', 'url' => '#'],
+                                    ];
+                                @endphp
+
+                                @foreach ($modules as $mod)
+                                    <div class="col-lg-2 col-4 mb-3">
+                                        <div class="small-box bg-white">
+                                            <div class="inner">
+                                                <p>{{ $mod['label'] }}</p>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fa {{ $mod['icon'] }}"></i>
+                                            </div>
+                                            <a href="{{ $mod['url'] }}" class="small-box-footer">
+                                                <i class="fas fa-arrow-circle-right"></i>
+                                            </a>
                                         </div>
-                                        <div class="icon">
-                                            <i class="fa fa-cash-register"></i>
-                                        </div>
-                                        <a href="{{ route('order.create') }}" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
                                     </div>
-                                </div>
-                                <div class="col-lg-2 col-4">
-                                    <div class="small-box bg-white">
-                                        <div class="inner">
-                                            <p>{{__('Stock')}}</p>
-                                        </div>
-                                        <div class="icon">
-                                            <i class="fa fa-warehouse"></i>
-                                        </div>
-                                        <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-4">
-                                    <div class="small-box bg-white">
-                                        <div class="inner">
-                                            <p>{{__('Bilan')}}</p>
-                                        </div>
-                                        <div class="icon">
-                                            <i class="fa fa-chart-line"></i>
-                                        </div>
-                                        <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
-                                    </div>
-                                </div>
+                                @endforeach
+
                             </div>
-                        </div><!-- /.card-body -->
+                        </div>
                     </div>
                 </section>
-
-
             </div>
 
         </div>

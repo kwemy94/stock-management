@@ -134,13 +134,13 @@
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["excel", "pdf", "print", "colvis"]
+                "buttons": ["csv", "pdf"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         });
 
         function deleteCustomer(i) {
-            if (confirm('Voulez-vous supprimer cet utilisateur ??')) {
+            if (confirm('Voulez-vous supprimer ce client ?')) {
                 $('#form-delete-customer' + i).submit();
             }
         }

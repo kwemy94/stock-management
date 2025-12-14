@@ -2,145 +2,156 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Street Smart | @yield('title')</title>
-
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{ __('home.web-description') }}">
-    {{-- <meta name="description" content="site web, application web sur mesure, site vitrine, site carte de visite."> --}}
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    {{-- ====== Favicon Icon ====== --}}
-    <link rel="shortcut icon" href="{{ asset('front-template/assets/images/favicon-32x32.png') }}" type="image/svg" />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ asset('front-template/assets/images/favicon-32x32.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('front-template/assets/images/logo/logo.png') }}">
 
+    <!-- Google Font (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- SweetAlert Theme -->
+    <link rel="stylesheet"
+        href="{{ asset('dashboard-template/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+
+    <!-- Style Global Modernisé -->
     <style>
-        body {
-            background: #f9fafb;
+        :root {
+            --primary: #2563eb;
+            --dark: #111;
+            --light: #f9fafb;
+            --radius: .75rem;
         }
 
+        body {
+            background: var(--light);
+            font-family: "Inter", sans-serif;
+        }
+
+        /* Navbar */
         .navbar-custom {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(6px);
+            background: rgba(255, 255, 255, .75);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, .05);
         }
 
         .navbar-custom .nav-link {
-            color: #111;
+            color: var(--dark);
             font-weight: 500;
         }
 
         .navbar-custom .nav-link.active {
-            color: #2563eb;
+            color: var(--primary) !important;
         }
 
+        /* Hero */
         .hero {
-            background-color: #2563eb;
-            color: #fff;
+            background: var(--primary);
             padding: 5rem 0;
+            color: #fff;
         }
 
         .hero h1 {
-            font-size: 2.5rem;
+            font-size: 2.6rem;
             font-weight: 700;
         }
 
-        .hero p {
-            font-size: 1.1rem;
-            margin-top: 1rem;
-        }
-
-        .hero .btn {
-            background: #fff;
-            color: #2563eb;
-            font-weight: 600;
-        }
-
+        /* Cards */
         .product-card {
-            transition: transform .18s ease, box-shadow .18s ease;
+            background: #fff;
+            border-radius: var(--radius);
+            transition: .25s ease;
         }
 
         .product-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, .12);
         }
 
-        .badge-category {
-            font-size: .72rem;
-        }
-
+        /* Carousel */
         .carousel-item img {
             object-fit: cover;
             height: 420px;
             width: 100%;
         }
 
-        .lang-select {
-            min-width: 72px;
-            border-radius: .5rem;
-        }
-
-        @media (max-width: 576px) {
+        @media(max-width: 576px) {
             .carousel-item img {
-                height: 200px;
+                height: 220px;
             }
         }
+
+        .section {
+            padding: 5rem 0;
+        }
     </style>
-    {{-- sweetalert --}}
-    <link rel="stylesheet"
-        href="{{ asset('dashboard-template/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
 
     @yield('front-css')
-
 </head>
 
 <body>
-    <!-- ====== Header Start ====== -->
+
     @include('layouts.partials._header')
-    <!-- ====== Header End ====== -->
 
     @yield('front-content')
 
-    <!-- ====== Footer Start ====== -->
     @include('layouts.partials._footer')
-    <!-- ====== Footer End ====== -->
 
-    <!-- ====== Back To Top Start ====== -->
+    <!-- Back to top -->
     <a href="javascript:void(0)" class="back-to-top">
-        <i class="lni lni-chevron-up"> </i>
+        <i class="lni lni-chevron-up"></i>
     </a>
-    <!-- ====== Back To Top End ====== -->
 
-    <!-- ====== All Javascript Files ====== -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('js/custom.js') }}"></script>
-    @yield('front-simpleJs')
-    {{-- Traduction du site --}}
-    <script type="text/javascript">
-        var url = "{{ route('change-lang') }}";
-        $(".Langchange").change(function() {
-            console.log('Loading...');
-            window.location.href = url + "?lang=" + $(this).val();
-        });
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        // Region captcha
-        $(".btn-refresh").click(function() {
-            $.ajax({
-                type: 'GET',
-                url: '/refresh_captcha',
-                success: function(data) {
-                    $(".captcha span").html(data.captcha);
-                }
+    <script>
+        // Helper global Toast
+        window.toast = (icon, title) => {
+            Swal.fire({
+                toast: true,
+                icon,
+                title,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 4000,
+            });
+        };
+
+        // Language switch
+        document.querySelectorAll('.Langchange').forEach(el => {
+            el.addEventListener('change', e => {
+                window.location.href = "{{ route('change-lang') }}?lang=" + e.target.value;
             });
         });
+
+        // Refresh captcha
+        document.addEventListener("click", (e) => {
+            if (!e.target.classList.contains("btn-refresh")) return;
+            fetch('/refresh_captcha')
+                .then(res => res.json())
+                .then(data => {
+                    document.querySelector(".captcha span").innerHTML = data.captcha;
+                });
+        });
     </script>
+
     @yield('front-js')
+
 </body>
 
 </html>

@@ -196,7 +196,7 @@ if (!function_exists('checkCompany')) {
 }
 
 if (!function_exists('generateInvoiceNumber')) {
-    function generateInvoiceNumber($_table, $init = 'FV', $client_db = true)
+    function generateInvoiceNumber($_table, $init = 'FV', $client_db = true, $column = "invoice_number")
     {
         $today = Carbon::now();
         $dateCode = $today->format('y-m-d');
@@ -210,7 +210,7 @@ if (!function_exists('generateInvoiceNumber')) {
 
         if ($lastInvoice) {
             # Extraire la séquence de la dernière facture
-            $lastNumber = intval(substr($lastInvoice->invoice_number, -3));
+            $lastNumber = intval(substr($lastInvoice->$column, -3));
             $nextNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
         } else {
             $nextNumber = '001'; # première facture de la journée

@@ -14,13 +14,15 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Sale\SaleController;
-use App\Http\Controllers\Sale\SaleInvoiceController;
 use App\Http\Controllers\buy\BuyInvoiceController;
 use App\Http\Controllers\ProductSupplierController;
 use App\Http\Controllers\Treasury\RecipeController;
+use App\Http\Controllers\Sale\SaleInvoiceController;
 use App\Http\Controllers\Treasury\AnalyseController;
 use App\Http\Controllers\Treasury\ExpenseController;
 use App\Http\Controllers\API\EtablissementController;
+use App\Http\Controllers\buy\GoodsReceiptController;
+use App\Http\Controllers\buy\PurchaseOrderController;
 use App\Http\Controllers\Inventory\InventoryController;
 
 /*
@@ -66,60 +68,74 @@ Route::get('/app-company', [EtablissementController::class, 'nosCompany'])->name
 Route::post('/app-activate-company/{id}', [EtablissementController::class, 'activateEts'])->name('app.activate.company');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('product', ProductController::class);
-    Route::resource('/category', CategoryController::class);
-    Route::resource('/setting', SettingController::class);
-    Route::resource('/supplier', SupplierController::class);
+    Route::group(['prefix' =>'dashboard'], function() {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        Route::resource('product', ProductController::class);
+        Route::resource('/category', CategoryController::class);
+        Route::resource('/setting', SettingController::class);
+        Route::resource('/supplier', SupplierController::class);
 
-    Route::resource('/achat', ProductSupplierController::class);
-    #Inventaire
-    Route::get('/syst-inventory', [ProductSupplierController::class, 'inventory'])->name('syst.inventory');
-    Route::post('/store-inventory', [ProductSupplierController::class, 'storeInventory'])->name('store.inventory');
-    Route::get('/inventaire-histo', [InventoryController::class, 'history'])->name('histo.inventaire');
-    Route::get('/invent-histo-print/{date_inv}', [InventoryController::class, 'printInventory'])->name('print.inventaire');
+        Route::resource('/achat', ProductSupplierController::class);
+        #Inventaire
+        Route::get('/syst-inventory', [ProductSupplierController::class, 'inventory'])->name('syst.inventory');
+        Route::post('/store-inventory', [ProductSupplierController::class, 'storeInventory'])->name('store.inventory');
+        Route::get('/inventaire-histo', [InventoryController::class, 'history'])->name('histo.inventaire');
+        Route::get('/invent-histo-print/{date_inv}', [InventoryController::class, 'printInventory'])->name('print.inventaire');
 
-    Route::resource('/customer', CustomerController::class);
-    Route::resource('/unite-mesure', UnitController::class);
+        Route::resource('/customer', CustomerController::class);
+        Route::resource('/unite-mesure', UnitController::class);
+    
+        Route::resource('/order', OrderController::class);
+        Route::get('print-invoice/{id}', [OrderController::class, 'printInvoice'])->name('order.print.invoice');
+    
+        ## print to pdf
+        Route::get('/pdf-barcode', [ProductController::class, 'BarcodeToPDF'])->name('barcode.to.pdf');
+        Route::get('/product/{id}/barcode/pdf', [ProductController::class, 'printBarcodePdf'])->name('barcode.product.pdf');
 
-    Route::resource('/order', OrderController::class);
-    Route::get('print-invoice/{id}', [OrderController::class, 'printInvoice'])->name('order.print.invoice');
+        ## pos
+        Route::get('/pos-data-loading', [OrderController::class, 'loadProduct']);
+        Route::get('/pos-dashboard', [OrderController::class, 'dashboard'])->name('order.dashboard');
+        Route::get('/pos-rapport', [OrderController::class, 'rapport'])->name('order.rapport');
+    
+        ## Vente
+        Route::resource('sale', SaleController::class);
+        Route::get('sale-invoice/{all?}', [SaleInvoiceController::class, 'index'])->name('sale.invoice');
+        Route::get('sale-invoice-create/{type}', [SaleInvoiceController::class, 'create'])->name('sale.invoice.create');
+        Route::get('sale-invoice-data', [SaleInvoiceController::class, 'dataCreateInvoice'])->name('sale.invoice.data');
+        Route::post('sale-invoice-store', [SaleInvoiceController::class, 'store'])->name('sale.invoice.store');
+        Route::post('sale-invoice-update/{id}', [SaleInvoiceController::class, 'update'])->name('sale.invoice.update');
+        Route::get('sale-invoice-edit/{id}', [SaleInvoiceController::class, 'edit'])->name('sale.invoice.edit');
+        Route::get('sale-invoice-details/{id}', [SaleInvoiceController::class, 'show'])->name('sale.invoice.show');
+        Route::get('sale-invoice-confirm/{id}', [SaleInvoiceController::class, 'confirmInvoice'])->name('sale.invoice.confirm');
+        Route::get('sale-invoice-print/{id}', [SaleInvoiceController::class, 'printInvoice'])->name('sale.invoice.print');
+        Route::get('sale-invoice-rapport', [SaleInvoiceController::class, 'rapport'])->name('sale.invoice.rapport');
+        Route::post('sale-invoice-payment', [SaleInvoiceController::class, 'payment'])->name('sale.invoice.payment');
 
-    ## print to pdf
-    Route::get('/pdf-barcode', [ProductController::class, 'BarcodeToPDF'])->name('barcode.to.pdf');
+        ## Buy
+        Route::get('buy-home', [BuyInvoiceController::class, 'index'])->name('buy.home');
+        Route::get('buy-command-list', [BuyInvoiceController::class, 'indexCmd'])->name('buy.command.index');
+        Route::get('buy-commande-create', [BuyInvoiceController::class, 'create'])->name('buy.command.create');
+        Route::get('buy-command-data', [BuyInvoiceController::class, 'dataCreateInvoice'])->name('buy.command.data');
+        Route::resource('buy-command-order', PurchaseOrderController::class);
+        Route::get('buy-command-create-data', [PurchaseOrderController::class, 'dataCreateCommand'])->name('buy.command.data.create');
+        Route::get('buy-command-print/{id}', [PurchaseOrderController::class, 'printCommand'])->name('buy.command.print');
+        Route::get('buy-command-send/{id}', [PurchaseOrderController::class, 'sendCommand'])->name('buy.command.send');
 
-    ## pos
-    Route::get('/pos-data-loading', [OrderController::class, 'loadProduct']);
-
-    ## Vente
-    Route::resource('sale', SaleController::class);
-    Route::get('sale-invoice/{all?}', [SaleInvoiceController::class, 'index'])->name('sale.invoice');
-    Route::get('sale-invoice-create/{type}', [SaleInvoiceController::class, 'create'])->name('sale.invoice.create');
-    Route::get('sale-invoice-data', [SaleInvoiceController::class, 'dataCreateInvoice'])->name('sale.invoice.data');
-    Route::post('sale-invoice-store', [SaleInvoiceController::class, 'store'])->name('sale.invoice.store');
-    Route::post('sale-invoice-update/{id}', [SaleInvoiceController::class, 'update'])->name('sale.invoice.update');
-    Route::get('sale-invoice-edit/{id}', [SaleInvoiceController::class, 'edit'])->name('sale.invoice.edit');
-    Route::get('sale-invoice-details/{id}', [SaleInvoiceController::class, 'show'])->name('sale.invoice.show');
-    Route::get('sale-invoice-confirm/{id}', [SaleInvoiceController::class, 'confirmInvoice'])->name('sale.invoice.confirm');
-    Route::get('sale-invoice-print/{id}', [SaleInvoiceController::class, 'printInvoice'])->name('sale.invoice.print');
-    Route::get('sale-invoice-rapport', [SaleInvoiceController::class, 'rapport'])->name('sale.invoice.rapport');
-    Route::post('sale-invoice-payment', [SaleInvoiceController::class, 'payment'])->name('sale.invoice.payment');
-
-
-    ## Buy
-    Route::get('buy-home', [BuyInvoiceController::class, 'index'])->name('buy.home');
-    Route::get('buy-invoice-create', [BuyInvoiceController::class, 'create'])->name('buy.invoice.create');
-
-    ## inventory
-    Route::resource('/inventory', InventoryController::class);
-
-    Route::group(['prefix'=>'treasury'], function(){
-        Route::get('/analyse', [AnalyseController::class, 'index'])->name('analyse.treso');
-        Route::resource('/recipe', RecipeController::class);
-        Route::resource('/expense', ExpenseController::class);
+        # Reception fournisseur
+        Route::resource('/buy-reception', GoodsReceiptController::class);
+    
+        ## inventory
+        Route::resource('/inventory', InventoryController::class);
+    
+        Route::group(['prefix'=>'treasury'], function(){
+            Route::get('/analyse', [AnalyseController::class, 'index'])->name('analyse.treso');
+            Route::resource('/recipe', RecipeController::class);
+            Route::resource('/expense', ExpenseController::class);
+        });
     });
+
 });
 
 require __DIR__.'/auth.php';

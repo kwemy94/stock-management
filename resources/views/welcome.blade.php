@@ -1,159 +1,106 @@
 @extends('layouts.layout')
 
+@section('title', 'Accueil')
+
 @section('front-css')
     <style>
-        em {
-            color: red;
-        }
-
-        .subscribe {
-            border: none;
-            border-bottom: 1px solid black;
-        }
-
         #loading {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100px;
+            height: 100%;
+            background: rgba(255, 255, 255, .8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 99999;
+            display: none;
         }
     </style>
 @endsection
 
 @section('front-content')
-    <div class="submit-loading-table col-md-12 text-center" style="display: none;" id="loading">
-        <img src="{{ asset('images/load/preloader.gif') }}" alt="">
+
+    <div id="loading">
         <div class="text-center">
-            <span
-                style="font-size: 16px; background-color: #ffffff; border-radius: 15px;
-            padding: 5px 10px 5px 10px;">
+            <img src="{{ asset('images/load/preloader.gif') }}" alt="">
+            <div class="mt-2" style="font-size: 15px; background: #fff; padding: 6px 15px; border-radius: 12px;">
                 {{ __('messages.loader') }}
-            </span>
+            </div>
         </div>
     </div>
-    <!-- ====== Hero Start ====== -->
+
+    <!-- Hero -->
     @include('partials._home')
-    <!-- ====== Hero End ====== -->
 
-    <!-- ====== Features Start ====== -->
+    <!-- Produits -->
     @include('partials._our-product')
-    <!-- ====== Features End ====== -->
 
-    <!-- ====== About Start ====== -->
+    <!-- About -->
     {{-- @include('partials._about') --}}
-    <!-- ====== About End ====== -->
 
-    <!-- ====== Team Start ====== -->
+    <!-- Team -->
     {{-- @include('partials._team') --}}
-    <!-- ====== Team End ====== -->
 
-    <!-- ====== FAQ Start ====== -->
+    <!-- FAQ -->
     {{-- @include('partials._faq') --}}
-    <!-- ====== FAQ End ====== -->
 
-    <!-- ====== Contact Start ====== -->
+    <!-- Contact -->
     {{-- @include('partials._contact') --}}
-    <!-- ====== Contact End ====== -->
 
-
-    {{-- Génération de signature pdf --}}
-    {{-- <div id="pspdfkit" style="height: 100vh"></div>
-
-    <script src="{{asset('assets/dist/pspdfkit.js')}}"></script>
-    <script>
-        PSPDFKit.load({
-            container: "#pspdfkit",
-              document: "document.pdf" // Add the path to your document here.
-        })
-        .then(function(instance) {
-            console.log("PSPDFKit loaded", instance);
-        })
-        .catch(function(error) {
-            console.error(error.message);
-        });
-    </script> --}}
 @endsection
+
 
 @section('front-simpleJs')
     <script>
-        // $(function() {
-        var Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 5000
-        });
-        // })
-        $('#lapin').click(function() {
-            Toast.fire({
-                icon: 'success',
-                title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
-            })
-        });
+        // Soumission formulaire avec animation + toast
+        const submitBtn = document.getElementById('btnSubmit');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', async () => {
 
-        $('#btnSubmit').click((e) => {
-            // e.preventDefault();
-
-            if (!ControlRequiredFields($('#registerForm .required'))) {
-                return;
-            }
-            $('#loading').css('display', 'block');
-
-            $('#btnSubmit').prop('disabled', true);
-
-            let name = $('#app_name').val();
-            let phone = $('#app_phone').val();
-            let email = $('#app_email').val();
-            let logo = $('#app_logo').val();
-            let address = $('#app_address').val();
-            let activity = $('#app_domain').val();
-            //let captcha = $('#captcha').val();
-            // let _token = $("input[name='_token']").val();
-            let datas = {
-                name,
-                phone,
-                email,
-                logo,
-                address,
-                activity,
-                // captcha
-            };
-            let url = "{{ route('app.sub.scribt') }}";
-            console.log(url);
-            postData(url, datas).then(res => {
-                console.log(res);
-                if (res.success) {
-                    $('#registerForm').trigger('reset');
-                    $("#supcription_app").modal('hide');
-                    Toast.fire({
-                        icon: 'success',
-                        title: res.msg
-                    });
-                } else {
-                    let msg = "Une erreur survenue! Essayer plus tard.";
-                    if (res.msg)
-                        msg = res.msg;
-
-                    Toast.fire({
-                        icon: 'warning',
-                        title: msg
-                    })
-                    $("#supcription_app").modal('hide');
+                if (!ControlRequiredFields(document.querySelectorAll('#registerForm .required'))) {
+                    return;
                 }
-                $('#loading').css('display', 'none');
-                $('#btnSubmit').prop('disabled', false);
-            }).catch(err => {
-                console.log(err.response);
-                $('#loading').css('display', 'none');
-                $('#btnSubmit').prop('disabled', false);
-                Toast.fire({
-                    icon: 'error',
-                    title: 'Oups!! Erreur survenue'
-                })
+
+                document.getElementById('loading').style.display = 'flex';
+                submitBtn.disabled = true;
+
+                let datas = {
+                    name: document.getElementById('app_name').value,
+                    phone: document.getElementById('app_phone').value,
+                    email: document.getElementById('app_email').value,
+                    logo: document.getElementById('app_logo').value,
+                    address: document.getElementById('app_address').value,
+                    activity: document.getElementById('app_domain').value,
+                };
+
+                try {
+                    let response = await fetch("{{ route('app.sub.scribt') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                        },
+                        body: JSON.stringify(datas)
+                    });
+
+                    let res = await response.json();
+
+                    if (res.success) {
+                        document.getElementById('registerForm').reset();
+                        toast('success', res.msg);
+                        $("#supcription_app").modal('hide');
+                    } else {
+                        toast('warning', res.msg ?? "Une erreur est survenue.");
+                    }
+                } catch (err) {
+                    toast('error', "Erreur inattendue.");
+                }
+
+                document.getElementById('loading').style.display = 'none';
+                submitBtn.disabled = false;
             });
-        });
-        // })
+        }
     </script>
 @endsection

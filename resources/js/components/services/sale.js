@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const addSaleInvoice = async (data) => {
     try {
-        const res = await axios.post(`/sale-invoice-store`, data, {
+        const res = await axios.post(`/dashboard/sale-invoice-store`, data, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
@@ -20,7 +20,7 @@ export const addSaleInvoice = async (data) => {
 };
 export const updateSaleInvoice = async (data, id) => {
     try {
-        const res = await axios.post(`/sale-invoice-update/${id}`, data, {
+        const res = await axios.post(`/dashboard/sale-invoice-update/${id}`, data, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
@@ -39,7 +39,7 @@ export const updateSaleInvoice = async (data, id) => {
 
 export const getDataForInvoice = async () => {
     try {
-        const res = await axios.get(`/sale-invoice-data`);
+        const res = await axios.get(`/dashboard/sale-invoice-data`);
 
         return { success: true, data: res.data, status: res.status };
     } catch (error) {

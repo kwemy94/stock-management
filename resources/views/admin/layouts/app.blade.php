@@ -33,6 +33,11 @@
 
     <link rel="stylesheet" href="{{ asset('css/customer.css') }}">
     @yield('dashboard-datatable-css')
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+    </style>
 </head>
 
 {{-- <body class="hold-transition sidebar-mini layout-fixed"> --}}
