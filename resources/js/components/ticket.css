@@ -1,0 +1,50 @@
+@media print {
+    body {
+        margin: 0;
+    }
+
+    .ticket {
+        width: 58mm; /* 80mm si grande imprimante */
+        font-family: monospace;
+        font-size: 12px;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px dashed #000;
+        margin: 6px 0;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .right {
+        text-align: right;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    /* Masquer tout sauf le ticket */
+    body * {
+        visibility: hidden;
+    }
+
+    .ticket,
+    .ticket * {
+        visibility: visible;
+    }
+
+    .ticket {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}

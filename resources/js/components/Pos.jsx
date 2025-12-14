@@ -8,6 +8,8 @@ import useScanDetection from "use-scan-detection";
 import { QrReader } from "react-qr-reader";
 import PaymentModal from "./PaymentModal";
 import { Color } from "pspdfkit";
+import ThermalReceipt from "./ThermalReceipt";
+import './ticket.css';
 
 function Pos() {
     const [products, setProducts] = useState([]);
@@ -22,10 +24,14 @@ function Pos() {
     const [totalCart, setTotalCart] = useState(0);
     const [customer, setCustomer] = useState("");
     const [disableBtn, setDisableBtn] = useState(false);
-    const [amount_received, setAmountReceived] = useState();
+    // const [amount_received, setAmountReceived] = useState();
+    const [amountReceived, setAmountReceived] = useState(0);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [balance, setBalance] = useState(0);
 
     const qrRf = useRef(null);
 
+    const printRef = useRef();
     const [cartField, setCartFiel] = useState([
         // { prod_id: '', name: '', quantity: '', price: '' }
     ]);
@@ -33,6 +39,10 @@ function Pos() {
     useEffect(() => {
         loadData();
     }, []);
+
+    useEffect(() => {
+        setBalance(Number(amountReceived || 0) - Number(totalCart));
+    }, [amountReceived, totalCart]);
 
     useEffect(() => {
         console.log("total");
@@ -328,6 +338,24 @@ function Pos() {
         }
     };
 
+    const confirmInvoice = async () => {
+        await handleSubmit();
+        setShowPaymentModal(false);
+        setAmountReceived(0);
+    };
+
+    const confirmAndPrint = async () => {
+    await handleSubmit();
+
+    setTimeout(() => {
+        window.print();
+    }, 500);
+
+    setShowPaymentModal(false);
+    setAmountReceived(0);
+};
+
+
     return (
         <>
             <div className="row g-3">
@@ -465,8 +493,10 @@ function Pos() {
                                 </button>
                                 <button
                                     type="button"
-                                    disabled={disableBtn}
-                                    onClick={() => handleSubmit()}
+                                    disabled={
+                                        disableBtn || cartField.length === 0
+                                    }
+                                    onClick={() => setShowPaymentModal(true)}
                                     className="btn btn-success w-50"
                                 >
                                     Valider
@@ -545,6 +575,30 @@ function Pos() {
                     </div>
                 </div>
             </div>
+
+            <div style={{ display: "none" }}>
+                <ThermalReceipt
+                    ref={printRef}
+                    cartField={cartField}
+                    totalCart={totalCart}
+                    amountReceived={amountReceived}
+                    balance={balance}
+                    devise={setting?.[0]?.devise}
+                />
+            </div>
+
+            <PaymentModal
+                show={showPaymentModal}
+                onClose={() => setShowPaymentModal(false)}
+                cartField={cartField}
+                totalCart={totalCart}
+                amountReceived={amountReceived}
+                setAmountReceived={setAmountReceived}
+                balance={balance}
+                devise={setting?.[0]?.devise}
+                onConfirm={confirmInvoice}
+                onConfirmAndPrint={confirmAndPrint}
+            />
         </>
     );
 }
