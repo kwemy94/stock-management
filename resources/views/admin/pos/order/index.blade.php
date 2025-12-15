@@ -11,6 +11,16 @@
     <link rel="stylesheet" href="{{ asset('dashboard-template/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('dashboard-template/dist/css/adminlte.min.css') }}">
+    <style>
+        .table-hover tbody tr {
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+    </style>
 @endsection
 
 
@@ -20,90 +30,107 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">{{ __('Liste des factures POS') }}</h3>
-                            <div class="card-tools">
-                                <a href="{{ route('order.create') }}" class="btn btn-outline-success btn-sm"><span
-                                        class="fa fa-plus"></span> Continuer à Vendre</a>
-                            </div>
+                    <div class="card card-outline card-success">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3 class="card-title m-0">
+                                <i class="fas fa-cash-register mr-1 text-success"></i>
+                                Liste des factures POS
+                            </h3>
+
+                            <a href="{{ route('order.create') }}" class="btn btn-sm btn-success">
+                                <i class="fas fa-plus"></i> Continuer à vendre
+                            </a>
                         </div>
+
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 10px">#</th>
-                                        <th>{{ __('Client') }} </th>
-                                        <th>{{ __('Montant facture') }} </th>
-                                        <th>{{ __('Montant perçu') }} </th>
-                                        <th>{{ __('Status') }} </th>
-                                        <th>{{ __('Reste') }}</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $cpt = 1;
-                                    @endphp
-                                    @forelse ($orders as $order)
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-hover table-sm mb-0">
+                                    <thead class="thead-light">
                                         <tr>
-                                            <td>{{ $cpt++ }}</td>
-                                            <td>{{ isset($order->customer) ? $order->customer->name : 'Non identifié' }}
-                                            </td>
-                                            {{-- @dd($order->order_products) --}}
-                                            <td>
-                                                @php
-                                                    $sumAttendu = 0;
-                                                    
-                                                    foreach ($order->order_products as $item) {
-                                                        $sumAttendu += $item->price;
-                                                    }
-                                                @endphp
-                                                {{ $sumAttendu }} {{ $setting->devise }}
-
-
-                                            </td>
-                                            <td>
-                                                @php
-                                                    $sumPayer = 0;
-                                                    foreach ($order->payments as $item) {
-                                                        $sumPayer += $item->amount;
-                                                    }
-                                                @endphp
-                                                {{ $sumPayer }} {{ $setting->devise }}
-                                            </td>
-                                            <td>
-                                                <span
-                                                    class="badge {{ $sumPayer == $sumAttendu ? 'bg-success' : 'bg-warning' }}">
-                                                    {{ $sumPayer == $sumAttendu ? 'payé' : 'Partiel' }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span>{{ $sumPayer != $sumAttendu ? ($sumAttendu - $sumPayer ). $setting->devise: '' }}</span>
-                                            </td>
-                                            <td style="display: flex !important;">
-                                                <a href="{{ route('order.print.invoice', $order->id) }}"
-                                                    class="fas fa-print" title="Imprimer" target=_blank
-                                                    style="color: #217fff; margin-left: 5px; margin-right: 5px;"></a>
-
-                                            </td>
+                                            <th>#</th>
+                                            <th>Client</th>
+                                            <th class="text-right">Montant</th>
+                                            <th class="text-right">Payé</th>
+                                            <th class="text-center">Statut</th>
+                                            <th class="text-right">Reste</th>
+                                            <th class="text-center">Actions</th>
                                         </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="7" style="text-align: center"> Aucun ordre disponible</td>
-                                        </tr>
-                                    @endforelse
+                                    </thead>
+
+                                    <tbody>
+
+                                        @php $cpt = 1; @endphp
+                                        @forelse ($orders as $order)
+                                            @php
+                                                $sumAttendu = $order->order_products->sum('price');
+                                                $sumPayer = $order->payments->sum('amount');
+                                                $reste = $sumAttendu - $sumPayer;
+                                            @endphp
+
+                                            <tr>
+                                                <td>{{ $cpt++ }}</td>
+
+                                                <td>
+                                                    {{ $order->customer->name ?? 'Non identifié' }}
+                                                </td>
+
+                                                <td class="text-right font-weight-bold">
+                                                    {{ number_format($sumAttendu, 0, ',', ' ') }} {{ $setting->devise }}
+                                                </td>
+
+                                                <td class="text-right text-success">
+                                                    {{ number_format($sumPayer, 0, ',', ' ') }} {{ $setting->devise }}
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <span
+                                                        class="badge badge-{{ $sumPayer == $sumAttendu ? 'success' : 'warning' }}">
+                                                        {{ $sumPayer == $sumAttendu ? 'Payé' : 'Partiel' }}
+                                                    </span>
+                                                </td>
+
+                                                <td class="text-right text-danger">
+                                                    {{ $reste > 0 ? number_format($reste, 0, ',', ' ') . ' ' . $setting->devise : '-' }}
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="dropdown">
+                                                        <a href="#" class="text-secondary" data-toggle="dropdown">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </a>
+
+                                                        <div class="dropdown-menu dropdown-menu-right shadow-sm">
+
+                                                            <a href="{{ route('order.print.invoice', $order->id) }}"
+                                                                class="dropdown-item" target="_blank">
+                                                                <i class="fas fa-print text-primary mr-2"></i>
+                                                                Imprimer
+                                                            </a>
+
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center text-muted py-4">
+                                                    <i class="fas fa-folder-open mb-2 d-block"></i>
+                                                    Aucun ordre disponible
+                                                </td>
+                                            </tr>
+                                        @endforelse
 
 
-                                </tbody>
-                            </table>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card-body -->
                     </div>
                 </div>
             </div>
-        </div>
     </section>
 @endsection
 
@@ -128,14 +155,14 @@
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('dashboard-template/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-    
+
     <script>
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["excel", "pdf","colvis"]
+                "buttons": ["excel", "pdf", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         });

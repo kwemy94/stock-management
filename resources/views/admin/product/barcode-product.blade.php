@@ -37,7 +37,7 @@
     <tr>
         @foreach ($barcodes as $index => $barcode)
 
-            <td>
+            <td style="text-align: center">
                 {!! $barcode['image'] !!}   <!-- Code-barres HTML -->
                 <br>
                 <span class="code">{{ $barcode['text'] }}</span>  <!-- Texte scanné -->

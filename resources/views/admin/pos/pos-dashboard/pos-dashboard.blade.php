@@ -1,29 +1,79 @@
 @extends('admin.layouts.app')
 
+@section('dashboard-datatable-css')
+    <style>
+        .action-card {
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+@endsection
 @section('dashboard-content')
     <section class="content">
         <div class="row pt-2">
 
             <div class="col-md-6">
-                <!-- Buttons with Icons -->
-                <div class="card">
+                <div class="card card-outline card-success">
                     <div class="card-header">
-                        <h3 class="card-title">Actions rapides</h3>
+                        <h3 class="card-title">
+                            <i class="fas fa-bolt text-success mr-1"></i>
+                            Actions rapides
+                        </h3>
                     </div>
-                    <div class="card-body row">
-                        <div class="col-md-6">
-                            <a href="{{ route('order.create') }}" type="button"
-                                class="btn btn-outline-success btn-block btn-sm"><i class="fas fa-money-bill"></i> Point de vente</a>
-                            <a href="{{ route('order.index') }}" type="button" class="btn btn-outline-success btn-block btn-sm"><i
-                                    class="fa fa-plus"></i> Factures POS </a>
-                        </div>
-                        <div class="col-md-6">
-                            {{-- <button type="button" class="btn btn-outline-primary btn-block btn-sm"><i
-                                    class="fa fa-book"></i> .btn-block .btn-flat</button> --}}
-                            {{-- <a href="{{ route('sale.invoice.create', ['type' => 'proformat']) }}" type="button"
-                                class="btn btn-outline-primary btn-block btn-sm"><i class="fa fa-plus"></i> Devis</a> --}}
-                            <a href="{{ route('order.rapport') }}" type="button"
-                                class="btn btn-outline-success btn-block btn-sm"><i class="fa fa-plus"></i> Statistiques</a>
+
+                    <div class="card-body">
+                        <div class="row">
+
+                            {{-- Point de vente --}}
+                            <div class="col-md-6 col-12 mb-3">
+                                <a href="{{ route('order.create') }}" class="text-dark">
+                                    <div class="info-box shadow-sm action-card">
+                                        <span class="info-box-icon bg-success">
+                                            <i class="fas fa-cash-register"></i>
+                                        </span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Point de vente</span>
+                                            <span class="info-box-number text-muted">Nouvelle vente</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            {{-- Factures POS --}}
+                            <div class="col-md-6 col-12 mb-3">
+                                <a href="{{ route('order.index') }}" class="text-dark">
+                                    <div class="info-box shadow-sm action-card">
+                                        <span class="info-box-icon bg-primary">
+                                            <i class="fas fa-file-invoice"></i>
+                                        </span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Factures POS</span>
+                                            <span class="info-box-number text-muted">Liste & gestion</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            {{-- Statistiques --}}
+                            <div class="col-md-6 col-12">
+                                <a href="{{ route('order.rapport') }}" class="text-dark">
+                                    <div class="info-box shadow-sm action-card">
+                                        <span class="info-box-icon bg-info">
+                                            <i class="fas fa-chart-line"></i>
+                                        </span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Statistiques</span>
+                                            <span class="info-box-number text-muted">Rapports & ventes</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -79,7 +129,7 @@
                 </div>
 
             </div>
-            
+
 
 
         </div>

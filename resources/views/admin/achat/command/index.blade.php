@@ -19,90 +19,112 @@
     <section class="content mt-4">
         <div class="container-fluid">
 
-            <div class="card">
-                <div class="card-header d-flex align-items-center">
-                    <h3 class="card-title mb-0">Bons de commandes</h3>
+            <div class="card card-outline card-primary">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <h3 class="card-title mb-0">
+            <i class="fas fa-file-alt mr-1"></i> Bons de commandes
+        </h3>
 
-                    <a href="{{ route('buy.command.create') }}" class="btn btn-success btn-sm ml-auto">
-                        <i class="fa fa-plus"></i> Nouveau
-                    </a>
-                </div>
+        <a href="{{ route('buy.command.create') }}" class="btn btn-sm btn-success">
+            <i class="fa fa-plus"></i> Nouveau
+        </a>
+    </div>
 
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="invoice_tab" class="table table-hover table-sm mb-0">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Numéro</th>
+                        <th>Fournisseur</th>
+                        <th>Date</th>
+                        <th class="text-right">Montant</th>
+                        <th class="text-center">Statut</th>
+                        <th class="text-center" style="width:30px;">Actions</th>
+                    </tr>
+                </thead>
 
-                <div class="card-body">
+                <tbody>
+                    @forelse ($commands as $command)
+                    <tr>
+                        <td>
+                            <a href="{{ route('buy-command-order.show', $command->id) }}">
+                                {{ $command->reference }}
+                            </a>
+                        </td>
+                        <td>{{ $command->supplier->name }}</td>
+                        <td>{{ \Carbon\Carbon::parse($command->date_command)->format('d/m/Y') }}</td>
+                        <td class="text-right font-weight-bold">
+                            {{ number_format($command->amount, 0, ',', ' ') }} FCFA
+                        </td>
+                        <td class="text-center">
+                            @switch($command->status)
+                                @case('draft')
+                                    <span class="badge badge-danger">Brouillon</span>
+                                @break
+                                @case('send')
+                                    <span class="badge badge-secondary">Envoyée</span>
+                                @break
+                                @case('confirmed')
+                                    <span class="badge badge-primary">Confirmée</span>
+                                @break
+                                @case('received')
+                                    <span class="badge badge-success">Livrée</span>
+                                @break
+                                @case('partially_received')
+                                    <span class="badge badge-warning">Partiellement livrée</span>
+                                @break
+                            @endswitch
+                        </td>
 
-                    <table id="invoice_tab" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Numéro</th>
-                                <th>Fournisseur</th>
-                                <th>Date</th>
-                                <th>Montant</th>
-                                <th>Statut</th>
-                                <th style="width:30px;">Actions</th>
-                            </tr>
-                        </thead>
+                        {{-- Actions regroupées --}}
+                        {{-- <td class="text-center">
+                            <div class="dropdown">
+                                <a href="#" class="text-secondary" data-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right shadow-sm">
 
-                        <tbody>
+                                    <a class="dropdown-item"
+                                       href="{{ route('buy-command-order.show', $command->id) }}">
+                                        <i class="fas fa-eye text-info mr-2"></i> Détails
+                                    </a>
 
-                            @forelse ($commands as $command)
-                                <tr>
+                                    <a class="dropdown-item"
+                                       href="{{ route('buy.command.edit', $command->id) }}">
+                                        <i class="fas fa-edit text-primary mr-2"></i> Modifier
+                                    </a>
 
-                                    <td>
-                                        <a href="{{ route('buy-command-order.show', $command->id) }}">
-                                            {{ $command->reference }}
-                                        </a>
-                                    </td>
+                                    <div class="dropdown-divider"></div>
 
-                                    <td>{{ $command->supplier->name }}</td>
-                                    <td>{{ $command->date_command }}</td>
-                                    <td>{{ number_format($command->amount, 0, ',', ' ') }} FCFA</td>
+                                    <form method="POST" action="{{ route('buy.command.destroy', $command->id) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="fas fa-trash-alt mr-2"></i> Supprimer
+                                        </button>
+                                    </form>
 
-                                    <td>
-                                        @switch($command->status)
-                                            @case('draft')
-                                                <span class="badge bg-danger">Brouillon</span>
-                                            @break
+                                </div>
+                            </div>
+                        </td> --}}
+                        @include('admin.achat.command._actions', ['command' => $command])
 
-                                            @case('send')
-                                                <span class="badge bg-secondary">Envoyée</span>
-                                            @break
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="fas fa-folder-open d-block mb-2"></i>
+                            Aucune commande disponible
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-                                            @case('confirmed')
-                                                <span class="badge bg-primary">Confirmée</span>
-                                            @break
-
-                                            @case('received')
-                                                <span class="badge bg-success">Livrée</span>
-                                            @break
-                                            @case('partially_received')
-                                                <span class="badge bg-warning">Partiellement livrée</span>
-                                            @break
-                                        @endswitch
-                                    </td>
-
-                                    <!-- ACTIONS -->
-                                    {{-- <td class="d-flex gap-1"> --}}
-
-                                    @include('admin.achat.command._actions', ['command' => $command])
-
-                                    {{-- </td> --}}
-
-                                </tr>
-
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center">Aucune commande disponible</td>
-                                    </tr>
-                                @endforelse
-
-                            </tbody>
-                        </table>
-
-                    </div>
-                </div>
-
-            </div>
         </section>
     @endsection
 

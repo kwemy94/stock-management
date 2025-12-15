@@ -11,6 +11,16 @@
     <link rel="stylesheet" href="{{ asset('dashboard-template/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('dashboard-template/dist/css/adminlte.min.css') }}">
+    <style>
+        .table-hover tbody tr {
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+    </style>
 @endsection
 
 
@@ -20,186 +30,228 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card card-outline card-primary">
                         <div class="card-header text-center">
-                            <h3 class="card-title w-100">{{ __('Factures') }}</h3>
+                            <h3 class="card-title w-100">
+                                <i class="fas fa-file-invoice mr-1"></i> Factures
+                            </h3>
                         </div>
-                        <!-- /.card-header -->
+
                         <div class="card-body">
-                            <table id="invoice_tab" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Numéro facture</th>
-                                        <th>Date</th>
-                                        <th>Montant</th>
-                                        <th>Montant encaissé</th>
-                                        <th>Montant dû</th>
-                                        <th style="width: 40px">Statut</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $cpt = 1;
-                                    @endphp
-                                    @forelse ($saleInvoices as $invoice)
+                            <div class="table-responsive">
+                                <table id="invoice_tab" class="table table-hover table-sm mb-0">
+                                    <thead class="thead-light">
                                         <tr>
-                                            <td>{{ $invoice->invoice_number }}</td>
-                                            <td>{{ $invoice->date }}</td>
-                                            <td>{{ $invoice->montant_facture }}</td>
-                                            <td>{{ $invoice->montant_encaisse ?? 0 }}</td>
-                                            <td>{{ $invoice->montant_du }}</td>
-                                            <td>
-                                                @switch($invoice->status)
-                                                    @case('draft')
-                                                        <span class="badge bg-danger">{{ $invoice->status }}</span>
-                                                    @break
-
-                                                    @case('confirmed')
-                                                        <span class="badge bg-primary">{{ $invoice->status }}</span>
-                                                    @break
-
-                                                    @case('proformat')
-                                                        <span class="badge bg-warning">{{ $invoice->status }}</span>
-                                                    @break
-
-                                                    @case('Payé')
-                                                        <span class="badge bg-success">{{ $invoice->status }}</span>
-                                                    @break
-
-                                                    @default
-                                                @endswitch
-
-                                            </td>
-                                            <td style="display: flex !important;">
-                                                @if ($invoice->status == 'confirmed')
-                                                    <a href="#" title="Payé" class="fas fa-check"
-                                                        id="invoice_{{ $invoice->id }}"
-                                                        onclick="paiementInvoice({{ $invoice->id }})" data-toggle="modal"
-                                                        data-target="#modal-secondary"
-                                                        data-amount_du={{ $invoice->montant_du }} {{-- data-amount_ ={{ $invoice->montant_facture }} --}}
-                                                        style="color: #09c240; margin-left: 5px; margin-right: 5px;"></a>
-                                                @endif
-                                                <a href="{{ route('sale.invoice.show', $invoice->id) }}" title="Détails"
-                                                    class="fas fa-eye" style=" margin-left: 5px; margin-right: 5px;"></a>
-                                                @if (in_array($invoice->status, ['confirmed', 'proformat', 'Payé']))
-                                                    <a href="{{ route('sale.invoice.print', $invoice->id) }}"
-                                                        title="Imprimer" class="fas fa-print"
-                                                        style="color:grey; margin-left: 5px; margin-right: 5px;"></a>
-                                                @endif
-
-                                                <form method="post" action="{{ route('product.destroy', $invoice->id) }}"
-                                                    id="form-delete-invoice{{ $invoice->id }}">
-                                                    {{-- <a href="{{ route('invoice.show', $invoice->id) }}" class="fas fa-eye"
-                                                        style="color: green"></a> --}}
-                                                    @if (!in_array($invoice->status, ['confirmed', 'Payé']))
-                                                        <a href="{{ route('sale.invoice.edit', $invoice->id) }}"
-                                                            class="fas fa-pen-alt"
-                                                            style="color: #37383a; margin-left: 5px; margin-right: 5px;"></a>
-                                                        @csrf
-                                                        @method('delete')
-                                                        <span id="btn-delete-invoice{{ $invoice->id }}"
-                                                            onclick="deleteinvoice({{ $invoice->id }})"
-                                                            class="fas fa-trash-alt" style="color: rgb(248, 38, 38)"></span>
-                                                    @endif
-
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="6" style="text-align: center"> Aucun produit disponible</td>
-                                            </tr>
-                                        @endforelse
-
-
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Numéro facture</th>
+                                            <th>Facture</th>
                                             <th>Date</th>
-                                            <th>Montant</th>
-                                            <th>Montant encaissé</th>
-                                            <th>Montant dû</th>
-                                            <th style="width: 40px">Statut</th>
-                                            <th>Action</th>
+                                            <th class="text-right">Montant</th>
+                                            <th class="text-right">Encaissé</th>
+                                            <th class="text-right">Reste</th>
+                                            <th class="text-center">Statut</th>
+                                            <th class="text-center">Actions</th>
                                         </tr>
-                                    </tfoot>
-                                </table>
+                                    </thead>
 
-                                <div class="modal fade" id="modal-secondary">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content bg-white">
-                                            <div class="modal-header">
-                                                <h4 class="modal-title"
-                                                    style="display: flex; justify-content: center; align-items: center;">
-                                                    Enregistrer un paiment
-                                                </h4>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form action="{{ route('sale.invoice.payment') }}" method="post" id="pay-form">
-                                                @csrf
-                                                <div class="modal-body">
-                                                    <div class="row" style="display:flex;gap:10px">
-                                                        <div class="form-group">
-                                                            <label for="name">{{ __('Montant dû') }}</label>
-                                                            <input type="text" readonly
-                                                                class="form-control form-control-border border-width-2 required"
-                                                                name="amount" id="amount_du" value="">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="name">{{ __('Montant encaissé') }}
-                                                                <em>*</em></label>
-                                                            <input type="text"
-                                                                class="form-control form-control-border border-width-2 required"
-                                                                name="amount_encaisse" id="amount_encaisse">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="mode">Mode de paiement <em>*</em></label>
-                                                            <select name="mode_id"
-                                                                class="custom-select form-control-border border-width-2 required"
-                                                                id="mode">
-                                                                <option value="" disabled selected>Mode de paiement
-                                                                </option>
-                                                                @forelse ($paymentModes as $mode)
-                                                                    <option value="{{ $mode->id }}">{{ $mode->name }}
-                                                                    </option>
-                                                                @empty
-                                                                    <option value="" disabled>Aucun mode de paiement
-                                                                        trouvé</option>
-                                                                @endforelse
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="name">{{ __('Date de paiement') }}
-                                                                <em>*</em></label>
-                                                            <input type="date"
-                                                                class="form-control form-control-border border-width-2 required"
-                                                                name="date_pay" id="date_pay" value="{{ date('Y-m-d') }}">
-                                                        </div>
-                                                        <input type="hidden" name='invoice_id' id="invoice_id">
+                                    <tbody>
+                                        @forelse ($saleInvoices as $invoice)
+                                            <tr>
+                                                <td><strong>{{ $invoice->invoice_number }}</strong></td>
 
+                                                <td class="text-muted">
+                                                    {{ \Carbon\Carbon::parse($invoice->date)->format('d/m/Y') }}
+                                                </td>
 
+                                                <td class="text-right font-weight-bold">
+                                                    {{ number_format($invoice->montant_facture, 0, ',', ' ') }}
+                                                </td>
+
+                                                <td class="text-right text-success">
+                                                    {{ number_format($invoice->montant_encaisse ?? 0, 0, ',', ' ') }}
+                                                </td>
+
+                                                <td class="text-right text-danger">
+                                                    {{ number_format($invoice->montant_du, 0, ',', ' ') }}
+                                                </td>
+
+                                                <td class="text-center">
+                                                    @switch($invoice->status)
+                                                        @case('draft')
+                                                            <span class="badge badge-danger">Brouillon</span>
+                                                        @break
+
+                                                        @case('confirmed')
+                                                            <span class="badge badge-primary">Confirmée</span>
+                                                        @break
+
+                                                        @case('proformat')
+                                                            <span class="badge badge-warning">Proforma</span>
+                                                        @break
+
+                                                        @case('Payé')
+                                                            <span class="badge badge-success">Payée</span>
+                                                        @break
+                                                    @endswitch
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="dropdown">
+                                                        <a class="text-secondary" href="#" role="button"
+                                                            data-toggle="dropdown">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </a>
+
+                                                        <div class="dropdown-menu dropdown-menu-right shadow">
+
+                                                            {{-- Détails --}}
+                                                            <a class="dropdown-item"
+                                                                href="{{ route('sale.invoice.show', $invoice->id) }}">
+                                                                <i class="fas fa-eye text-info mr-2"></i> Détails
+                                                            </a>
+
+                                                            {{-- Paiement --}}
+                                                            @if ($invoice->status == 'confirmed')
+                                                                <a class="dropdown-item text-success" href="#"
+                                                                    onclick="paiementInvoice({{ $invoice->id }})"
+                                                                    data-toggle="modal" data-target="#modal-secondary"
+                                                                    data-amount_du="{{ $invoice->montant_du }}">
+                                                                    <i class="fas fa-cash-register mr-2"></i> Encaisser
+                                                                </a>
+                                                            @endif
+
+                                                            {{-- Impression --}}
+                                                            @if (in_array($invoice->status, ['confirmed', 'proformat', 'Payé']))
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('sale.invoice.print', $invoice->id) }}">
+                                                                    <i class="fas fa-print text-secondary mr-2"></i>
+                                                                    Imprimer
+                                                                </a>
+                                                            @endif
+
+                                                            {{-- Modifier / Supprimer --}}
+                                                            @if (!in_array($invoice->status, ['confirmed', 'Payé']))
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('sale.invoice.edit', $invoice->id) }}">
+                                                                    <i class="fas fa-edit text-primary mr-2"></i> Modifier
+                                                                </a>
+
+                                                                <div class="dropdown-divider"></div>
+
+                                                                <form method="POST"
+                                                                    action="{{ route('product.destroy', $invoice->id) }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit"
+                                                                        class="dropdown-item text-danger">
+                                                                        <i class="fas fa-trash-alt mr-2"></i> Supprimer
+                                                                    </button>
+                                                                </form>
+                                                            @endif
+
+                                                        </div>
                                                     </div>
+                                                </td>
+                                            </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="7" class="text-center text-muted py-4">
+                                                        <i class="fas fa-folder-open mb-2 d-block"></i>
+                                                        Aucune facture disponible
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+
+
+                                        <tfoot class="thead-light">
+                                            <tr>
+                                                <th>Facture</th>
+                                                <th>Date</th>
+                                                <th class="text-right">Montant</th>
+                                                <th class="text-right">Encaissé</th>
+                                                <th class="text-right">Reste</th>
+                                                <th class="text-center">Statut</th>
+                                                <th class="text-center">Actions</th>
+                                            </tr>
+                                        </tfoot>
+
+                                    </table>
+
+                                    <div class="modal fade" id="modal-secondary">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content bg-white">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title"
+                                                        style="display: flex; justify-content: center; align-items: center;">
+                                                        Enregistrer un paiment
+                                                    </h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
                                                 </div>
-                                                <div class="modal-footer justify-content-between">
-                                                    <button type="button" class="btn btn-outline-light"
-                                                        data-dismiss="modal">Annuler</button>
-                                                    <button type="submit" class="btn btn-outline-success"
-                                                        id="save-pay">Enregistrer</button>
-                                                </div>
-                                            </form>
+                                                <form action="{{ route('sale.invoice.payment') }}" method="post"
+                                                    id="pay-form">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <div class="row" style="display:flex;gap:10px">
+                                                            <div class="form-group">
+                                                                <label for="name">{{ __('Montant dû') }}</label>
+                                                                <input type="text" readonly
+                                                                    class="form-control form-control-border border-width-2 required"
+                                                                    name="amount" id="amount_du" value="">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="name">{{ __('Montant encaissé') }}
+                                                                    <em>*</em></label>
+                                                                <input type="text"
+                                                                    class="form-control form-control-border border-width-2 required"
+                                                                    name="amount_encaisse" id="amount_encaisse">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="mode">Mode de paiement <em>*</em></label>
+                                                                <select name="mode_id"
+                                                                    class="custom-select form-control-border border-width-2 required"
+                                                                    id="mode">
+                                                                    <option value="" disabled selected>Mode de paiement
+                                                                    </option>
+                                                                    @forelse ($paymentModes as $mode)
+                                                                        <option value="{{ $mode->id }}">
+                                                                            {{ $mode->name }}
+                                                                        </option>
+                                                                    @empty
+                                                                        <option value="" disabled>Aucun mode de paiement
+                                                                            trouvé</option>
+                                                                    @endforelse
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="name">{{ __('Date de paiement') }}
+                                                                    <em>*</em></label>
+                                                                <input type="date"
+                                                                    class="form-control form-control-border border-width-2 required"
+                                                                    name="date_pay" id="date_pay"
+                                                                    value="{{ date('Y-m-d') }}">
+                                                            </div>
+                                                            <input type="hidden" name='invoice_id' id="invoice_id">
+
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer justify-content-between">
+                                                        <button type="button" class="btn btn-outline-light"
+                                                            data-dismiss="modal">Annuler</button>
+                                                        <button type="submit" class="btn btn-outline-success"
+                                                            id="save-pay">Enregistrer</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <!-- /.card-body -->
                             </div>
-                            <!-- /.card-body -->
                         </div>
                     </div>
                 </div>
-            </div>
         </section>
     @endsection
 

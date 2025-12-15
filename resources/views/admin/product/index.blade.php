@@ -106,8 +106,8 @@
                             <div class="card-tools">
                                 <a href="{{ route('product.create') }}" class="btn btn-outline-success btn-sm"><span
                                         class="fa fa-plus"></span> Add</a>
-                                <a href="{{ route('barcode.to.pdf') }}" class="btn btn-outline-secondary btn-sm"
-                                    target="_blank"><span class="fa fa-print"></span> Barcode</a>
+                                {{-- <a href="{{ route('barcode.to.pdf') }}" class="btn btn-outline-secondary btn-sm"
+                                    target="_blank"><span class="fa fa-print"></span> Barcode</a> --}}
                             </div>
                         </div>
                         <!-- /.card-header -->
@@ -149,12 +149,12 @@
                                                     <i class="fas fa-pen" style="color:#2274ff"></i>
                                                 </a>
 
-                                                @if ($product->stock_quantity > 0)
+                                                {{-- @if ($product->stock_quantity > 0) --}}
                                                     <i class="fas fa-barcode" title="Imprimer code"
                                                         style="cursor:pointer; margin-right:8px;"
                                                         onclick="openPrintModal('{{ $product->id }}', '{{ $product->product_name }}', '{{ $product->code }}')">
                                                     </i>
-                                                @endif
+                                                {{-- @endif --}}
 
                                                 <i class="fas fa-trash" style="color:#e52b2b"
                                                     onclick="deleteProduct({{ $product->id }})">
