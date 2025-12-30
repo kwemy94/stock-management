@@ -40,6 +40,11 @@ class MessageGoogle extends Mailable
                 view: 'emails.suscription-email',
             );
         }
+        if (isset($this->data['created_account'])) {
+            return new Content(
+                view: 'admin.users.account-created',
+            );
+        }
         return new Content(
             view: 'emails.contact-email',
         );

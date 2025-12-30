@@ -5,15 +5,36 @@ namespace App\Http\Controllers\buy;
 use Illuminate\Http\Request;
 use App\Models\Buy\StockMovement;
 use App\Http\Controllers\Controller;
+use App\Repositories\Buy\StockMovementRepository;
 
 class StockMovementController extends Controller
 {
+    private $stockMovementRepository;
+
+    public function __construct(StockMovementRepository $stockMovementRepository)
+    {
+        $this->middleware('can:view stock movements')->only(['index']);
+        $this->stockMovementRepository = $stockMovementRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        toggleDatabase();
+        $movts = $this->stockMovementRepository->getAll($request);
+        $prevDate = $movts['prevDate'];
+        $currentDate = $movts['currentDate'];
+        $nextDate = $movts['nextDate'];
+        $movements = $movts['movements'];
+
+        return view('admin.achat.stock_movement.index', compact(
+            'movements',
+            'currentDate',
+            'prevDate',
+            'nextDate'
+        ));
     }
 
     /**

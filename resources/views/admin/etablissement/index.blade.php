@@ -24,12 +24,11 @@
                         <div class="card-header">
                             <h3 class="card-title">{{ __('Liste approvisionnement') }} </h3>
 
-                            {{-- <div class="card-tools">
-                                <a href="{{ route('syst.inventory') }}" class="btn btn-outline-primary btn-sm"><span
-                                        > {{ __('Inventaire') }}</a>
-                                <a href="{{ route('ets.create') }}" class="btn btn-outline-success btn-sm"><span
-                                        class="fa fa-plus"></span> Add</a>
-                            </div> --}}
+                            <div class="card-tools">
+                                <a href="{{ route('licenses.index') }}" class="btn btn-outline-primary btn-sm"> {{ __('Licences') }}</a>
+                                <a href="{{ route('plans.index') }}" class="btn btn-outline-primary btn-sm">Plans</a>
+                                <a href="#" class="btn btn-outline-success btn-sm"> <i class="fa fa-plus"></i> Nouveau</a>
+                            </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -151,7 +150,7 @@
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["excel", "pdf", "colvis"]
+                "buttons": ["csv"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         });

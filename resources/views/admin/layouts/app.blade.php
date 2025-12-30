@@ -106,7 +106,8 @@
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
             @php
-                $adminCompany = checkCompany();
+                $superAdmin = checkCompany();
+                $adminCompany = adminCompany();
             @endphp
             <div class="p-3">
                 <h5>Paramètres rapides</h5>
@@ -116,10 +117,12 @@
                     <li><a href="{{ route('supplier.index') }}">Fournisseurs</a></li>
                     <li><a href="{{ route('unite-mesure.index') }}">Unité de mesure</a></li>
                     <li><a href="{{ route('product.index') }}">Produit</a></li>
-                    <li><a href="#">Utilisateur</a></li>
-                    <li><a href="{{ route('setting.index') }}">Configuration</a></li>
-                    @if ($adminCompany)
-                        <li><a href="{{ route('app.company') }}">Gestion profile</a></li>
+                    @if ($adminCompany || $superAdmin)
+                        <li><a href="{{ route('users.index') }}">Utilisateur</a></li>
+                        <li><a href="{{ route('setting.index') }}">Configuration</a></li>
+                    @endif
+                    @if ($superAdmin)
+                        <li><a href="{{ route('app.company') }}">Gestion entreprise</a></li>
                     @endif
                 </ul>
             </div>

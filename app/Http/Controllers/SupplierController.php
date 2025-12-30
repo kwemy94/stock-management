@@ -12,6 +12,11 @@ class SupplierController extends Controller
 
     public function __construct(SupplierRepository $supplierRepository)
     {
+        $this->middleware('can:list supplier')->only(['index', 'show']);
+        $this->middleware('can:create supplier')->only(['create', 'store']);
+        $this->middleware('can:update supplier')->only(['edit', 'update']);
+        $this->middleware('can:delete supplier')->only(['destroy']);
+
         $this->supplierRepository = $supplierRepository;
     }
     /**

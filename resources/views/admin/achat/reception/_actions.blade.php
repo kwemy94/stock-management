@@ -9,20 +9,20 @@
         <div class="dropdown-menu dropdown-menu-right">
 
             {{-- Voir --}}
-            <a class="dropdown-item" href="{{ route('buy-command-order.show', $receipt->id) }}">
+            {{-- <a class="dropdown-item" href="{{ route('buy-command-order.show', $receipt->id) }}">
                 <i class="fas fa-eye text-primary mr-2"></i> Voir
-            </a>
-            <a class="dropdown-item" href="{{ route('buy.command.print', $receipt->id) }}" target="_blank">
+            </a> --}}
+            <a class="dropdown-item" href="#" target="_blank">
                 <i class="fas fa-print text-dark mr-2"></i> Imprimer
             </a>
 
             {{-- Modifier --}}
             @if ($receipt->status === 'draft')
-                <a class="dropdown-item" href="{{ route('buy-command-order.edit', $receipt->id) }}">
+                <a class="dropdown-item" href="{{ route('buy-reception.edit', $receipt->id) }}">
                     <i class="fas fa-edit text-warning mr-2"></i> Modifier
                 </a>
-                <form action="{{ route('buy-command-order.destroy', $receipt->id) }}" method="POST"
-                    onsubmit="return confirm('Supprimer cette commande ?');">
+                <form action="{{ route('buy-reception.destroy', $receipt->id) }}" method="POST"
+                    onsubmit="return confirm('Supprimer ce BR ?');">
                     @csrf
                     @method('DELETE')
 

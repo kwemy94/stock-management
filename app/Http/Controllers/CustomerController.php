@@ -13,6 +13,11 @@ class CustomerController extends Controller
     private $customerRepository;
     public function __construct(CustomerRepository $customerRepository)
     {
+        $this->middleware('can:list client')->only(['index', 'show']);
+        $this->middleware('can:create client')->only(['create', 'store']);
+        $this->middleware('can:update client')->only(['edit', 'update']);
+        $this->middleware('can:delete client')->only(['destroy']);
+
         $this->customerRepository = $customerRepository;
     }
 

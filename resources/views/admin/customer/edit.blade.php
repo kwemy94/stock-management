@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-md-3"></div>
 
-                <div class="col-md-6">
+                {{-- <div class="col-md-6">
 
                     <div class="card card-primary">
                         <div class="card-header" style="background-color: rgb(32, 47, 112)">
@@ -52,8 +52,69 @@
                         </form>
                     </div>
 
-                </div>
+                </div> --}}
+
+
                 <div class="col-md-3"></div>
+            </div>
+
+            <div class="row justify-content-center">
+
+                <div class="col-md-6">
+
+                    <div class="card card-outline card-primary shadow-sm">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-user-plus mr-1"></i>
+                                {{ __('Modification info client') }}
+                            </h3>
+                        </div>
+
+                        <form method="POST" action="{{ route('customer.update', $customer->id) }}" id="customer-form">
+                            @csrf
+
+                            @method('PUT')
+                            <div class="card-body">
+
+                                <div class="form-group">
+                                    <label>{{ __('Nom client') }} <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" value="{{$customer->name}}" class="form-control form-control-sm required" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>{{ __('Téléphone') }} <span class="text-danger">*</span></label>
+                                    <input type="text" name="phone" value="{{$customer->phone}}" class="form-control form-control-sm required" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>{{ __('CNI') }}</label>
+                                    <input type="text" name="cni" value="{{$customer->cni}}" class="form-control form-control-sm">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" name="email" value="{{$customer->email}}" class="form-control form-control-sm">
+                                </div>
+
+                                <div class="form-group mb-0">
+                                    <label>{{ __('Adresse') }}</label>
+                                    <input type="text" name="adress" value="{{$customer->adress}}" class="form-control form-control-sm">
+                                </div>
+
+                            </div>
+
+                            <div class="card-footer text-right bg-white">
+                                <button type="submit" class="btn btn-primary btn-sm" id="save-customer">
+                                    <i class="fas fa-save mr-1"></i>
+                                    {{ __('button.save') }}
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+
             </div>
         </div>
     </section>

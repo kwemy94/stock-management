@@ -155,11 +155,13 @@
 
         <!-- HEADER -->
         <div class="header">
+            @php
+                $logoPath = public_path('storage/uploads/logo/' . ($setting->logo ?? ''));
+            @endphp
             <img class="logo"
-                src="{{ isset($setting->logo)
-                    ? 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('storage/images/logo/' . $setting->logo)))
-                    : 'data:image/png;base64,' .
-                        base64_encode(file_get_contents(public_path('front-template/assets/images/logo/logo.png'))) }}">
+                src="{{ !empty($setting->logo) && file_exists($logoPath)
+                    ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath))
+                    : asset('front-template/assets/images/logo/logo.png') }}">
 
             <h1>FACTURE</h1>
 

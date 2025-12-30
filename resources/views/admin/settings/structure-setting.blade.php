@@ -10,9 +10,18 @@
                     <div class="card card-primary card-outline">
                         <div class="card-body box-profile">
                             <div class="text-center">
-                                <img class="profile-user-img img-fluid img-circle"
+                                {{-- <img class="profile-user-img img-fluid img-circle"
                                 src='{{ isset($setting->logo) ? asset("storage/images/logo/$setting->logo") : asset("front-template/assets/images/logo/logo.png") }}'
-                                >
+                                > --}}
+                                @php
+                                    $logoPath = public_path('storage/uploads/logo/' . ($setting->logo ?? ''));
+                                @endphp
+
+                                <img class="profile-user-img img-fluid img-circle"
+                                    src="{{ !empty($setting->logo) && file_exists($logoPath)
+                                        ? asset('storage/uploads/logo/' . $setting->logo)
+                                        : asset('front-template/assets/images/logo/logo.png') }}">
+
                             </div>
 
                             {{-- <h3 class="profile-username text-center">Nina Mcintire</h3> --}}
@@ -21,16 +30,19 @@
 
                             <ul class="list-group list-group-unbordered mb-3">
                                 <li class="list-group-item">
-                                    <b>App name</b> <a class="float-right">{{ isset($setting->app_name) ? $setting->app_name : ''}}</a>
+                                    <b>App name</b> <a
+                                        class="float-right">{{ isset($setting->app_name) ? $setting->app_name : '' }}</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Téléphone</b> <a class="float-right">{{ isset($setting->phone)? $setting->phone:"" }}</a>
+                                    <b>Téléphone</b> <a
+                                        class="float-right">{{ isset($setting->phone) ? $setting->phone : '' }}</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Email</b> <a class="float-right">{{isset($setting->phone)? $setting->email:'' }}</a>
+                                    <b>Email</b> <a class="float-right">{{ isset($setting->phone) ? $setting->email : '' }}</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Devise</b> <a class="float-right">{{ isset($setting->phone)? $setting->devise : ''}}</a>
+                                    <b>Devise</b> <a
+                                        class="float-right">{{ isset($setting->phone) ? $setting->devise : '' }}</a>
                                 </li>
                             </ul>
 
@@ -47,7 +59,8 @@
                     <div class="card">
                         <div class="card-header p-2">
                             <ul class="nav nav-pills">
-                                <li class="nav-item"><a class="nav-link active" href="#settings" style="background-color: #84b7ee; color: black; font-weight: bold;"
+                                <li class="nav-item"><a class="nav-link active" href="#settings"
+                                        style="background-color: #84b7ee; color: black; font-weight: bold;"
                                         data-toggle="tab">Settings</a></li>
                             </ul>
                         </div><!-- /.card-header -->
@@ -64,34 +77,35 @@
                                                 class="col-sm-2 col-form-label">{{ __('setting.structure-name') }}</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control required" name="app_name"
-                                                    id="inputName" placeholder="Name" value="{{$setting->app_name}}">
+                                                    id="inputName" placeholder="Name" value="{{ $setting->app_name }}">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="phone" class="col-sm-2 col-form-label">Téléphone</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control required" name="phone"
-                                                    id="phone" value="{{$setting->phone}}">
+                                                    id="phone" value="{{ $setting->phone }}">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="devise" class="col-sm-2 col-form-label">Dévise</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control required" name="devise"
-                                                    id="devise" value="{{$setting->devise}}">
+                                                    id="devise" value="{{ $setting->devise }}">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="email" class="col-sm-2 col-form-label">Email</label>
                                             <div class="col-sm-10">
                                                 <input type="email" name="email" class="form-control required"
-                                                    id="email" placeholder="Email" value="{{$setting->email}}">
+                                                    id="email" placeholder="Email" value="{{ $setting->email }}">
                                             </div>
                                         </div>
                                         <div class="input-group row mb-3">
                                             <label for="email" class="col-sm-2 col-form-label">Logo</label>
                                             <div class="col-sm-10">
-                                                <input type="file" class="custom-file-input" name="logo" id="exampleInputFile">
+                                                <input type="file" class="custom-file-input" name="logo"
+                                                    id="exampleInputFile">
                                                 <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                                             </div>
 

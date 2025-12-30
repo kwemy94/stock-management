@@ -12,6 +12,7 @@ class SettingController extends Controller
     private $settingRepository;
 
         public function __construct(SettingRepository $settingRepository){
+            $this->middleware('can:update company info')->only(['index', 'show', 'update']);
             $this->settingRepository = $settingRepository;
         }
         
@@ -75,11 +76,23 @@ class SettingController extends Controller
             $setting = $this->settingRepository->getById($id);
 
             if (!is_null($request->logo)) {
-                $logoImage = $request->file('logo');
-                $logoName = Str::uuid() . '.' . $logoImage->getClientOriginalExtension();
-                $request->logo->storeAs('public/images/logo', $logoName);
+                // $logoImage = $request->file('logo');
+                // $logoName = Str::uuid() . '.' . $logoImage->getClientOriginalExtension();
+                // $request->logo->storeAs('public/images/logo', $logoName);
                 
-                $inputs['logo'] = $logoName;
+                // $inputs['logo'] = $logoName;
+
+                $file = $request->file('logo');
+
+                $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+                // chemin réel public
+                $file->move(
+                    public_path('storage/uploads/logo'),
+                    $filename
+                );
+
+                $inputs['logo'] = $filename;
             }
 
             $this->settingRepository->update($setting->id, $inputs);

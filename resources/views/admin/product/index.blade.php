@@ -133,8 +133,11 @@
                                         <tr>
                                             <td>{{ $cpt++ }}</td>
                                             <td>{{ $product->product_name }} </td>
-                                            <td> <img src='{{ asset("storage/images/products/$product->product_image") }}'
-                                                    class="product-img" alt=""> </td>
+                                            <td>
+                                                {{-- <img src='{{ asset("storage/images/products/$product->product_image") }}' --}}
+                                                <img src='{{ asset("storage/uploads/products/$product->product_image") }}'
+                                                    class="product-img" alt="">
+                                            </td>
                                             <td>
                                                 {{ $product->sale_price }}
                                             </td>
@@ -150,10 +153,10 @@
                                                 </a>
 
                                                 {{-- @if ($product->stock_quantity > 0) --}}
-                                                    <i class="fas fa-barcode" title="Imprimer code"
-                                                        style="cursor:pointer; margin-right:8px;"
-                                                        onclick="openPrintModal('{{ $product->id }}', '{{ $product->product_name }}', '{{ $product->code }}')">
-                                                    </i>
+                                                <i class="fas fa-barcode" title="Imprimer code"
+                                                    style="cursor:pointer; margin-right:8px;"
+                                                    onclick="openPrintModal('{{ $product->id }}', '{{ $product->product_name }}', '{{ $product->code }}')">
+                                                </i>
                                                 {{-- @endif --}}
 
                                                 <i class="fas fa-trash" style="color:#e52b2b"
@@ -299,23 +302,22 @@
         //     $("#printBarcodeModal").modal('hide');
         // }
         function printBarcode() {
-    const id = $("#barcode_product_id").val();
-    const qty = parseInt($("#barcode_qty").val(), 10);
+            const id = $("#barcode_product_id").val();
+            const qty = parseInt($("#barcode_qty").val(), 10);
 
-    if (!id) {
-        alert("Produit non sélectionné");
-        return;
-    }
+            if (!id) {
+                alert("Produit non sélectionné");
+                return;
+            }
 
-    if (!qty || qty <= 0) {
-        alert("Quantité invalide");
-        return;
-    }
+            if (!qty || qty <= 0) {
+                alert("Quantité invalide");
+                return;
+            }
 
-    window.open(`/dashboard/product/${id}/barcode/pdf?qty=${qty}`, "_blank");
+            window.open(`/dashboard/product/${id}/barcode/pdf?qty=${qty}`, "_blank");
 
-    $("#printBarcodeModal").modal("hide");
-}
-
+            $("#printBarcodeModal").modal("hide");
+        }
     </script>
 @endsection

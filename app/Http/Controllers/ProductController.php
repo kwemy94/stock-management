@@ -23,6 +23,10 @@ class ProductController extends Controller
 
     public function __construct(ProductRepository $productRepository, CategoryRepository $categoryRepository, UnitRepository $unitRepository)
     {
+        $this->middleware('can:print qr code product')->only(['printBarcodePdf']);
+        $this->middleware('can:create product')->only(['create', 'store']);
+        $this->middleware('can:update product')->only(['edit', 'update']);
+        $this->middleware('can:delete product')->only(['destroy']);
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
         $this->unitRepository = $unitRepository;
@@ -54,51 +58,64 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        toggleDatabase();
-
-        // Validation
-        $validation = Validator::make(
-            $request->all(),
-            [
-                'product_name' => 'required|string|max:255',
-                'stock_quantity' => 'required|integer|min:0',
-                'unit_price' => 'required|numeric|min:0',
-                'product_image' => 'nullable|image|mimes:jpeg,png,jpg|max:1024', // 1MB max
-            ],
-            [
-                'product_name.required' => 'Nom du produit requis.',
-                'stock_quantity.required' => 'Stock initial requis.',
-                'stock_quantity.integer' => 'Le stock doit être un nombre entier.',
-                'unit_price.required' => 'Prix unitaire requis.',
-                'unit_price.numeric' => 'Le prix doit être un nombre.',
-                'product_image.image' => 'Le fichier doit être une image valide.',
-                'product_image.mimes' => 'L’image doit être au format jpeg, png ou jpg.',
-                'product_image.max' => 'L’image ne doit pas dépasser 1MB.',
-            ]
-        );
-
-        if ($validation->fails()) {
-            return redirect()->back()->withErrors($validation)->withInput();
-        }
-
-        $inputs = $request->except(['product_image']);
-
-        // Générer le code-barres
-        [$codeProduit, $barcode] = generateProductBarcode();
-        $inputs['code'] = $codeProduit;
-        $inputs['barcode'] = "xx";
-        // dd($inputs, $request->all());
-
-        // Gestion de l'image
-        if ($request->hasFile('product_image')) {
-            $productImage = $request->file('product_image');
-            $filename = Str::uuid() . '.' . $productImage->getClientOriginalExtension();
-            $productImage->storeAs('public/images/products', $filename);
-            $inputs['product_image'] = $filename;
-        }
-
-        // Enregistrement en base
         try {
+            toggleDatabase();
+
+            // Validation
+            $validation = Validator::make(
+                $request->all(),
+                [
+                    'product_name' => 'required|string|max:255',
+                    'stock_quantity' => 'required|integer|min:0',
+                    'unit_price' => 'required|numeric|min:0',
+                    'product_image' => 'nullable|image|mimes:jpeg,png,jpg|max:1024', // 1MB max
+                ],
+                [
+                    'product_name.required' => 'Nom du produit requis.',
+                    'stock_quantity.required' => 'Stock initial requis.',
+                    'stock_quantity.integer' => 'Le stock doit être un nombre entier.',
+                    'unit_price.required' => 'Prix unitaire requis.',
+                    'unit_price.numeric' => 'Le prix doit être un nombre.',
+                    'product_image.image' => 'Le fichier doit être une image valide.',
+                    'product_image.mimes' => 'L’image doit être au format jpeg, png ou jpg.',
+                    'product_image.max' => 'L’image ne doit pas dépasser 1MB.',
+                ]
+            );
+
+            if ($validation->fails()) {
+                return redirect()->back()->withErrors($validation)->withInput();
+            }
+
+            $inputs = $request->except(['product_image']);
+
+            // Générer le code-barres
+            [$codeProduit, $barcode] = generateProductBarcode();
+            $inputs['code'] = $codeProduit;
+            $inputs['barcode'] = "xx";
+            // dd($inputs, $request->all());
+
+            // Gestion de l'image
+            if ($request->hasFile('product_image')) {
+                // $productImage = $request->file('product_image');
+                // $filename = Str::uuid() . '.' . $productImage->getClientOriginalExtension();
+                // $productImage->storeAs('public/images/products', $filename);
+                // $inputs['product_image'] = $filename;
+
+                $file = $request->file('product_image');
+
+                $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+                // chemin réel public
+                $file->move(
+                    public_path('storage/uploads/products'),
+                    $filename
+                );
+
+                $inputs['product_image'] = $filename;
+            }
+
+            // Enregistrement en base
+
             $product = $this->productRepository->store($inputs);
 
             return redirect()->route('product.index')->with('success', __('product.store.success'));
@@ -146,14 +163,31 @@ class ProductController extends Controller
         try {
             if ($request->hasFile('product_image')) {
                 if (!is_null($product->product_image)) {
-                    Storage::delete('public/images/products/' . $product->product_image);
+                    // Storage::delete('public/images/products/' . $product->product_image);
+                    $oldImage = $product->product_image; // nom du fichier en DB
+                    $imagePath = public_path('storage/uploads/products/' . $oldImage);
+
+if (\File::exists($imagePath)) {
+    \File::delete($imagePath);
+}
                 }
 
-                $productImage = $request->file('product_image');
-                $productName = Str::uuid() . '.' . $productImage->getClientOriginalExtension();
-                $request->product_image->storeAs('public/images/products', $productName);
+                // $productImage = $request->file('product_image');
+                // $productName = Str::uuid() . '.' . $productImage->getClientOriginalExtension();
+                // $request->product_image->storeAs('public/images/products', $productName);
 
-                $inputs['product_image'] = $productName;
+                // $inputs['product_image'] = $productName;
+                $file = $request->file('product_image');
+
+                $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+                // chemin réel public
+                $file->move(
+                    public_path('storage/uploads/products'),
+                    $filename
+                );
+
+                $inputs['product_image'] = $filename;
             }
             $this->productRepository->update($id, $inputs);
 
@@ -244,31 +278,31 @@ class ProductController extends Controller
     // }
 
     public function printBarcodePdf($id)
-{
-    toggleDatabase();
-    $product = $this->productRepository->getById($id);
-    $qty = request()->get('qty', 2);
+    {
+        toggleDatabase();
+        $product = $this->productRepository->getById($id);
+        $qty = request()->get('qty', 2);
 
-    // Utilisation de la classe DNS1D en instance
-    $dns = new \Milon\Barcode\DNS1D();
-    $dns->setStorPath(storage_path('framework/barcodes/'));
+        // Utilisation de la classe DNS1D en instance
+        $dns = new \Milon\Barcode\DNS1D();
+        $dns->setStorPath(storage_path('framework/barcodes/'));
 
-    $barcodes = [];
+        $barcodes = [];
 
-    for ($i = 0; $i < $qty; $i++) {
-        $barcodes[] = [
-            'image' => $dns->getBarcodeHTML($product->code, 'C128', 1, 50),
-            'text'  => $product->code,  // ⬅️ Le scanner retournera cette valeur
-        ];
+        for ($i = 0; $i < $qty; $i++) {
+            $barcodes[] = [
+                'image' => $dns->getBarcodeHTML($product->code, 'C128', 1, 50),
+                'text' => $product->code,  // ⬅️ Le scanner retournera cette valeur
+            ];
+        }
+
+        $title = "Code barre produit " . $product->product_name;
+
+        $pdf = Pdf::loadView('admin.product.barcode-product', compact('product', 'barcodes', 'title'))
+            ->setPaper('A4', 'portrait');
+
+        return $pdf->stream("barcode-{$product->id}.pdf");
     }
-
-    $title = "Code barre produit " . $product->product_name;
-
-    $pdf = Pdf::loadView('admin.product.barcode-product', compact('product', 'barcodes', 'title'))
-        ->setPaper('A4', 'portrait');
-
-    return $pdf->stream("barcode-{$product->id}.pdf");
-}
 
 
 

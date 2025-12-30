@@ -75,19 +75,21 @@
                             </div>
 
                             {{-- Rapport --}}
-                            <div class="col-md-6 col-12">
-                                <a href="{{ route('sale.invoice.rapport') }}" class="text-dark">
-                                    <div class="info-box shadow-sm action-card">
-                                        <span class="info-box-icon bg-success">
-                                            <i class="fas fa-chart-pie"></i>
-                                        </span>
-                                        <div class="info-box-content">
-                                            <span class="info-box-text">Rapports</span>
-                                            <span class="info-box-number text-muted">Analyse & stats</span>
+                            @can('view sales report')
+                                <div class="col-md-6 col-12">
+                                    <a href="{{ route('sale.invoice.rapport') }}" class="text-dark">
+                                        <div class="info-box shadow-sm action-card">
+                                            <span class="info-box-icon bg-success">
+                                                <i class="fas fa-chart-pie"></i>
+                                            </span>
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Rapports</span>
+                                                <span class="info-box-number text-muted">Analyse & stats</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
-                            </div>
+                                    </a>
+                                </div>
+                            @endcan
 
                         </div>
                     </div>

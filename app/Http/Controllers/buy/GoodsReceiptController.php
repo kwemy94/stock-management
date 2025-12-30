@@ -32,6 +32,12 @@ class GoodsReceiptController extends Controller
         ProductRepository $productRepository,
         PurchaseOrderLineRepository $purchaseOrderLineRepository
     ) {
+        $this->middleware('can:view reception notes')->only(['index']);
+        $this->middleware('can:view reception note details')->only([ 'show']);
+        $this->middleware('can:create reception note')->only(['create', 'store']);
+        $this->middleware('can:update reception note')->only(['edit', 'update']);
+        $this->middleware('can:delete reception note')->only(['destroy']);
+
         $this->goodsReceiptRepository = $goodsReceiptRepository;
         $this->goodsReceiptLineRepository = $goodsReceiptLineRepository;
         $this->purchaseOrderRepository = $purchaseOrderRepository;

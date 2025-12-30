@@ -76,7 +76,7 @@
 
                     {{-- Mouvement de stock --}}
                     <div class="col-6 col-sm-6 col-md-6 mb-3">
-                        <a href="#" class="card text-center text-decoration-none purchase-card">
+                        <a href="{{ route('listing.index') }}" class="card text-center text-decoration-none purchase-card">
                             <div class="card-body">
                                 <i class="fas fa-exchange-alt fa-2x mb-2"></i>
                                 <h6 class="card-title">MOUVEMENT DE STOCK</h6>
@@ -95,34 +95,34 @@
                     </div>
 
                     {{-- Bon de réception --}}
-                    <div class="col-6 col-sm-6 col-md-6 mb-3">
+                    {{-- <div class="col-6 col-sm-6 col-md-6 mb-3">
                         <a href="#" class="card text-center text-decoration-none purchase-card">
                             <div class="card-body">
                                 <i class="fas fa-receipt fa-2x mb-2"></i>
                                 <h6 class="card-title">BON DE RÉCEPTION</h6>
                             </div>
                         </a>
-                    </div>
+                    </div> --}}
 
                     {{-- Facture fournisseur --}}
-                    <div class="col-6 col-sm-6 col-md-6 mb-3">
+                    {{-- <div class="col-6 col-sm-6 col-md-6 mb-3">
                         <a href="#" class="card text-center text-decoration-none purchase-card">
                             <div class="card-body">
                                 <i class="fas fa-file-invoice fa-2x mb-2"></i>
                                 <h6 class="card-title">FACTURE FOURNISSEUR</h6>
                             </div>
                         </a>
-                    </div>
+                    </div> --}}
 
                     {{-- Paiement --}}
-                    <div class="col-6 col-sm-6 col-md-6 mb-3">
+                    {{-- <div class="col-6 col-sm-6 col-md-6 mb-3">
                         <a href="#" class="card text-center text-decoration-none purchase-card">
                             <div class="card-body">
                                 <i class="fas fa-money-check-alt fa-2x mb-2"></i>
                                 <h6 class="card-title">PAIEMENT</h6>
                             </div>
                         </a>
-                    </div>
+                    </div> --}}
 
                     {{-- Rapport --}}
                     <div class="col-6 col-sm-6 col-md-6 mb-3">

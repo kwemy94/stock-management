@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
+use App\Models\User;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 
@@ -12,7 +14,14 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        //
+        $permissions = Permission::orderBy('group')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('group');
+
+        $roles = Role::with('permissions')->get();
+
+        return view('admin.permissions.index', compact('permissions', 'roles'));
     }
 
     /**
@@ -62,4 +71,32 @@ class PermissionController extends Controller
     {
         //
     }
+
+
+    public function editUserPermissions(User $user)
+{
+    $permissions = Permission::orderBy('group')
+        ->orderBy('name')
+        ->get()
+        ->groupBy('group');
+
+    $userPermissions = $user->permissions->pluck('id')->toArray();
+
+    return view(
+        'admin.permissions.user',
+        compact('user', 'permissions', 'userPermissions')
+    );
+}
+
+public function updateUserPermissions(Request $request, User $user)
+{
+    $permissionIds = $request->input('permissions', []);
+
+    $user->permissions()->sync($permissionIds);
+
+    return redirect()
+        ->back()
+        ->with('success', 'Permissions mises à jour avec succès.');
+}
+
 }

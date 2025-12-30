@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use PDF;
 use Exception;
 use App\Models\Order;
+use App\Repositories\Buy\StockMovementRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -25,10 +26,12 @@ class OrderController extends Controller
     private $customerRepository;
     private $categoryRepository;
     private $settingRepository;
+    private $stockMovementRepository;
 
     public function __construct(OrderRepository $orderRepository, ProductRepository $productRepository, PaymentRepository $paymentRepository, 
                     OrderProductRepository $orderProductRepository, CustomerRepository $customerRepository, CategoryRepository $categoryRepository,
-                    SettingRepository $settingRepository)
+                    SettingRepository $settingRepository,
+                    StockMovementRepository $stockMovementRepository)
     {
         $this->orderRepository = $orderRepository;
         $this->productRepository =$productRepository;
@@ -37,6 +40,7 @@ class OrderController extends Controller
         $this->customerRepository =$customerRepository;
         $this->categoryRepository =$categoryRepository;
         $this->settingRepository =$settingRepository;
+        $this->stockMovementRepository =$stockMovementRepository;
     }
     
     public function index()
@@ -101,6 +105,17 @@ class OrderController extends Controller
                     $inputs['price'] = $panier[$i]['total_price'];
 
                     $this->orderProductRepository->store($inputs);
+
+                    $stockMovementData = [
+                        'product_id' => $inputs['product_id'],
+                        'order_id' => $order->id,
+                        'movement_type' => 'out',
+                        'quantity' => $inputs['quantity'],
+                        'reference' => 'POS-0'.$order->id,
+                        'to_location' => '', 
+                        'notes' => $inputs['observation'] ?? '',
+                    ];
+                    $this->stockMovementRepository->store($stockMovementData);
 
                     ## update product quantity
                     $prod = $this->productRepository->getById($inputs['product_id']);

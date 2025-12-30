@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LangController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProductController;
@@ -14,15 +15,19 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Sale\SaleController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\Config\PlanController;
 use App\Http\Controllers\buy\BuyInvoiceController;
+use App\Http\Controllers\Config\LicensesController;
 use App\Http\Controllers\ProductSupplierController;
 use App\Http\Controllers\Treasury\RecipeController;
+use App\Http\Controllers\buy\GoodsReceiptController;
 use App\Http\Controllers\Sale\SaleInvoiceController;
 use App\Http\Controllers\Treasury\AnalyseController;
 use App\Http\Controllers\Treasury\ExpenseController;
 use App\Http\Controllers\API\EtablissementController;
-use App\Http\Controllers\buy\GoodsReceiptController;
 use App\Http\Controllers\buy\PurchaseOrderController;
+use App\Http\Controllers\buy\StockMovementController;
 use App\Http\Controllers\Inventory\InventoryController;
 
 /*
@@ -61,21 +66,41 @@ Route::post('contact-us', [ContactController::class, 'store'])->name('contact.us
 // Route::get('/dashboard', function () {
 //     return view('admin.dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/dashboard', [DashboardController::class, 'dashboardHome'] )->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/license-expired', function () {
+    return view('admin.etablissement.licenses.expired');
+})->name('license.expired');
+Route::post('/licenses/activate', [LicensesController::class, 'activate'])
+    ->name('licenses.activate');
+
+
+Route::get('/dashboard', [DashboardController::class, 'dashboardHome'])->middleware(['auth', 'verified', 'check.license'])->name('dashboard');
 
 Route::Post('/app-sub-script', [EtablissementController::class, 'store'])->name('app.sub.scribt');
 Route::get('/app-company', [EtablissementController::class, 'nosCompany'])->name('app.company');
 Route::post('/app-activate-company/{id}', [EtablissementController::class, 'activateEts'])->name('app.activate.company');
 
-Route::middleware('auth')->group(function () {
-    Route::group(['prefix' =>'dashboard'], function() {
+Route::middleware(['auth', 'check.license'])->group(function () {
+    Route::group(['prefix' => 'dashboard'], function () {
+
+        #Licenses Management
+        Route::resource('/licenses', LicensesController::class);
+        Route::resource('/plans', PlanController::class);
+
+
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
         Route::resource('product', ProductController::class);
         Route::resource('/category', CategoryController::class);
         Route::resource('/setting', SettingController::class);
-        Route::resource('/supplier', SupplierController::class);
+        Route::resource('/supplier', SupplierController::class)
+        // ->middleware([
+        //     'index' => 'can:list supplier',
+        //     'store' => 'can:create supplier',
+        //     'update' => 'can:update supplier',
+        //     'delete' => 'can:delete supplier',
+        // ])
+        ;
 
         Route::resource('/achat', ProductSupplierController::class);
         #Inventaire
@@ -86,19 +111,22 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('/customer', CustomerController::class);
         Route::resource('/unite-mesure', UnitController::class);
-    
+
         Route::resource('/order', OrderController::class);
         Route::get('print-invoice/{id}', [OrderController::class, 'printInvoice'])->name('order.print.invoice');
-    
+
         ## print to pdf
         Route::get('/pdf-barcode', [ProductController::class, 'BarcodeToPDF'])->name('barcode.to.pdf');
         Route::get('/product/{id}/barcode/pdf', [ProductController::class, 'printBarcodePdf'])->name('barcode.product.pdf');
 
         ## pos
         Route::get('/pos-data-loading', [OrderController::class, 'loadProduct']);
-        Route::get('/pos-dashboard', [OrderController::class, 'dashboard'])->name('order.dashboard');
-        Route::get('/pos-rapport', [OrderController::class, 'rapport'])->name('order.rapport');
-    
+        Route::get('/pos-dashboard', [OrderController::class, 'dashboard'])
+        ->name('order.dashboard')
+        ->middleware('can:manage pos');
+        Route::get('/pos-rapport', [OrderController::class, 'rapport'])->name('order.rapport')
+        ->middleware('can:view pos statistics');
+
         ## Vente
         Route::resource('sale', SaleController::class);
         Route::get('sale-invoice/{all?}', [SaleInvoiceController::class, 'index'])->name('sale.invoice');
@@ -110,11 +138,13 @@ Route::middleware('auth')->group(function () {
         Route::get('sale-invoice-details/{id}', [SaleInvoiceController::class, 'show'])->name('sale.invoice.show');
         Route::get('sale-invoice-confirm/{id}', [SaleInvoiceController::class, 'confirmInvoice'])->name('sale.invoice.confirm');
         Route::get('sale-invoice-print/{id}', [SaleInvoiceController::class, 'printInvoice'])->name('sale.invoice.print');
-        Route::get('sale-invoice-rapport', [SaleInvoiceController::class, 'rapport'])->name('sale.invoice.rapport');
+        Route::get('sale-invoice-rapport', [SaleInvoiceController::class, 'rapport'])->name('sale.invoice.rapport')->middleware('can:view sales report');
         Route::post('sale-invoice-payment', [SaleInvoiceController::class, 'payment'])->name('sale.invoice.payment');
 
         ## Buy
-        Route::get('buy-home', [BuyInvoiceController::class, 'index'])->name('buy.home');
+        Route::get('buy-home', [BuyInvoiceController::class, 'index'])
+        ->name('buy.home')
+        ->middleware('can:manage purchase');
         Route::get('buy-command-list', [BuyInvoiceController::class, 'indexCmd'])->name('buy.command.index');
         Route::get('buy-commande-create', [BuyInvoiceController::class, 'create'])->name('buy.command.create');
         Route::get('buy-command-data', [BuyInvoiceController::class, 'dataCreateInvoice'])->name('buy.command.data');
@@ -122,20 +152,41 @@ Route::middleware('auth')->group(function () {
         Route::get('buy-command-create-data', [PurchaseOrderController::class, 'dataCreateCommand'])->name('buy.command.data.create');
         Route::get('buy-command-print/{id}', [PurchaseOrderController::class, 'printCommand'])->name('buy.command.print');
         Route::get('buy-command-send/{id}', [PurchaseOrderController::class, 'sendCommand'])->name('buy.command.send');
+        Route::get('/confirm-buy-command/{id}', [PurchaseOrderController::class, 'confirmCommand'])->name('confirm.command');
 
         # Reception fournisseur
         Route::resource('/buy-reception', GoodsReceiptController::class);
-    
+
         ## inventory
         Route::resource('/inventory', InventoryController::class);
-    
-        Route::group(['prefix'=>'treasury'], function(){
+
+        Route::group(['prefix' => 'treasury'], function () {
             Route::get('/analyse', [AnalyseController::class, 'index'])->name('analyse.treso');
             Route::resource('/recipe', RecipeController::class);
             Route::resource('/expense', ExpenseController::class);
         });
+
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store')->middleware('can:create user');
+        Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update')->middleware('can:update user');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy')->middleware('can:delete user');
+        Route::get('/users/{user}', function (App\Models\User $user) {
+            return response()->json($user);
+        });
+
+        # Stock movement
+        Route::resource('/stock-mvt/listing', StockMovementController::class);
+
+        # Gestion des permissions
+        Route::resource('/permissions', PermissionController::class);
+        Route::get('/users/{user}/permissions', [PermissionController::class, 'editUserPermissions'])
+            ->name('users.permissions.edit');
+
+        Route::post('/users/{user}/permissions', [PermissionController::class, 'updateUserPermissions'])
+            ->name('users.permissions.update');
+
     });
 
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -3,6 +3,7 @@
          color: #1f2d3d;
          font-weight: bold;
      }
+
      .brand-link:hover .brand-text {
          color: #1385ff !important;
      }
@@ -11,8 +12,17 @@
 
  {{-- Brand Logo  --}}
  <a href="{{ route('dashboard') }}" class="brand-link">
-     <img src='{{ asset('logo_chre2.png') }}'
-         alt="TechB" class="brand-image img-circle elevation-3" style="opacity: .8">
+     {{-- @php
+    //  $setting = getCompanyInfo();
+         $logoPath = public_path('storage/uploads/logo/' . ($setting->logo ?? ''));
+     @endphp
+
+     <img class="brand-image img-circle elevation-3" style="opacity: .8"
+         src="{{ !empty($setting->logo) && file_exists($logoPath)
+             ? asset('storage/uploads/logo/' . $setting->logo)
+             : asset('front-template/assets/images/logo/logo.png') }}"> --}}
+
+     <img src='{{ asset('front-template/assets/images/logo/logo.png') }}' alt="TechB" class="brand-image img-circle elevation-3" style="opacity: .8">
      <span class="brand-text ">Street Smart</span>
  </a>
 
@@ -24,7 +34,7 @@
              <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
 
-             
+
              <li class="nav-header">Approvisionnement</li>
              <li class="nav-item">
                  <a href="{{ route('buy.home') }}" class="nav-link">

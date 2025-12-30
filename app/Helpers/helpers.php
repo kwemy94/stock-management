@@ -195,6 +195,17 @@ if (!function_exists('checkCompany')) {
     }
 }
 
+if (!function_exists('adminCompany')) {
+    function adminCompany()
+    {
+        toggleDatabase(false);
+        $user = Auth::user();
+        $company = DB::table('etablissements')->where('email', $user->email)->first();
+
+        return ($company && $company->email != 'tigod2302@gmail.com') ? true : false;
+    }
+}
+
 if (!function_exists('generateInvoiceNumber')) {
     function generateInvoiceNumber($_table, $init = 'FV', $client_db = true, $column = "invoice_number")
     {

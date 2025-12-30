@@ -155,10 +155,18 @@
     <!-- ===== HEADER ===== -->
     <div class="header">
         <div class="header-left">
-            <img class="logo"
+            {{-- <img class="logo"
                 src="{{ isset($setting->logo)
-                    ? 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('storage/images/logo/' . $setting->logo)))
-                    : 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('front-template/assets/images/logo/logo.png'))) }}">
+                    ? 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('storage/uploads/images/logo/' . $setting->logo)))
+                    : 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('front-template/assets/images/logo/logo.png'))) }}"> --}}
+            @php
+                $logoPath = public_path('storage/uploads/logo/' . ($setting->logo ?? ''));
+            @endphp
+
+            <img class="logo"
+                src="{{ !empty($setting->logo) && file_exists($logoPath)
+                    ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath))
+                    : asset('front-template/assets/images/logo/logo.png') }}">
         </div>
 
         <div class="header-center">
@@ -179,12 +187,12 @@
     <div class="reference">
         <strong>Référence :</strong> {{ $command->reference }}
         @if ($command->status == 'validated')
-                        <span class="badge badge-success">Validée</span>
-                    @elseif ($command->status == 'draft')
-                        <span class="badge badge-danger">Brouillon</span>
-                    @else
-                        <span class="badge badge-primary">Confirmée</span>
-                    @endif
+            <span class="badge badge-success">Validée</span>
+        @elseif ($command->status == 'draft')
+            <span class="badge badge-danger">Brouillon</span>
+        @else
+            <span class="badge badge-primary">Confirmée</span>
+        @endif
     </div>
 
     <!-- ===== FOURNISSEUR ===== -->
@@ -292,4 +300,5 @@
     </div>
 
 </body>
+
 </html>

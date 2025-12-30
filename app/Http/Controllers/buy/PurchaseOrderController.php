@@ -33,6 +33,10 @@ class PurchaseOrderController extends Controller
         SettingRepository $settingRepository
         )
         {
+        $this->middleware('can:view purchase orders')->only(['index', 'show']);
+        $this->middleware('can:create purchase orders')->only(['create', 'store']);
+        $this->middleware('can:update purchase order')->only(['edit', 'update']);
+        $this->middleware('can:delete purchase order')->only(['destroy']);
         $this->purchaseOrderRepository = $purchaseOrderRepository;
         $this->purchaseOrderLineRepository = $purchaseOrderLineRepository;
         $this->supplierRepository = $supplierRepository;
@@ -180,6 +184,31 @@ class PurchaseOrderController extends Controller
             ], 500);
         }
     }
+    public function confirmCommand($id)
+    {
+        try {
+            toggleDatabase();
+            
+            $commandInputs['status'] = 'confirmed';
+
+            DB::beginTransaction();
+            $this->purchaseOrderRepository->update($id, $commandInputs);
+
+            DB::commit();
+            return redirect()->route('buy-command-order.index')->with('success', "Commande confirmée avec succès");
+            
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::info("ERREUR CONFIRMATION COMMANDE : ". $th->getMessage());
+            Log::info("ERREUR FILE : ". $th->getFile());
+            return response()->json([
+                "success" => false,
+                "error" => $th->getMessage(),
+                "message" => "Oups! Echec de confirmation de la commande"
+            ], 500);
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -213,7 +242,7 @@ class PurchaseOrderController extends Controller
             'command' => $command,
             'setting' => $setting,
         ];
-
+        // dd($setting);
         $pdf = PDF::loadView('admin.achat.command.print_command', $data)->setPaper('a4', 'portrait');
         return $pdf->stream('commande_'.$command->reference.'.pdf');
         // return view('admin.achat.command.print_command', compact('command'));

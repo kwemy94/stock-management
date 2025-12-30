@@ -31,94 +31,103 @@
         </div>
     </x-app-layout> --}}
 
-    <section class="content mt-2">
+    <section class="content pt-3">
         <div class="container-fluid">
             <div class="row">
+
+                {{-- PROFILE --}}
                 <div class="col-md-6">
                     @if (session('status') === 'profile-updated')
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ __('Profile mise à jour!') }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                        <div class="alert alert-success alert-dismissible shadow-sm">
+                            <i class="fas fa-check-circle mr-1"></i>
+                            {{ __('Profil mis à jour avec succès') }}
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
                         </div>
                     @endif
-                    <div class="card card-primary">
+
+                    <div class="card card-outline card-primary shadow-sm">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('Profile Information') }}</h3>
+                            <h3 class="card-title">
+                                <i class="fas fa-user mr-1"></i>
+                                {{ __('Informations du profil') }}
+                            </h3>
                         </div>
-                        {{-- @include('profile.partials.update-profile-information-form') --}}
-                        <form method="post" action="{{ route('profile.update') }}">
+
+                        <form method="POST" action="{{ route('profile.update') }}">
                             @csrf
-                            @method('patch')
+                            @method('PATCH')
+
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="name">{{ __('auth.name') }} </label>
-                                    <input type="text" class="form-control" id="name" name="name"
-                                        value="{{ old('name', $user->name) }}" required autofocus autocomplete="name">
-                                    <span class="mt-2" :messages="$errors - > get('name')"></span>
+                                    <label>{{ __('Nom') }}</label>
+                                    <input type="text" name="name" class="form-control form-control-sm"
+                                        value="{{ old('name', $user->name) }}" required>
                                 </div>
+
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Email address</label>
-                                    <input type="email" name="email" class="form-control" id="email" readonly
-                                        value="{{ old('email', $user->email) }}" required autocomplete="username">
-                                    <span class="mt-2" :messages="$errors - > get('email')"></span>
+                                    <label>Email</label>
+                                    <input type="email" class="form-control form-control-sm" value="{{ $user->email }}"
+                                        readonly>
                                 </div>
                             </div>
 
-                            <div class="card-footer">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                            <div class="card-footer text-right">
+                                <button class="btn btn-primary btn-sm">
+                                    <i class="fas fa-save mr-1"></i> Enregistrer
+                                </button>
                             </div>
                         </form>
                     </div>
-
                 </div>
+
+                {{-- PASSWORD --}}
                 <div class="col-md-6">
                     @if (session('status') === 'password-updated')
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ __('Mot de passe mise à jour!') }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                        <div class="alert alert-success alert-dismissible shadow-sm">
+                            <i class="fas fa-lock mr-1"></i>
+                            {{ __('Mot de passe mis à jour') }}
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
                         </div>
                     @endif
 
-                    <div class="card card-primary">
+                    <div class="card card-outline card-primary shadow-sm">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('Update password') }}</h3>
+                            <h3 class="card-title">
+                                <i class="fas fa-key mr-1"></i>
+                                {{ __('Sécurité') }}
+                            </h3>
                         </div>
 
-                        <form method="post" action="{{ route('password.update') }}">
+                        <form method="POST" action="{{ route('password.update') }}">
                             @csrf
-                            @method('put')
+                            @method('PUT')
+
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="current_password">{{ __('Current Password') }} </label>
-                                    <input type="password" name="current_password" class="form-control"
-                                        id="current_password" value="" required>
-                                    <span class="mt-2"
-                                        :messages="$errors - > updatePassword - > get('current_password')"></span>
+                                    <label>{{ __('Mot de passe actuel') }}</label>
+                                    <input type="password" name="current_password" class="form-control form-control-sm"
+                                        required>
                                 </div>
+
                                 <div class="form-group">
-                                    <label for="password">{{ __('New Password') }} </label>
-                                    <input type="password" name="password" class="form-control" id="password" required>
-                                    <span class="mt-2" :messages="$errors - > updatePassword - > get('password')"></span>
+                                    <label>{{ __('Nouveau mot de passe') }}</label>
+                                    <input type="password" name="password" class="form-control form-control-sm" required>
                                 </div>
+
                                 <div class="form-group">
-                                    <label for="password_confirmation">{{ __('Confirm Password') }} </label>
-                                    <input type="password" name="password_confirmation" class="form-control"
-                                        id="password_confirmation" value="" required>
-                                    <span class="mt-2"
-                                        :messages="$errors - > updatePassword - > get('password_confirmation')"></span>
+                                    <label>{{ __('Confirmation') }}</label>
+                                    <input type="password" name="password_confirmation" class="form-control form-control-sm"
+                                        required>
                                 </div>
                             </div>
 
-                            <div class="card-footer">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                            <div class="card-footer text-right">
+                                <button class="btn btn-primary btn-sm">
+                                    <i class="fas fa-shield-alt mr-1"></i> Mettre à jour
+                                </button>
                             </div>
                         </form>
                     </div>
-
                 </div>
 
             </div>

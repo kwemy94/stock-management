@@ -20,6 +20,7 @@ class BuyInvoiceController extends Controller
         ProductRepository $productRepository,
         PaymentModeRepository $paymentModeRepository
     ) {
+        $this->middleware('can:create purchase orders')->only(['create']);
         $this->supplierRepository = $supplierRepository;
         $this->productRepository = $productRepository;
         $this->paymentModeRepository = $paymentModeRepository;

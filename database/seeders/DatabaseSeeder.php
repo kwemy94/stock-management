@@ -17,8 +17,9 @@ class DatabaseSeeder extends Seeder
         # Tous mes seeder front front ici
         $this->call([
             EtablissementSeeder::class,
-            RoleSeeder::class,
+            // RoleSeeder::class,
             UserFrontEndSeeder::class,
+            PermissionsSeeder::class,
         ]);
 
 
