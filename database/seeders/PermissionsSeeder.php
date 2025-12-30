@@ -68,7 +68,14 @@ class PermissionsSeeder extends Seeder
             ['name' => 'confirm sale invoice', 'group' => 'sales', 'guard_name' => 'web'],
             ['name' => 'update sale invoice', 'group' => 'sales', 'guard_name' => 'web'],
             ['name' => 'view sales report', 'group' => 'sales', 'guard_name' => 'web'],
-            ['name' => 'convert proforma', 'group' => 'sales', 'guard_name' => 'web'],
+
+            ['name' => 'convert proforma to command', 'group' => 'sales', 'guard_name' => 'web'],
+            ['name' => 'create proforma', 'group' => 'sales', 'guard_name' => 'web'],
+
+            ['name' => 'print command', 'group' => 'sales', 'guard_name' => 'web'],
+            ['name' => 'view command list', 'group' => 'sales', 'guard_name' => 'web'],
+            ['name' => 'view command details', 'group' => 'sales', 'guard_name' => 'web'],
+            ['name' => 'create command', 'group' => 'sales', 'guard_name' => 'web'],
 
             // ======================
             // INVENTAIRE / STOCK

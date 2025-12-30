@@ -3,194 +3,190 @@
 @section('dashboard-content')
     @php
         $confEntreprise = getCompanyInfo();
+
+        $statusClasses = [
+            'draft' => 'danger',
+            'confirmed' => 'primary',
+            'proformat' => 'warning',
+            'Payé' => 'success',
+        ];
     @endphp
+
     <section class="content mt-4">
-        <div class="container-fluid">
-            <div class="invoice p-3 mb-3">
-                <div class="row">
-                    <div class="col-12">
-                        <h4 class="text-center">
-                            @switch($invoice->status)
-                                @case('draft')
-                                    <i class="fas fa-globe float-center"></i> Détails commande #{{ $invoice->invoice_number }}
-                                    <span class="badge bg-danger">{{ $invoice->status }}</span>
-                                @break
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-8 col-lg-9 col-md-10 col-sm-12">
 
-                                @case('confirmed')
-                                    <i class="fas fa-globe float-center"></i> Détails facture #{{ $invoice->invoice_number }}
-                                    <span class="badge bg-primary">{{ $invoice->status }}</span>
-                                @break
+                    {{-- ================= HEADER PRINCIPAL ================= --}}
+                    <div class="card shadow-sm mb-1">
+                        <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
 
-                                @case('proformat')
-                                    <i class="fas fa-globe float-center"></i> Détails dévis #{{ $invoice->invoice_number }}
-                                    <span class="badge bg-warning">{{ $invoice->status }}</span>
-                                @break
+                            <div>
+                                <h4 class="mb-1">
+                                    Facture #{{ $invoice->invoice_number }}
+                                    <span class="badge bg-{{ $statusClasses[$invoice->status] ?? 'secondary' }} ms-2">
+                                        {{ ucfirst($invoice->status) }}
+                                    </span>
+                                </h4>
+                                <small class="text-muted">
+                                    Date : {{ $invoice->date }}
+                                </small>
+                            </div>
 
-                                @case('Payé')
-                                    <i class="fas fa-globe float-center"></i> Détails facture #{{ $invoice->invoice_number }}
-                                    <span class="badge bg-success">{{ $invoice->status }}</span>
-                                @break
+                            <div class="text-md-end mt-3 mt-md-0">
+                                <h3 class="fw-bold text-danger mb-0">
+                                    {{ number_format($invoice->montant_du, 0, ',', ' ') }}
+                                    {{ $confEntreprise->devise }}
+                                </h3>
+                                <small class="text-muted">Reste à payer</small>
+                            </div>
 
-                                @default
-                            @endswitch
-                        </h4>
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <div class="row invoice-info">
-                    <div class="col-sm-4 invoice-col">
-                        From
-                        <address>
-                            <strong>{{ $confEntreprise->app_name }}</strong><br>
-                            Tél : {{ $confEntreprise->phone }}<br>
-                            Email : {{ $confEntreprise->email }}<br>
-                        </address>
+                        </div>
                     </div>
 
-                    <div class="col-sm-4 invoice-col">
-                        To
-                        <address>
-                            <strong>{{ $invoice->customer->name }}</strong><br>
-                            Tél: {{ $invoice->customer->phone }}<br>
-                            Email: {{ $invoice->customer->email }}
-                        </address>
+                    {{-- ================= RÉSUMÉ FINANCIER ================= --}}
+                    <div class="row mb-1">
+                        <div class="col-md-4 col-sm-6 mb-2">
+                            <div class="info-box bg-light shadow-sm">
+                                <span class="info-box-icon bg-primary">
+                                    <i class="fas fa-file-invoice"></i>
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Total TTC</span>
+                                    <span class="info-box-number">
+                                        {{ number_format($invoice->montant_facture, 0, ',', ' ') }}
+                                        {{ $confEntreprise->devise }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-6 mb-2">
+                            <div class="info-box bg-light shadow-sm">
+                                <span class="info-box-icon bg-success">
+                                    <i class="fas fa-check-circle"></i>
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Montant encaissé</span>
+                                    <span class="info-box-number">
+                                        {{ number_format($invoice->montant_encaisse, 0, ',', ' ') }}
+                                        {{ $confEntreprise->devise }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 mb-2">
+                            <div class="info-box bg-light shadow-sm">
+                                <span class="info-box-icon bg-danger">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Reste dû</span>
+                                    <span class="info-box-number">
+                                        {{ number_format($invoice->montant_du, 0, ',', ' ') }}
+                                        {{ $confEntreprise->devise }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="col-sm-4 invoice-col">
-                        <b>Invoice #{{ $invoice->invoice_number }}</b><br>
-                        <b>Date:</b> {{ $invoice->date }}<br>
-                        <i>Montant TTC : </i><b>{{ $invoice->montant_facture }}
-                        </b><i>{{ $confEntreprise->devise }}</i><br>
-                        <i>Montant Encaissé : </i><b>{{ $invoice->montant_encaisse }}
-                        </b><i>{{ $confEntreprise->devise }}</i><br>
-                        <i>Montant du : </i> <b>{{ $invoice->montant_du }} </b><i>{{ $confEntreprise->devise }}</i>
+                    {{-- ================= CLIENT / ENTREPRISE ================= --}}
+                    <div class="row mb-1">
+                        <div class="col-md-6 mb-2">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <small class="text-muted">Entreprise</small><br>
+                                    <strong>{{ $confEntreprise->app_name }}</strong><br>
+                                    {{ $confEntreprise->phone }}<br>
+                                    {{ $confEntreprise->email }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <small class="text-muted">Client</small><br>
+                                    <strong>{{ $invoice->customer->name }}</strong><br>
+                                    {{ $invoice->customer->phone }}<br>
+                                    {{ $invoice->customer->email }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                </div>
-                <div class="row">
-                    <div class="col-12 table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Produit</th>
-                                    <th>Quantité</th>
-                                    <th>P.U</th>
-                                    <th>Remise</th>
-                                    <th>Taxe</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($invoice->invoiceLines as $line)
-                                    @php
-                                        $total = $line->quantity * $line->unit_price * (1 - $line->remise / 100);
-                                    @endphp
-                                    <tr>
-                                        <td>{{ $line->product->product_name }}</td>
-                                        <td>{{ $line->quantity }}</td>
-                                        <td>{{ $line->unit_price }}</td>
-                                        <td>{{ $line->remise }}</td>
-                                        <td>{{ $line->taxe }}</td>
-                                        <td>{{ $total }} {{ $confEntreprise->devise }}</td>
-                                    </tr>
-                                @endforeach
-
-                            </tbody>
-                        </table>
+                    {{-- ================= TABLE PRODUITS ================= --}}
+                    <div class="card shadow-sm mb-2">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm mb-0">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th>Produit</th>
+                                            <th class="text-center">Qté</th>
+                                            <th class="text-end">P.U</th>
+                                            <th class="text-center">Remise</th>
+                                            <th class="text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($invoice->invoiceLines as $line)
+                                            @php
+                                                $total =
+                                                    $line->quantity * $line->unit_price * (1 - $line->remise / 100);
+                                            @endphp
+                                            <tr>
+                                                <td>{{ $line->product->product_name }}</td>
+                                                <td class="text-center">{{ $line->quantity }}</td>
+                                                <td class="text-end">
+                                                    {{ number_format($line->unit_price, 0, ',', ' ') }}
+                                                </td>
+                                                <td class="text-center">{{ $line->remise }}%</td>
+                                                <td class="text-end fw-bold">
+                                                    {{ number_format($total, 0, ',', ' ') }}
+                                                    {{ $confEntreprise->devise }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
 
-                </div>
-                <div class="row text-center">
-                    <div class="col-12 d-flex justify-content-center">
-
+                    {{-- ================= ACTION PRINCIPALE ================= --}}
+                    <div class="text-end mb-5">
                         @switch($invoice->status)
                             @case('draft')
                                 <a href="{{ route('sale.invoice.confirm', $invoice->id) }}" onclick="return confirmInvoice()"
-                                    class="btn btn-outline-primary" id="conf-cmd">Confirmer la commande</a>
+                                    class="btn btn-primary btn-sm">
+                                    <i class="fas fa-check"></i> Confirmer la commande
+                                </a>
                             @break
 
                             @case('confirmed')
-                                <button data-target="#modal-pay" data-toggle="modal" class="btn btn-outline-success"
-                                    id="pay-invoice">Payer cette facture</button>
+                                <button data-toggle="modal" data-target="#modal-pay" class="btn btn-success btn-sm">
+                                    <i class="fas fa-money-bill-wave"></i> Encaisser le paiement
+                                </button>
                             @break
 
                             @case('proformat')
                                 <a href="{{ route('sale.invoice.confirm', $invoice->id) }}" onclick="return confirmProformat()"
-                                    class="btn btn-outline-primary" id="valid-proformat">Convertir</a>
+                                    class="btn btn-warning btn-sm">
+                                    <i class="fas fa-sync"></i> Convertir en commande
+                                </a>
                             @break
-
-                            @default
                         @endswitch
                     </div>
-                </div>
-            </div>
 
-        </div>
-
-        <div class="modal fade" id="modal-pay">
-            <div class="modal-dialog">
-                <div class="modal-content bg-white">
-                    <div class="modal-header">
-                        <h4 class="modal-title" style="display: flex; justify-content: center; align-items: center;">
-                            Règlement facture {{ $invoice->invoice_number }}
-                        </h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form action="{{ route('sale.invoice.payment') }}" method="post" id="pay-form">
-                        @csrf
-                        <div class="modal-body">
-                            <div class="row" style="display:flex;gap:10px">
-                                <div class="form-group">
-                                    <label for="name">{{ __('Montant dû') }}</label>
-                                    <input type="text" readonly
-                                        class="form-control form-control-border border-width-2 required" name="amount"
-                                        id="amount_du" value="{{ $invoice->montant_du }}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="name">{{ __('Montant encaissé') }}
-                                        <em>*</em></label>
-                                    <input type="text" class="form-control form-control-border border-width-2 required"
-                                        name="amount_encaisse" id="amount_encaisse" value="{{ $invoice->montant_du }}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="mode">Mode de paiement <em>*</em></label>
-                                    <select name="mode_id" class="custom-select form-control-border border-width-2 required"
-                                        id="mode">
-                                        <option value="" disabled selected>Mode de paiement
-                                        </option>
-                                        @forelse ($paymentModes as $mode)
-                                            <option value="{{ $mode->id }}">{{ $mode->name }}
-                                            </option>
-                                        @empty
-                                            <option value="" disabled>Aucun mode de paiement
-                                                trouvé</option>
-                                        @endforelse
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="name">{{ __('Date de paiement') }}
-                                        <em>*</em></label>
-                                    <input type="date" class="form-control form-control-border border-width-2 required"
-                                        name="date_pay" id="date_pay" value="{{ date('Y-m-d') }}">
-                                </div>
-                                <input type="hidden" name='invoice_id' id="invoice_id" value="{{ $invoice->id }}">
-
-
-                            </div>
-                        </div>
-                        <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-outline-light" data-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-outline-success" id="save-pay">Enregistrer</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
-
     </section>
 @endsection
+
 
 @section('dashboard-js')
     <script>

@@ -202,177 +202,215 @@ export default function BuyReceipt({ type, commands }) {
     };
 
     return (
-        <div className="row m-2">
-            <Loader load={loading} />
-            <div className="toast-container">
-                <ToastContainer limit={3} />
-            </div>
-            <h4>Nouvelle Réception</h4>
-            <div
-                className="row g-3 border rounded p-3 mb-4"
-                style={{ backgroundColor: "white" }}
-            >
-                <div className="col-md-4">
-                    <label className="form-label">Commande *</label>
-                    <Select
-                        options={commandes}
-                        value={form.commande}
-                        onChange={(selected) => handleSelectCommande(selected)}
-                        placeholder="Sélectionner une commande"
-                        isClearable
-                    />
-                </div>
-                <div className="col-md-3">
-                    <label className="form-label">Fournisseur *</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={form.supplier}
-                        readOnly
-                    />
-                </div>
+        <div className="container mt-4">
+            <div className="row justify-content-center">
+                <div className="col-xl-10 col-lg-11 col-md-12">
+                    <Loader load={loading} />
+                    <div className="toast-container">
+                        <ToastContainer limit={3} />
+                    </div>
+                    <div className="mb-3 text-center">
+                        <h5 className="mb-0 fw-semibold">Nouvelle Réception</h5>
+                        <small className="text-muted">
+                            Saisie des informations principales
+                        </small>
+                    </div>
+                    <div className="row g-3 bg-white rounded shadow-sm p-3 mb-4">
+                        <div className="col-md-4">
+                            <label className="form-label">Commande *</label>
+                            <Select
+                                options={commandes}
+                                value={form.commande}
+                                onChange={(selected) =>
+                                    handleSelectCommande(selected)
+                                }
+                                placeholder="Sélectionner une commande"
+                                isClearable
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label">Fournisseur *</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={form.supplier}
+                                readOnly
+                            />
+                        </div>
 
-                <div className="col-md-3">
-                    <label className="form-label">Date réception *</label>
-                    <input
-                        type="date"
-                        className="form-control"
-                        value={form.dateFacture}
-                        onChange={(e) =>
-                            setForm({ ...form, dateFacture: e.target.value })
-                        }
-                    />
-                </div>
-                <div className="col-md-3">
-                    <label className="form-label">Montant *</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={form?.montantFacture?.toFixed(2)}
-                        readOnly
-                    />
-                </div>
-                <div className="col-md-3">
-                    <label className="form-label">Observation</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={form?.observation}
-                        onChange={(e) =>
-                            setForm({ ...form, observation: e.target.value })
-                        }
-                    />
-                </div>
+                        <div className="col-md-3">
+                            <label className="form-label">
+                                Date réception *
+                            </label>
+                            <input
+                                type="date"
+                                className="form-control"
+                                value={form.dateFacture}
+                                onChange={(e) =>
+                                    setForm({
+                                        ...form,
+                                        dateFacture: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label">Montant *</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={form?.montantFacture?.toFixed(2)}
+                                readOnly
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label">Observation</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={form?.observation}
+                                onChange={(e) =>
+                                    setForm({
+                                        ...form,
+                                        observation: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
 
-                <div className="col-12">
-                    <div className="d-flex mb-2"></div>
+                        <div className="col-12">
+                            <div className="d-flex align-items-center mb-2 gap-2"></div>
+                            <div className="table-responsive">
+                                <table className="table table-sm table-hover align-middle">
+                                    <thead className="table-light text-muted small">
+                                        <tr>
+                                            <th>Article/Code</th>
+                                            <th>Unité</th>
+                                            <th>Qté commandée</th>
+                                            <th>PU</th>
+                                            <th>Qté reçue</th>
+                                            <th>Reste</th>
+                                            <th>Observation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {rows.map((row, index) => (
+                                            <tr key={index}>
+                                                <td>{row.article?.label}</td>
 
-                    <table className="table table-bordered">
-                        <thead className="table-light">
-                            <tr>
-                                <th>Article/Code</th>
-                                <th>Unité</th>
-                                <th>Qté commandée</th>
-                                <th>PU</th>
-                                <th>Qté reçue</th>
-                                <th>Reste</th>
-                                <th>Observation</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rows.map((row, index) => (
-                                <tr key={index}>
-                                    <td>{row.article?.label}</td>
+                                                <td>{row.unite}</td>
 
-                                    <td>{row.unite}</td>
+                                                <td>{row.qte_commandee}</td>
+                                                <td>{row.unit_price}</td>
 
-                                    <td>{row.qte_commandee}</td>
-                                    <td>{row.unit_price}</td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control hidden-input"
+                                                        style={{
+                                                            textAlign: "center",
+                                                        }}
+                                                        value={row.qte_recue}
+                                                        min={0}
+                                                        max={
+                                                            row.remaining_quantity
+                                                        }
+                                                        onChange={(e) => {
+                                                            const value =
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                );
 
-                                    <td>
-                                        <input
-                                            type="number"
-                                            className="form-control hidden-input"
-                                            style={{ textAlign: "center" }}
-                                            value={row.qte_recue}
-                                            min={0}
-                                            max={row.remaining_quantity}
-                                            onChange={(e) => {
-                                                const value = Number(
-                                                    e.target.value
-                                                );
+                                                            const updated = [
+                                                                ...rows,
+                                                            ];
+                                                            const rowData =
+                                                                updated[index];
 
-                                                const updated = [...rows];
-                                                const rowData = updated[index];
+                                                            const maxReceivable =
+                                                                rowData.qte_commandee -
+                                                                rowData.received_quantity;
 
-                                                const maxReceivable =
-                                                    rowData.qte_commandee -
-                                                    rowData.received_quantity;
+                                                            const qteRecue =
+                                                                Math.min(
+                                                                    value,
+                                                                    maxReceivable
+                                                                );
 
-                                                const qteRecue = Math.min(
-                                                    value,
-                                                    maxReceivable
-                                                );
+                                                            rowData.qte_recue =
+                                                                qteRecue;
+                                                            rowData.remaining_quantity =
+                                                                rowData.qte_commandee -
+                                                                rowData.received_quantity -
+                                                                qteRecue;
 
-                                                rowData.qte_recue = qteRecue;
-                                                rowData.remaining_quantity =
-                                                    rowData.qte_commandee -
-                                                    rowData.received_quantity -
-                                                    qteRecue;
+                                                            setRows(updated);
+                                                        }}
+                                                    />
+                                                </td>
 
-                                                setRows(updated);
-                                            }}
-                                        />
-                                    </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control hidden-input"
+                                                        style={{
+                                                            textAlign: "center",
+                                                        }}
+                                                        value={
+                                                            row.remaining_quantity
+                                                        }
+                                                        readOnly
+                                                    />
+                                                </td>
 
-                                    <td>
-                                        <input
-                                            type="number"
-                                            className="form-control hidden-input"
-                                            style={{ textAlign: "center" }}
-                                            value={row.remaining_quantity}
-                                            readOnly
-                                        />
-                                    </td>
-
-                                    <td>
-                                        <input
-                                            type="text"
-                                            className="form-control hidden-input"
-                                            style={{ textAlign: "left" }}
-                                            value={row.observation}
-                                            onChange={(e) => {
-                                                const updated = [...rows];
-                                                updated[index].observation =
-                                                    e.target.value;
-                                                setRows(updated);
-                                            }}
-                                        />
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-                <div className="d-flex justify-content-center gap-2 mt-3 pb-3">
-                    <button
-                        className="btn btn-success btn-sm"
-                        disabled={disableBtn}
-                        onClick={(e) => {
-                            handleSubmit(e);
-                        }}
-                    >
-                        Reception
-                    </button>
-                    <button
-                        className="btn btn-primary btn-sm"
-                        disabled={disableBtn}
-                        onClick={(e) => {
-                            handleSubmit(e, "draft");
-                        }}
-                    >
-                        Enregistrer
-                    </button>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control hidden-input"
+                                                        style={{
+                                                            textAlign: "left",
+                                                        }}
+                                                        value={row.observation}
+                                                        onChange={(e) => {
+                                                            const updated = [
+                                                                ...rows,
+                                                            ];
+                                                            updated[
+                                                                index
+                                                            ].observation =
+                                                                e.target.value;
+                                                            setRows(updated);
+                                                        }}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="d-flex flex-wrap justify-content-center gap-2 mt-4 pb-3">
+                            <button
+                                className="btn btn-success btn-sm"
+                                disabled={disableBtn}
+                                onClick={(e) => {
+                                    handleSubmit(e);
+                                }}
+                            >
+                                Reception
+                            </button>
+                            <button
+                                className="btn btn-primary btn-sm"
+                                disabled={disableBtn}
+                                onClick={(e) => {
+                                    handleSubmit(e, "draft");
+                                }}
+                            >
+                                Enregistrer
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

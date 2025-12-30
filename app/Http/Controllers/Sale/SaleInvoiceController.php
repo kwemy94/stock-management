@@ -37,6 +37,10 @@ class SaleInvoiceController extends Controller
         SalePaymentRepository $salePaymentRepository,
         SettingRepository $settingRepository
     ) {
+        $this->middleware('can:view command details')->only(['show']);
+        $this->middleware('can:print command')->only(['printInvoice']);
+        $this->middleware('can:update sale invoice')->only(['edit', 'update']);
+        // $this->middleware('can:confirm sale invoice')->only(['confirmInvoice']);
         $this->saleInvoiceRepository = $saleInvoiceRepository;
         $this->customerRepository = $customerRepository;
         $this->productRepository = $productRepository;
@@ -46,9 +50,23 @@ class SaleInvoiceController extends Controller
         $this->settingRepository = $settingRepository;
     }
 
-    public function index($all = null)
+    public function index(Request $request)
     {
-        // dd( $all);
+        $type = $request->type;
+        // dd($request->all(), $type);
+        if (!$type) {
+            abort_if(
+                !auth()->user()->hasPermissionTo('manage sales'),
+                403
+            );
+        } else {
+            abort_if(
+                !auth()->user()->hasPermissionTo('view command list'),
+                403
+            );
+
+        }
+
         toggleDatabase();
         $saleInvoices = $this->saleInvoiceRepository->getAll();
 
@@ -57,16 +75,46 @@ class SaleInvoiceController extends Controller
         $devisInvoices = $this->saleInvoiceRepository->getDevisInvoice();
         $paymentModes = $this->paymentModeRepository->getAll();
 
-        if ($all) {
-            $result = view('admin.sale.invoice.index_all', compact('saleInvoices', 'draftInvoices', 'confirmInvoices', 'devisInvoices', 'paymentModes'));
-        } else {
-            $result = view('admin.sale.invoice.index', compact('saleInvoices', 'draftInvoices', 'confirmInvoices', 'devisInvoices'));
+        switch ($type) {
+            case 'draft':
+                $result = view('admin.sale.invoice.index_draft', compact('draftInvoices', 'paymentModes'));
+                break;
+            case 'confirm':
+                $result = view('admin.sale.invoice.index_confirm', compact('confirmInvoices', 'paymentModes'));
+                break;
+            case 'proforma':
+                $result = view('admin.sale.invoice.index_proforma', compact('devisInvoices', 'paymentModes'));
+                break;
+
+            default:
+                $result = view('admin.sale.invoice.dashboard', compact('saleInvoices', 'draftInvoices', 'confirmInvoices', 'devisInvoices'));
+                break;
         }
 
         return $result;
     }
-    public function create($type = 'facture')
+    public function create(Request $request)
     {
+        $type = $request->type;
+        switch ($type) {
+            case 'proforma':
+                abort_if(
+                    !auth()->user()->hasPermissionTo('create proforma'),
+                    403
+                );
+                break;
+            case 'facture':
+                abort_if(
+                    !auth()->user()->hasPermissionTo('create command'),
+                    403
+                );
+                break;
+
+            default:
+                # code...
+                break;
+        }
+
         toggleDatabase();
         $saleInvoices = $this->saleInvoiceRepository->getAll();
 
@@ -89,6 +137,25 @@ class SaleInvoiceController extends Controller
 
     public function store(Request $request)
     {
+        $statut = $request->statut == 'proformat'? 'proforma': $request->statut;
+        switch ($statut) {
+            case 'proforma':
+                abort_if(
+                    !auth()->user()->hasPermissionTo('create proforma'),
+                    403
+                );
+                break;
+            case 'facture':
+                abort_if(
+                    !auth()->user()->hasPermissionTo('create command'),
+                    403
+                );
+                break;
+
+            default:
+                # code...
+                break;
+        }
         try {
             toggleDatabase();
             $inputs = $request->except(['lines']);
@@ -296,8 +363,21 @@ class SaleInvoiceController extends Controller
     {# la confirmation de la facture entraine le mvt de stock
 
         toggleDatabase();
+         $invoice = $this->saleInvoiceRepository->getById($id);
+
+        if($invoice->status == 'proformat'){
+            abort_if(
+                    !auth()->user()->hasPermissionTo('convert proforma to command'),
+                    403
+                );
+        }else{
+            abort_if(
+                    !auth()->user()->hasPermissionTo('confirm sale invoice'),
+                    403
+                );
+        }
         try {
-            $invoice = $this->saleInvoiceRepository->getById($id);
+            // $invoice = $this->saleInvoiceRepository->getById($id);
             if ($invoice->status == 'proformat') {
                 $this->saleInvoiceRepository->update($id, ['status' => 'draft']);
                 $message = 'Proformat validé avec succès';

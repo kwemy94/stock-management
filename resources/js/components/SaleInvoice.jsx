@@ -252,25 +252,37 @@ export default function SaleInvoice({ type }) {
 
     return (
         <div className="container mt-4">
-            <Loader load={loading} />
-            <div className="toast-container">
-                <ToastContainer limit={3} />
-            </div>
-            <h4>Nouvelle facture</h4>
-            <div
-                className="row g-3 border rounded p-3 mb-4"
-                style={{ backgroundColor: "white" }}
-            >
-                <div className="col-md-4">
-                    <label className="form-label">Client *</label>
-                    <Select
-                        options={clients}
-                        value={form.client}
-                        onChange={(v) => setForm({ ...form, client: v })}
-                        placeholder="Sélectionner un client"
-                    />
-                </div>
-                {/* <div className="col-md-4">
+            <div className="row justify-content-center">
+                <div className="col-xl-10 col-lg-11 col-md-12">
+                    <Loader load={loading} />
+                    <div className="toast-container">
+                        <ToastContainer limit={3} />
+                    </div>
+                    {/* <h4>{type == "proforma" ? "Nouveau proforma" : "Nouvelle facture"}</h4> */}
+                    <div className="mb-3 text-center">
+                        <h5 className="mb-0 fw-semibold">
+                            {type === "proforma"
+                                ? "Nouveau proforma"
+                                : "Nouvelle facture"}
+                        </h5>
+                        <small className="text-muted">
+                            Saisie des informations principales
+                        </small>
+                    </div>
+
+                    <div className="row g-3 bg-white rounded shadow-sm p-3 mb-4">
+                        <div className="col-md-4">
+                            <label className="form-label">Client *</label>
+                            <Select
+                                options={clients}
+                                value={form.client}
+                                onChange={(v) =>
+                                    setForm({ ...form, client: v })
+                                }
+                                placeholder="Sélectionner un client"
+                            />
+                        </div>
+                        {/* <div className="col-md-4">
                     <label className="form-label">Site *</label>
                     <Select
                         options={sites}
@@ -278,27 +290,34 @@ export default function SaleInvoice({ type }) {
                         onChange={(v) => setForm({ ...form, site: v })}
                     />
                 </div> */}
-                <div className="col-md-4">
-                    <label className="form-label">Mode de paiement *</label>
-                    <Select
-                        options={modesPaiement}
-                        value={form.modePaiement}
-                        onChange={(v) => setForm({ ...form, modePaiement: v })}
-                    />
-                </div>
+                        <div className="col-md-4">
+                            <label className="form-label">
+                                Mode de paiement *
+                            </label>
+                            <Select
+                                options={modesPaiement}
+                                value={form.modePaiement}
+                                onChange={(v) =>
+                                    setForm({ ...form, modePaiement: v })
+                                }
+                            />
+                        </div>
 
-                <div className="col-md-3">
-                    <label className="form-label">Date facture *</label>
-                    <input
-                        type="date"
-                        className="form-control"
-                        value={form.dateFacture}
-                        onChange={(e) =>
-                            setForm({ ...form, dateFacture: e.target.value })
-                        }
-                    />
-                </div>
-                {/* <div className="col-md-3">
+                        <div className="col-md-3">
+                            <label className="form-label">Date facture *</label>
+                            <input
+                                type="date"
+                                className="form-control"
+                                value={form.dateFacture}
+                                onChange={(e) =>
+                                    setForm({
+                                        ...form,
+                                        dateFacture: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+                        {/* <div className="col-md-3">
                     <label className="form-label">Échéance</label>
                     <input
                         type="date"
@@ -309,216 +328,242 @@ export default function SaleInvoice({ type }) {
                         }
                     />
                 </div> */}
-                <div className="col-md-3">
-                    <label className="form-label">Montant facture</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={form.montantFacture.toFixed(2)}
-                        readOnly
-                    />
-                </div>
-                <div className="col-md-3">
-                    <label className="form-label">Montant dû</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={form.montantDu.toFixed(2)}
-                        readOnly
-                    />
-                </div>
+                        <div className="col-md-3">
+                            <label className="form-label">
+                                Montant facture
+                            </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={form.montantFacture.toFixed(2)}
+                                readOnly
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label">Montant dû</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={form.montantDu.toFixed(2)}
+                                readOnly
+                            />
+                        </div>
 
-                <div className="col-md-3">
-                    <label className="form-label">Montant encaissé</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        value={form.montantEncaisse}
-                        onChange={(e) =>
-                            setForm({
-                                ...form,
-                                montantEncaisse:
-                                    parseFloat(e.target.value) || 0,
-                            })
-                        }
-                    />
-                </div>
+                        <div className="col-md-3">
+                            <label className="form-label">
+                                Montant encaissé
+                            </label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                value={form.montantEncaisse}
+                                onChange={(e) =>
+                                    setForm({
+                                        ...form,
+                                        montantEncaisse:
+                                            parseFloat(e.target.value) || 0,
+                                    })
+                                }
+                            />
+                        </div>
 
-                <div className="col-12">
-                    <div className="d-flex mb-2">
-                        <button
-                            className="btn btn-success btn-sm me-2"
-                            onClick={handleAddRow}
-                        >
-                            + Add
-                        </button>
-                        <button
-                            className="btn btn-danger btn-sm"
-                            onClick={() => setRows(rows.slice(0, -1))}
-                        >
-                            <span
-                                className="fas fa-trash"
-                                aria-hidden="true"
-                            ></span>{" "}
-                            Delete
-                        </button>
+                        <div className="col-12">
+                            <div className="d-flex align-items-center mb-2 gap-2">
+                                <button
+                                    className="btn btn-outline-success btn-sm me-2"
+                                    onClick={handleAddRow}
+                                >
+                                    + Add
+                                </button>
+                                <button
+                                    className="btn btn-outline-danger btn-sm"
+                                    onClick={() => setRows(rows.slice(0, -1))}
+                                >
+                                    <span
+                                        className="fas fa-trash"
+                                        aria-hidden="true"
+                                    ></span>{" "}
+                                    Delete
+                                </button>
+                            </div>
+                            <div className="table-responsive">
+                                <table className="table table-sm table-hover align-middle">
+                                    <thead className="table-light text-muted small">
+                                        <tr>
+                                            <th>Article</th>
+                                            <th>Description</th>
+                                            <th>Quantité</th>
+                                            <th>Unité</th>
+                                            <th>Prix unitaire</th>
+                                            <th>Remise (%)</th>
+                                            <th>Montant HT</th>
+                                            <th>Montant Taxe</th>
+                                            <th>Montant TTC</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {rows.map((row, index) => {
+                                            const montantHT =
+                                                row.quantite *
+                                                row.prix *
+                                                (1 - row.remise / 100);
+                                            const montantTaxe =
+                                                montantHT * (row.taxe / 100);
+                                            const montantTTC =
+                                                montantHT + montantTaxe;
+
+                                            return (
+                                                <tr key={index}>
+                                                    <td
+                                                        style={{
+                                                            minWidth: "200px",
+                                                        }}
+                                                    >
+                                                        <Select
+                                                            options={getAvailableArticles(
+                                                                index
+                                                            )}
+                                                            value={row.article}
+                                                            onChange={(val) =>
+                                                                handleSelectArticle(
+                                                                    index,
+                                                                    val
+                                                                )
+                                                            }
+                                                            placeholder="Choisir un article"
+                                                            isClearable
+                                                        />
+                                                    </td>
+                                                    <td>{row.description}</td>
+                                                    <td>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            value={row.quantite}
+                                                            onChange={(e) => {
+                                                                const updatedRows =
+                                                                    [...rows];
+                                                                updatedRows[
+                                                                    index
+                                                                ].quantite =
+                                                                    parseInt(
+                                                                        e.target
+                                                                            .value
+                                                                    ) || 1;
+                                                                setRows(
+                                                                    updatedRows
+                                                                );
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td>{row.unite}</td>
+                                                    <td>{row.prix}</td>
+                                                    <td>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            value={row.remise}
+                                                            onChange={(e) => {
+                                                                const updatedRows =
+                                                                    [...rows];
+                                                                updatedRows[
+                                                                    index
+                                                                ].remise =
+                                                                    parseFloat(
+                                                                        e.target
+                                                                            .value
+                                                                    ) || 0;
+                                                                setRows(
+                                                                    updatedRows
+                                                                );
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        {montantHT.toFixed(2)}
+                                                    </td>
+                                                    <td>
+                                                        {montantTaxe.toFixed(2)}
+                                                    </td>
+                                                    <td>
+                                                        {montantTTC.toFixed(2)}
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            className="btn btn-sm btn-outline-danger"
+                                                            onClick={() =>
+                                                                handleRemoveRow(
+                                                                    index
+                                                                )
+                                                            }
+                                                        >
+                                                            X
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="d-flex flex-wrap justify-content-center gap-2 mt-4 pb-3">
+                            {/* <button className="btn btn-secondary" disabled={disableBtn}>Annuler</button> */}
+                            {type == "proforma" ? (
+                                <>
+                                    <button
+                                        className="btn btn-primary"
+                                        disabled={disableBtn}
+                                        onClick={(e) => {
+                                            handleSubmit(e, "proformat");
+                                        }}
+                                    >
+                                        Enegistrer
+                                    </button>
+                                    <button
+                                        className="btn btn-primary"
+                                        disabled={disableBtn}
+                                        onClick={(e) => {
+                                            handleSubmit(e, "proformat", true);
+                                        }}
+                                    >
+                                        Enegistrer & Continuer
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        className="btn btn-success"
+                                        disabled={disableBtn}
+                                        onClick={(e) => {
+                                            handleSubmit(e, "confirmed");
+                                        }}
+                                    >
+                                        Confirmer
+                                    </button>
+                                    <button
+                                        className="btn btn-primary"
+                                        disabled={disableBtn}
+                                        onClick={(e) => {
+                                            handleSubmit(e, "draft");
+                                        }}
+                                    >
+                                        Enregistrer
+                                    </button>
+                                    <button
+                                        className="btn btn-primary btn-sm"
+                                        disabled={disableBtn}
+                                        onClick={(e) => {
+                                            handleSubmit(e, "draft", true);
+                                        }}
+                                    >
+                                        Enregistrer & Continuer
+                                    </button>
+                                </>
+                            )}
+                        </div>
                     </div>
-
-                    <table className="table table-bordered">
-                        <thead className="table-light">
-                            <tr>
-                                <th>Article</th>
-                                <th>Description</th>
-                                <th>Quantité</th>
-                                <th>Unité</th>
-                                <th>Prix unitaire</th>
-                                <th>Remise (%)</th>
-                                <th>Montant HT</th>
-                                <th>Montant Taxe</th>
-                                <th>Montant TTC</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rows.map((row, index) => {
-                                const montantHT =
-                                    row.quantite *
-                                    row.prix *
-                                    (1 - row.remise / 100);
-                                const montantTaxe =
-                                    montantHT * (row.taxe / 100);
-                                const montantTTC = montantHT + montantTaxe;
-
-                                return (
-                                    <tr key={index}>
-                                        <td style={{ minWidth: "200px" }}>
-                                            <Select
-                                                options={getAvailableArticles(
-                                                    index
-                                                )}
-                                                value={row.article}
-                                                onChange={(val) =>
-                                                    handleSelectArticle(
-                                                        index,
-                                                        val
-                                                    )
-                                                }
-                                                placeholder="Choisir un article"
-                                                isClearable
-                                            />
-                                        </td>
-                                        <td>{row.description}</td>
-                                        <td>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                value={row.quantite}
-                                                onChange={(e) => {
-                                                    const updatedRows = [
-                                                        ...rows,
-                                                    ];
-                                                    updatedRows[
-                                                        index
-                                                    ].quantite =
-                                                        parseInt(
-                                                            e.target.value
-                                                        ) || 1;
-                                                    setRows(updatedRows);
-                                                }}
-                                            />
-                                        </td>
-                                        <td>{row.unite}</td>
-                                        <td>{row.prix}</td>
-                                        <td>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                value={row.remise}
-                                                onChange={(e) => {
-                                                    const updatedRows = [
-                                                        ...rows,
-                                                    ];
-                                                    updatedRows[index].remise =
-                                                        parseFloat(
-                                                            e.target.value
-                                                        ) || 0;
-                                                    setRows(updatedRows);
-                                                }}
-                                            />
-                                        </td>
-                                        <td>{montantHT.toFixed(2)}</td>
-                                        <td>{montantTaxe.toFixed(2)}</td>
-                                        <td>{montantTTC.toFixed(2)}</td>
-                                        <td>
-                                            <button
-                                                className="btn btn-sm btn-outline-danger"
-                                                onClick={() =>
-                                                    handleRemoveRow(index)
-                                                }
-                                            >
-                                                X
-                                            </button>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-                <div className="d-flex justify-content-center gap-2 mt-3 pb-3">
-                    {/* <button className="btn btn-secondary" disabled={disableBtn}>Annuler</button> */}
-                    {type == "proformat" ? (
-                        <>
-                            <button
-                                className="btn btn-primary"
-                                disabled={disableBtn}
-                                onClick={(e) => {
-                                    handleSubmit(e, "proformat");
-                                }}
-                            >
-                                Enegistrer
-                            </button>
-                            <button
-                                className="btn btn-primary"
-                                disabled={disableBtn}
-                                onClick={(e) => {
-                                    handleSubmit(e, "proformat", true);
-                                }}
-                            >
-                                Enegistrer & Continuer
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <button
-                                className="btn btn-success"
-                                disabled={disableBtn}
-                                onClick={(e) => {
-                                    handleSubmit(e, "confirmed");
-                                }}
-                            >
-                                Confirmer
-                            </button>
-                            <button
-                                className="btn btn-primary"
-                                disabled={disableBtn}
-                                onClick={(e) => {
-                                    handleSubmit(e, "draft");
-                                }}
-                            >
-                                Enregistrer
-                            </button>
-                            <button
-                                className="btn btn-primary"
-                                disabled={disableBtn}
-                                onClick={(e) => {
-                                    handleSubmit(e, "draft", true);
-                                }}
-                            >
-                                Enregistrer & Continuer
-                            </button>
-                        </>
-                    )}
                 </div>
             </div>
         </div>

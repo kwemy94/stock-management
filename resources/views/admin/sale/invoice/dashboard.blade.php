@@ -37,15 +37,15 @@
                                             <i class="fas fa-file-invoice-dollar"></i>
                                         </span>
                                         <div class="info-box-content">
-                                            <span class="info-box-text">Facture client</span>
-                                            <span class="info-box-number text-muted">Créer une facture</span>
+                                            <span class="info-box-text">cmd client</span>
+                                            <span class="info-box-number text-muted">Créer une commande</span>
                                         </div>
                                     </div>
                                 </a>
                             </div>
 
                             {{-- Commande --}}
-                            <div class="col-md-6 col-12 mb-3">
+                            {{-- <div class="col-md-6 col-12 mb-3">
                                 <a href="#" class="text-dark">
                                     <div class="info-box shadow-sm action-card">
                                         <span class="info-box-icon bg-warning">
@@ -57,11 +57,11 @@
                                         </div>
                                     </div>
                                 </a>
-                            </div>
+                            </div> --}}
 
                             {{-- Devis --}}
                             <div class="col-md-6 col-12 mb-3">
-                                <a href="{{ route('sale.invoice.create', ['type' => 'proformat']) }}" class="text-dark">
+                                <a href="{{ route('sale.invoice.create', ['type' => 'proforma']) }}" class="text-dark">
                                     <div class="info-box shadow-sm action-card">
                                         <span class="info-box-icon bg-info">
                                             <i class="fas fa-file-alt"></i>
@@ -75,7 +75,7 @@
                             </div>
 
                             {{-- Rapport --}}
-                            @can('view sales report')
+                            {{-- @can('view sales report') --}}
                                 <div class="col-md-6 col-12">
                                     <a href="{{ route('sale.invoice.rapport') }}" class="text-dark">
                                         <div class="info-box shadow-sm action-card">
@@ -89,7 +89,7 @@
                                         </div>
                                     </a>
                                 </div>
-                            @endcan
+                            {{-- @endcan --}}
 
                         </div>
                     </div>
@@ -109,7 +109,7 @@
                             </span>
                         </h3>
 
-                        <a href="{{ route('sale.invoice', [true]) }}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ route('sale.invoice', ['type' => 'confirm']) }}" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-arrow-right"></i> Voir tout
                         </a>
                     </div>
@@ -147,7 +147,7 @@
                                             </td>
                                             <td class="text-center">
                                                 <span
-                                                    class="badge badge-{{ $invoice->status == 'Payé' ? 'success' : 'warning' }}">
+                                                    class="badge badge-{{ $invoice->status == 'Payé' ? 'success' : 'primary' }}">
                                                     {{ $invoice->status }}
                                                 </span>
                                             </td>
@@ -179,7 +179,7 @@
                             </span>
                         </h3>
 
-                        <a href="{{ route('sale.invoice', ['draft' => true]) }}" class="btn btn-sm btn-outline-danger">
+                        <a href="{{ route('sale.invoice', ['type' => 'draft']) }}" class="btn btn-sm btn-outline-danger">
                             <i class="fas fa-arrow-right"></i> Voir tout
                         </a>
                     </div>
@@ -249,7 +249,7 @@
                             </span>
                         </h3>
 
-                        <a href="{{ route('sale.invoice', ['type' => 'proformat']) }}"
+                        <a href="{{ route('sale.invoice', ['type' => 'proforma']) }}"
                             class="btn btn-sm btn-outline-warning">
                             <i class="fas fa-arrow-right"></i> Voir tout
                         </a>
