@@ -52,11 +52,24 @@
                                         @if ($role->name == 'super-admin')
                                             @continue
                                         @endif
-                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
+                        @if (auth()->user()->company->email == 'tigod2302@gmail.com')
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Etablissement <em class="text-danger">*</em></label>
+                                    <select name="etablissement_id" class="form-control form-control-sm required">
+                                        <option value="" selected disabled>Sélectionner la structure</option>
+                                        @foreach ($companies as $company)
+                                            <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        @endif
                         {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label>Mot de passe <em class="text-danger">*</em></label>

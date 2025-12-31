@@ -79,6 +79,9 @@ Route::Post('/app-sub-script', [EtablissementController::class, 'store'])->name(
 Route::get('/app-company', [EtablissementController::class, 'nosCompany'])->name('app.company');
 Route::post('/app-activate-company/{id}', [EtablissementController::class, 'activateEts'])->name('app.activate.company');
 
+// Route::get('/activate/{token}', [AuthController::class, 'activate']);
+
+
 Route::middleware(['auth', 'check.license'])->group(function () {
     Route::group(['prefix' => 'dashboard'], function () {
 
@@ -185,6 +188,9 @@ Route::middleware(['auth', 'check.license'])->group(function () {
         Route::post('/users/{user}/permissions', [PermissionController::class, 'updateUserPermissions'])
             ->name('users.permissions.update');
 
+
+        # etablissement
+        Route::resource('etablissements', EtablissementController::class);
     });
 
 });

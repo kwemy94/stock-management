@@ -27,7 +27,7 @@
                             <div class="card-tools">
                                 <a href="{{ route('licenses.index') }}" class="btn btn-outline-primary btn-sm"> {{ __('Licences') }}</a>
                                 <a href="{{ route('plans.index') }}" class="btn btn-outline-primary btn-sm">Plans</a>
-                                <a href="#" class="btn btn-outline-success btn-sm"> <i class="fa fa-plus"></i> Nouveau</a>
+                                <a href="#" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#createEtablissementModal"> <i class="fa fa-plus"></i> Nouveau</a>
                             </div>
                         </div>
                         <!-- /.card-header -->
@@ -120,6 +120,7 @@
             </div>
         </div>
 
+        @include('admin.etablissement.create-modal')
     </section>
 @endsection
 

@@ -26,7 +26,7 @@ class MessageGoogle extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: isset($this->data['url'])? 'Souscription Tech Briva stock' : 'new massage Tech Briva',
+            subject: isset($this->data['url'])? 'Souscription Tech Briva stock' : 'new message Tech Briva',
         );
     }
 

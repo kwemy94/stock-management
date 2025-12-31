@@ -6,15 +6,18 @@ use App\Mail\MessageGoogle;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Etablissement;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Services\EtablissementService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use App\Repositories\User\UserRepository;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\EtablissementRequest;
 use App\Http\Validation\EtablissementValidation;
 use App\Http\Controllers\SMSNotificationController;
 use App\Repositories\Etablissement\EtablissementRepository;
@@ -42,7 +45,7 @@ class EtablissementController extends Controller
     public function nosCompany()
     {
         $etablissements = $this->etablissementRepository->getAllCompany();
-        
+
         return view('admin.etablissement.index', compact('etablissements'));
     }
 
@@ -57,7 +60,25 @@ class EtablissementController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, EtablissementValidation $etablissementValidation)
+
+
+    public function store(
+        EtablissementRequest $request,
+        EtablissementService $service
+    ): JsonResponse {
+        $result = $service->createEtablissement($request);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Etablissement créé. Un email d’activation a été envoyé.",
+            'data' => [
+                'etablissement_id' => $result->id,
+            ],
+        ], 201);
+    }
+
+
+    public function store_old(Request $request, EtablissementValidation $etablissementValidation)
     {
         // $sms = new SMSNotificationController;
         // dd($sms->sendSMSNotification());
@@ -78,7 +99,7 @@ class EtablissementController extends Controller
         $adminUser['email'] = $request->email;
         $pwd = $this->passwordGenerate(8);
         $adminUser['password'] = Hash::make($pwd);
-        
+
 
         try {
             $database = null;
@@ -91,31 +112,31 @@ class EtablissementController extends Controller
 
 
             $database = '2s_' . preg_replace("/\s+/", "", $request->name) . '_db';
-            
+
             $data = array("db" => array('database' => $database, 'username' => 'root', 'password' => ''), 'momo' => '{}');
-            
+
             $request['settings'] = $data;
 
             $ets = null;
             $transaction = DB::transaction(function () use (&$adminUser, &$ets, $request) {
-                
+
                 $ets = $this->etablissementRepository->store($request->post());
-                
+
                 $adminUser['etablissement_id'] = $ets->id;
-                
+
                 $this->userRepository->store($adminUser);
-                
+
             });
-            
-            
+
+
             if (is_null($transaction)) {
                 #création de la bd client
-                Artisan::call('db:create', ['name'=> $database]);
+                Artisan::call('db:create', ['name' => $database]);
                 // dump($ets);
                 toggleDatabaseById($ets->id);
                 # Exécution des migrations dans les bases de données nouvellement crées
                 $path = 'database/migrations/backend_db';
-                Artisan::call('migrate', ['--path'=> $path]);
+                Artisan::call('migrate', ['--path' => $path]);
                 // dd(1);
 
                 # Exécution des seeds du nouvelle environnement
@@ -126,7 +147,7 @@ class EtablissementController extends Controller
 
 
         } catch (\Exception $e) {
-            errorManager("Error create new environment",$e, $e->getMessage());
+            errorManager("Error create new environment", $e, $e->getMessage());
             return response()->json([
                 'success' => false,
                 'error' => 'erreur survenue ' . $e->getFile(),
@@ -144,7 +165,7 @@ class EtablissementController extends Controller
             Mail::to($adminUser['email'])->bcc("grantshell0@gmail.com")
                 ->queue(new MessageGoogle($inputs));
         } catch (\Throwable $th) {
-            errorManager("Error send mail params:",$th, $th->getMessage());
+            errorManager("Error send mail params:", $th, $th->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => "Erreur survenue",
@@ -202,19 +223,20 @@ class EtablissementController extends Controller
         return substr(str_shuffle($data), 0, $chars);
     }
 
-    public function activateEts($id){
+    public function activateEts($id)
+    {
         $ets = $this->etablissementRepository->getById($id);
-        if($ets){
+        if ($ets) {
             $this->etablissementRepository->update($id, ['status' => 0]);
 
             return response()->json([
-                'success'=> true,
+                'success' => true,
                 'message' => "Bien vouloir valider les commandes pour finaliser l'activation"
             ]);
         }
 
         return response()->json([
-            'success'=> false,
+            'success' => false,
             'message' => "Etablissement non existant"
         ]);
     }

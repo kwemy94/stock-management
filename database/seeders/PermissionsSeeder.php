@@ -52,6 +52,7 @@ class PermissionsSeeder extends Seeder
             // UTILISATEURS
             // ======================
             ['name' => 'create user', 'group' => 'users', 'guard_name' => 'web'],
+            ['name' => 'view users', 'group' => 'users', 'guard_name' => 'web'],
             ['name' => 'update user', 'group' => 'users', 'guard_name' => 'web'],
             ['name' => 'delete user', 'group' => 'users', 'guard_name' => 'web'],
 
