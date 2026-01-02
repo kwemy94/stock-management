@@ -42,7 +42,7 @@ class UserFrontEndSeeder extends Seeder
                 'email' => "tigod2302@gmail.com",
                 'cni' => "12345678",
                 'etablissement_id' => $etablissement->id,
-                'password' => '$2y$10$peJHHeZJHMZ/vKnT0BQNy.qCjL2oor5L5.TePoqeYHuhvBAYX1seu',
+                'password' => '$2y$10$yrAK1wkBHNtvDEb1XfbfhegaL50S9lhD8Wa4x6n6avGki/QYAiOuC',
             ),
             array(
                 'name' => "admin-manager",
