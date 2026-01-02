@@ -16,31 +16,24 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        // Créer des permissions
-        $permStock = Permission::create(['name' => 'manage stock']);
-        $permSales = Permission::create(['name' => 'manage sales']);
-        $permPOS = Permission::create(['name' => 'manage pos']);
+        # Permissions
+        $permStock = Permission::firstOrCreate(['name' => 'manage stock']);
+        $permSales = Permission::firstOrCreate(['name' => 'manage sales']);
+        $permPOS = Permission::firstOrCreate(['name' => 'manage pos']);
 
-        // Créer des rôles
-        if (!Role::where('name', 'super-admin')->exists()) {
-            $roleSuperAdmin = Role::create(['name' => 'super-admin']);
-            $roleSuperAdmin->givePermissionTo([$permStock, $permSales]);
-        }
+        # Rôles + permissions
+        $roles = [
+            'super-admin' => [$permStock, $permSales, $permPOS],
+            'admin' => [$permStock, $permSales],
+            'manager' => [$permStock],
+            'caissier' => [$permPOS],
+        ];
 
-        if (!Role::where('name', 'admin')->exists()) {
-            $roleAdmin = Role::create(['name' => 'admin']);
-            $roleAdmin->givePermissionTo([$permStock, $permSales]);
-        }
-        
-        if (!Role::where('name', 'manager')->exists()) {
-           $roleManager = Role::create(['name' => 'manager']);
-              $roleManager->givePermissionTo($permStock);
-        }
+        foreach ($roles as $roleName => $permissions) {
+            $role = Role::firstOrCreate(['name' => $roleName]);
 
-        if (!Role::where('name', 'caissier')->exists()) {
-            $roleCaissier = Role::create(['name' => 'caissier']);
-            $roleCaissier->givePermissionTo([$permPOS]);
+            # Synchronise proprement les permissions
+            $role->syncPermissions($permissions);
         }
-
     }
 }
