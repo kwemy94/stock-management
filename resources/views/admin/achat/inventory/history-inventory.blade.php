@@ -54,7 +54,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" style="text-align: center"> Aucun invaitaire disponible</td>
+                                            <td colspan="4" style="text-align: center"> Aucun inventaire disponible</td>
                                         </tr>
                                     @endforelse
 

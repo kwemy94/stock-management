@@ -38,18 +38,18 @@
              <li class="nav-header">Approvisionnement</li>
              <li class="nav-item">
                  <a href="{{ route('buy.home') }}" class="nav-link">
-                     <i class="nav-icon fa fa-home"></i>
+                     <i class="nav-icon fas fa-shopping-cart"></i>
                      <p>
-                         {{ __('Home achat') }}
+                         {{ __('Achat') }}
                      </p>
                  </a>
              </li>
              <li class="nav-item">
                  <a href="{{ route('achat.index') }}"
                      class="nav-link {{ request()->routeIs('achat.index') ? 'active' : '' }}">
-                     <i class="nav-icon fas fa-shopping-cart"></i>
+                     <i class="nav-icon fas fa-clipboard-list"></i>
                      <p>
-                         {{ __('Achat') }}
+                         {{ __('Inventaire') }}
                      </p>
                  </a>
              </li>
@@ -57,7 +57,7 @@
              <li class="nav-header">POS</li>
              <li class="nav-item">
                  <a href="{{ route('order.dashboard') }}" class="nav-link">
-                     <i class="nav-icon fas fa-box"></i>
+                     <i class="nav-icon fas fa-cash-register"></i>
                      <p>
                          {{ 'POS' }}
                      </p>
@@ -65,7 +65,7 @@
              </li>
              <li class="nav-item">
                  <a href="{{ route('sale.invoice') }}" class="nav-link">
-                     <i class="nav-icon fas fa-cash-register"></i>
+                     <i class="nav-icon fas fa-file-invoice-dollar"></i>
                      <p>
                          {{ __('dashboard.sale') }}
                      </p>

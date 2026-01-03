@@ -20,75 +20,83 @@
         <div class="container-fluid">
 
             <div class="card">
-                <div class="card-header d-flex align-items-center">
+                <div class="card-header d-flex flex-wrap align-items-center gap-2">
                     <h3 class="card-title mb-0">Bons de réception</h3>
 
-                    <a href="{{ route('buy-reception.create') }}" class="btn btn-success btn-sm ml-auto">
+                    <a href="{{ route('buy-reception.create') }}" class="btn btn-success btn-sm ml-md-auto">
                         <i class="fa fa-plus"></i> Nouveau
                     </a>
                 </div>
 
 
+
                 <div class="card-body">
 
-                    <table id="invoice_tab" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Numéro</th>
-                                <th>Référence commande</th>
-                                <th>Fournisseur</th>
-                                <th>Date de réception</th>
-                                <th>Montant</th>
-                                <th>Créer par</th>
-                                <th>Statut</th>
-                                <th style="width:30px;">Actions</th>
-                            </tr>
-                        </thead>
+                    <div class="table-responsive">
+                        <table id="invoice_tab" class="table table-bordered table-striped table-sm">
 
-                        <tbody>
-
-                            @forelse ($receipts as $receipt)
+                            <thead>
                                 <tr>
-
-                                    <td>
-                                        <a href="{{ route('buy-reception.show', $receipt->id) }}">
-                                            {{ $receipt->receipt_number }}
-                                        </a>
-                                    </td>
-                                    <td>{{ $receipt->purchaseOrder->reference }}</td>
-                                    <td>{{ $receipt->purchaseOrder?->supplier?->name }}</td>
-                                    <td>{{ $receipt->receipt_date }}</td>
-                                    <td>{{ number_format($receipt->total_amount, 0, ',', ' ') }} FCFA</td>
-                                    <td>{{ $receipt->created_by }}</td>
-
-                                    <td>
-                                        @switch($receipt->status)
-                                            @case('draft')
-                                                <span class="badge bg-danger">Brouillon</span>
-                                            @break
-
-                                            @case('partially_received')
-                                                <span class="badge bg-warning">PARTIEL</span>
-                                            @break
-
-                                            @case('received')
-                                                <span class="badge bg-success">Reçue</span>
-                                            @break
-                                        @endswitch
-                                    </td>
-
-                                    @include('admin.achat.reception._actions', ['receipt' => $receipt])
-
+                                    <th>Numéro</th>
+                                    <th class="d-none d-md-table-cell">Référence commande</th>
+                                    <th>Fournisseur</th>
+                                    <th class="d-none d-lg-table-cell">Date réception</th>
+                                    <th>Montant</th>
+                                    <th class="d-none d-md-table-cell">Créé par</th>
+                                    <th>Statut</th>
+                                    <th style="width:30px;">Actions</th>
                                 </tr>
+                            </thead>
 
-                                @empty
+
+                            <tbody>
+
+                                @forelse ($receipts as $receipt)
                                     <tr>
-                                        <td colspan="8" class="text-center">Aucun bon de réception disponible</td>
-                                    </tr>
-                                @endforelse
 
-                            </tbody>
-                        </table>
+                                        <td>
+                                            <a href="{{ route('buy-reception.show', $receipt->id) }}">
+                                                {{ $receipt->receipt_number }}
+                                            </a>
+                                        </td>
+                                        <td class="d-none d-md-table-cell">{{ $receipt->purchaseOrder->reference }}</td>
+                                        <td>{{ $receipt->purchaseOrder?->supplier?->name }}</td>
+                                        <td class="d-none d-md-table-cell">{{ $receipt->receipt_date }}</td>
+                                        <td>{{ number_format($receipt->total_amount, 0, ',', ' ') }} FCFA</td>
+                                        <td class="d-none d-md-table-cell">{{ $receipt->created_by }}</td>
+
+                                        <td>
+                                            @switch($receipt->status)
+                                                @case('draft')
+                                                    <span class="badge bg-danger">Brouillon</span>
+                                                @break
+
+                                                @case('partially_received')
+                                                    <span class="badge bg-warning">PARTIEL</span>
+                                                @break
+
+                                                @case('received')
+                                                    <span class="badge bg-success">Reçue</span>
+                                                @break
+
+                                                @default
+                                                @break
+                                            @endswitch
+                                        </td>
+
+                                        @include('admin.achat.reception._actions', ['receipt' => $receipt])
+
+                                    </tr>
+
+                                    @empty
+                                        <tr>
+                                            <td colspan="8" class="text-center">Aucun bon de réception disponible</td>
+                                        </tr>
+                                    @endforelse
+
+                                </tbody>
+                            </table>
+                        </div>
 
                     </div>
                 </div>

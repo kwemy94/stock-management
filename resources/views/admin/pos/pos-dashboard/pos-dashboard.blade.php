@@ -88,7 +88,7 @@
                         <div class="card-tools">
                             <ul class="pagination pagination-sm float-right">
                                 <li class="page-item"><a class="page-link"
-                                        href="{{ route('sale.invoice', [true]) }}">Plus</a>
+                                        href="#">Plus</a>
                                 </li>
                             </ul>
                         </div>

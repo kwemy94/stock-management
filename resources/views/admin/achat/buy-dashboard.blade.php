@@ -46,95 +46,68 @@
     </style>
 @endsection
 
+
 @section('dashboard-content')
     <section class="content">
         <div class="row pt-2">
 
             <div class="col-md-6">
-                <div class="row">
+                <div class="row g-3">
 
                     {{-- Bon de commande --}}
-                    <div class="col-6 col-sm-6 col-md-6 mb-3">
+                    <div class="col-6 col-md-4 col-lg-3">
                         <a href="{{ route('buy-command-order.index') }}"
                             class="card text-center text-decoration-none purchase-card">
                             <div class="card-body">
                                 <i class="fas fa-file-alt fa-2x mb-2"></i>
-                                <h6 class="card-title">BON DE COMMANDE</h6>
+                                <div class="card-title">BON DE COMMANDE</div>
                             </div>
                         </a>
                     </div>
 
                     {{-- Réception fournisseur --}}
-                    <div class="col-6 col-sm-6 col-md-6 mb-3">
-                        <a href="{{ route('buy-reception.index') }}" class="card text-center text-decoration-none purchase-card">
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a href="{{ route('buy-reception.index') }}"
+                            class="card text-center text-decoration-none purchase-card">
                             <div class="card-body">
                                 <i class="fas fa-truck-loading fa-2x mb-2"></i>
-                                <h6 class="card-title">RÉCEPTION FOURNISSEUR</h6>
+                                <div class="card-title">RÉCEPTION</div>
                             </div>
                         </a>
                     </div>
 
                     {{-- Mouvement de stock --}}
-                    <div class="col-6 col-sm-6 col-md-6 mb-3">
+                    <div class="col-6 col-md-4 col-lg-3">
                         <a href="{{ route('listing.index') }}" class="card text-center text-decoration-none purchase-card">
                             <div class="card-body">
                                 <i class="fas fa-exchange-alt fa-2x mb-2"></i>
-                                <h6 class="card-title">MOUVEMENT DE STOCK</h6>
+                                <div class="card-title">MOUVEMENT</div>
                             </div>
                         </a>
                     </div>
 
                     {{-- Inventaire --}}
-                    <div class="col-6 col-sm-6 col-md-6 mb-3">
+                    <div class="col-6 col-md-4 col-lg-3">
                         <a href="#" class="card text-center text-decoration-none purchase-card">
                             <div class="card-body">
                                 <i class="fas fa-boxes fa-2x mb-2"></i>
-                                <h6 class="card-title">INVENTAIRE</h6>
+                                <div class="card-title">INVENTAIRE</div>
                             </div>
                         </a>
                     </div>
 
-                    {{-- Bon de réception --}}
-                    {{-- <div class="col-6 col-sm-6 col-md-6 mb-3">
-                        <a href="#" class="card text-center text-decoration-none purchase-card">
-                            <div class="card-body">
-                                <i class="fas fa-receipt fa-2x mb-2"></i>
-                                <h6 class="card-title">BON DE RÉCEPTION</h6>
-                            </div>
-                        </a>
-                    </div> --}}
-
-                    {{-- Facture fournisseur --}}
-                    {{-- <div class="col-6 col-sm-6 col-md-6 mb-3">
-                        <a href="#" class="card text-center text-decoration-none purchase-card">
-                            <div class="card-body">
-                                <i class="fas fa-file-invoice fa-2x mb-2"></i>
-                                <h6 class="card-title">FACTURE FOURNISSEUR</h6>
-                            </div>
-                        </a>
-                    </div> --}}
-
-                    {{-- Paiement --}}
-                    {{-- <div class="col-6 col-sm-6 col-md-6 mb-3">
-                        <a href="#" class="card text-center text-decoration-none purchase-card">
-                            <div class="card-body">
-                                <i class="fas fa-money-check-alt fa-2x mb-2"></i>
-                                <h6 class="card-title">PAIEMENT</h6>
-                            </div>
-                        </a>
-                    </div> --}}
-
                     {{-- Rapport --}}
-                    <div class="col-6 col-sm-6 col-md-6 mb-3">
+                    <div class="col-6 col-md-4 col-lg-3">
                         <a href="#" class="card text-center text-decoration-none purchase-card">
                             <div class="card-body">
                                 <i class="fas fa-chart-line fa-2x mb-2"></i>
-                                <h6 class="card-title">RAPPORT</h6>
+                                <div class="card-title">RAPPORT</div>
                             </div>
                         </a>
                     </div>
 
                 </div>
+
             </div>
 
 
@@ -152,37 +125,28 @@
                     </div>
 
                     <div class="card-body p-0">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    {{-- <th style="width: 10px">#</th> --}}
-                                    <th>Numéro facture</th>
-                                    <th>Date</th>
-                                    {{-- <th>Montant</th> --}}
-                                    <th>Montant encaissé</th>
-                                    <th>Montant dû</th>
-                                    <th style="width: 40px">Statut</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{-- @forelse ($confirmInvoices->take(4) as $invoice)
-                                <tr>
-                                    <td>{{ $invoice->invoice_number }}</td>
-                                    <td>{{ $invoice->date }}</td>
-                                    <td>{{ $invoice->montant_encaisse }}</td>
-                                    <td>{{ $invoice->montant_du }}</td>
-                                    <td><span
-                                            class="badge bg-{{ $invoice->status == 'Payé' ? 'success' : 'primary' }}">{{ $invoice->status }}</span>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" style="text-align: center">Aucune facture confirmée</td>
-                                </tr>
-                            @endforelse --}}
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Facture</th>
+                                        <th class="d-none d-md-table-cell">Date</th>
+                                        <th>Encaissé</th>
+                                        <th class="d-none d-lg-table-cell">Dû</th>
+                                        <th>Statut</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">
+                                            Aucune facture confirmée
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
                 </div>
 
             </div>
