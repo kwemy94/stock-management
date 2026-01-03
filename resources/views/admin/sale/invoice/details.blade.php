@@ -167,7 +167,8 @@
                             @break
 
                             @case('confirmed')
-                                <button data-toggle="modal" data-target="#modal-pay" class="btn btn-success btn-sm">
+                                <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal-pay"
+                                    onclick="openPaymentModal({{ $invoice->id }}, {{ $invoice->montant_du }})">
                                     <i class="fas fa-money-bill-wave"></i> Encaisser le paiement
                                 </button>
                             @break
@@ -185,15 +186,104 @@
             </div>
         </div>
     </section>
+
+    <div class="modal fade" id="modal-pay" tabindex="-1">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+
+                <form action="{{ route('sale.invoice.payment') }}" method="POST" id="pay-form">
+                    @csrf
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-cash-register"></i> Encaissement facture
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label>Montant dû</label>
+                                <input type="text" id="amount_du" class="form-control" readonly>
+                                <input type="hidden" name="amount" value="{{ $invoice->montant_du }}"
+                                    class="form-control">
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label>Montant encaissé <span class="text-danger">*</span></label>
+                                <input type="number" name="amount_encaisse" id="amount_encaisse"
+                                    class="form-control required" min="0" step="0.01">
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label>Mode de paiement <span class="text-danger">*</span></label>
+                                <select name="mode_id" class="form-control required">
+                                    <option value="">-- Choisir --</option>
+                                    @foreach ($paymentModes as $mode)
+                                        <option value="{{ $mode->id }}">
+                                            {{ $mode->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label>Date de paiement <span class="text-danger">*</span></label>
+                                <input type="date" name="date_pay" class="form-control required"
+                                    value="{{ date('Y-m-d') }}">
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="invoice_id" id="invoice_id">
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            Annuler
+                        </button>
+                        <button type="submit" class="btn btn-success" id="save-pay">
+                            Enregistrer le paiement
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
 @endsection
 
 
 @section('dashboard-js')
     <script>
-        $('#save-pay').click((e) => {
+        let montantInitial = 0;
+
+        function openPaymentModal(invoiceId, montantDu) {
+            montantInitial = parseFloat(montantDu) || 0;
+
+            $('#invoice_id').val(invoiceId);
+            $('#amount_du').val(montantInitial.toFixed(0));
+            $('#amount_encaisse').val('');
+        }
+
+        $('#amount_encaisse').on('input', function() {
+            let encaisse = parseFloat($(this).val()) || 0;
+            let reste = montantInitial - encaisse;
+
+            if (reste < 0) reste = 0;
+
+            $('#amount_du').val(reste.toFixed(0));
+        });
+
+        $('#save-pay').click(function(e) {
             e.preventDefault();
             if (ControlRequiredFields()) {
-                $('#pay-form').submit()
+                $('#pay-form').submit();
             }
         });
 

@@ -110,9 +110,8 @@
                                                             {{-- Paiement --}}
                                                             @if ($invoice->status == 'confirmed')
                                                                 <a class="dropdown-item text-success" href="#"
-                                                                    onclick="paiementInvoice({{ $invoice->id }})"
                                                                     data-toggle="modal" data-target="#modal-secondary"
-                                                                    data-amount_du="{{ $invoice->montant_du }}">
+                                                                    onclick="paiementInvoice({{ $invoice->id }}, {{ $invoice->montant_du }})">
                                                                     <i class="fas fa-cash-register mr-2"></i> Encaisser
                                                                 </a>
                                                             @endif
@@ -179,10 +178,10 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content bg-white">
                                                 <div class="modal-header">
-                                                    <h4 class="modal-title"
+                                                    <h5 class="modal-title"
                                                         style="display: flex; justify-content: center; align-items: center;">
-                                                        Enregistrer un paiment
-                                                    </h4>
+                                                        <i class="fas fa-cash-register"></i> Encaissement facture
+                                                    </h5>
                                                     <button type="button" class="close" data-dismiss="modal"
                                                         aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
@@ -296,25 +295,25 @@
                 }
             }
 
-            const paiementInvoice = (id) => {
-                let amount_du = $(`#invoice_${id}`).data('amount_du');
-                $('#amount_du').val(amount_du);
-                $('#invoice_id').val(id);
+            let montantInitial = 0;
 
+            function paiementInvoice(id, montant_du) {
+                montantInitial = parseFloat(montant_du) || 0;
+
+                $('#amount_du').val(montantInitial);
+                $('#invoice_id').val(id);
+                $('#amount_encaisse').val('');
             }
+
             const abc = parseFloat($(`#invoice_${id}`).data('amount_du')) || 0;
             $(document).ready(function() {
-                // Récupère le montant initial au chargement
                 $('#amount_encaisse').on('input', function() {
-                    let initAmount = abc;
-                    console.log("détecté", abc);
                     let montant_encaisse = parseFloat($(this).val()) || 0;
-                    console.log("Changement ", montant_encaisse);
-                    let new_montant_du = initAmount - montant_encaisse;
-                    console.log("Chan", new_montant_du);
-                    console.log("test");
-                    if (new_montant_du < 0) new_montant_du = 0;
-                    $('#amount_du').val(new_montant_du.toFixed(1));
+                    let reste = montantInitial - montant_encaisse;
+
+                    if (reste < 0) reste = 0;
+
+                    $('#amount_du').val(reste.toFixed(0));
                 });
             });
         </script>
