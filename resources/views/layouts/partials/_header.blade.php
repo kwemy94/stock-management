@@ -16,7 +16,11 @@
                 {{-- <li class="nav-item"><a class="nav-link" href="{{ route('home-page') }}">À propos</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('home-page') }}">Produits</a></li> --}}
                 <li class="nav-item"><a class="nav-link" href="{{ route('contact.us') }}">Contact</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Log in</a></li>
+                @if (auth()->user())
+                    <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
+                @else
+                    <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
+                @endif
             </ul>
         </div>
 
